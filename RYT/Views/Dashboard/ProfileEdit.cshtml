@@ -1,9 +1,8 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Profile Edit</title>
-</head>
-<body class="babs-body">
+﻿@{
+    ViewData["Title"] = "Profile Edit";
+}
+
+<div class="babs-body">
     <div class="rectangle">
         <img src="~/Images/Rectangle 307.jpg" />
         <div class="rectangletext">
@@ -12,33 +11,57 @@
     </div>
    <div class="babs-container">
        <div class="options">
-           <p class="profile-colour">Edit Profile</p>
-           <p>Change Password</p>
+            <p class="babs-options-edit"><a href="#">Edit Profile</a></p>
+            <p class="babs-options-edit"><a href="#">Change Password</a></p>
        </div>
        <div class="babs-form-area">
             <div class="babs-form-details">
-                <p class="babs-edit">Edit Profile</p>
+                <P class="babs-edit">Edit Profile</P>
                 <p class="babs-view">Only you can view and edit your profile</p>
                 <form class="babs-form-items">
                     <label>Full Name</label>
                     <input type="text" placeholder="Franca John" />
                     <br />
-                    <label>Full Name</label>
-                    <input type="text" placeholder="Franca John" />
+                    <label>Email</label>
+                    <input type="text" placeholder="francajohn@gmail.com" />
                     <br />
-                    <label>Full Name</label>
-                    <input type="text" placeholder="Franca John" />
+                    <label>Phone Number</label>
+                    <input type="text" placeholder="07045889234" />
                     <br />
-                    <label>Full Name</label>
-                    <input type="text" placeholder="Franca John" />
+                    <label>Name of school</label>
+                    <img id="hiddenImage" src="~/Images/pen-square.jpg" alt="Hidden Image" />
+
+                    <input type="text" id="textInput" oninput="hideImage()" placeholder="Mainland Senior High School" />
+
                     <br />
-                    <button type="submit" class="save-button">Save</button>
-                    
+                    <button type="submit"  class="save-button">Save</button>
+                   
                   
                 </form>
             </div>
        </div>
    </div>
+</div>
 
-</body>
-</html>
+
+<script>
+        // JavaScript function to hide the image when typing starts
+
+    function hideImage() {
+        var image = document.getElementById("hiddenImage");
+        var textbox = document.getElementById("textInput");
+        // Check if the textbox has any value 
+        if (textbox.value.trim() !== "")
+        {
+            // If there is text in the textbox, hide the image 
+            image.style.opacity = 0;
+
+        }
+        else 
+        {
+            // If the textbox is empty, show the image 
+            image.style.opacity = 6;
+        }
+
+    }
+</script>
