@@ -8,5 +8,10 @@ namespace RYT.Controllers
         {
             return View();
         }
+
+        public IActionResult ProfileEdit() 
+        {
+            return View();
+        }
     }
 }

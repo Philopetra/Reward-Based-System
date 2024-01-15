@@ -1,16 +1,16 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
@@ -23,9 +23,6 @@ a {
 }
 
 
-
-
-
 .drawer-panel, .side-drawer, .drawer-content-area {
     box-sizing: border-box;
 }
@@ -33,6 +30,7 @@ a {
 .side-drawer-inner, .drawer-content-area {
     padding: 40px
 }
+
 .side-drawer-inner {
     padding-top: 10px;
     padding-bottom: 10px
@@ -54,23 +52,27 @@ a {
 .drawer-content-area-inner {
     margin-left: 280px;
 }
+
 .side-drawer p {
     padding: 12px 16px 12px 16px;
     margin: 8px;
     border-radius: 6px;
     overflow: hidden;
 }
+
 #active-side-menu {
     color: #FFFFFF;
 }
-.side-drawer-inner a p i{
+
+.side-drawer-inner a p i {
     color: #333333;
 }
-#active-side-menu p{
+
+#active-side-menu p {
     background: #6938EF;
 }
-.sperator{
-    border:1px solid #cccccc;
-}
 
+.sperator {
+    border: 1px solid #cccccc;
+}
 
