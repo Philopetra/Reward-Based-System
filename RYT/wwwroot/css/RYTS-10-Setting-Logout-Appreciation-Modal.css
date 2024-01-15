@@ -1,21 +1,19 @@
-body{
-    font-family: Inter;
-}
 
-.modal-settings{
+.ryts-10-modal-settings {
     background-color: white;
     height: 190px;
     width: 216px;
+    font-family: Inter;
 }
 
-.settings-1{
+.ryts-10-settings-1{
     margin-top: 18px;
     margin-bottom: 24px;
     padding-top: 18px;
     padding-left: 16px;
 }
 
-.settings-1 a{
+.ryts-10-settings-1 a{
     text-decoration: none;
     font-size: 14px;
     font-weight: 400;
@@ -23,23 +21,23 @@ body{
     color: #101828;
 }
 
-.settings-1 a:hover{
+.ryts-10-settings-1 a:hover{
     text-decoration: none;
     color: #6938EF;
 }
 
-a .account-setting {
+a .ryts-10-account-setting {
     margin-right: 16px;
     margin-bottom: 8px;
 }
 
-.settings-2{
+.ryts-10-settings-2{
     margin-top: 18px;
     margin-bottom: 24px;
     padding-left: 16px;
 }
 
-.settings-2 a{
+.ryts-10-settings-2 a{
     text-decoration: none;
     font-size: 14px;
     font-weight: 400;
@@ -47,22 +45,22 @@ a .account-setting {
     color: #101828;
 }
 
-.settings-2 a:hover{
+.ryts-10-settings-2 a:hover{
     text-decoration: none;
     color: #6938EF;
 }
 
-a .help-center-setting{
+a .ryts-10-help-center-setting{
     margin-right: 16px;
     margin-bottom: 4px;
 }
 
-.settings-3{
+.ryts-10-settings-3{
     margin-top: 18px;
     padding-left: 16px;
 }
 
-.settings-3 a{
+.ryts-10-settings-3 a{
     text-decoration: none;
     font-size: 14px;
     font-weight: 400;
@@ -70,17 +68,18 @@ a .help-center-setting{
     color: #101828;
 }
 
-.settings-3 a:hover{
+.ryts-10-settings-3 a:hover{
     text-decoration: none;
     color: #6938EF;
 }
 
-a .logout-setting{
+a .ryts-10-logout-setting{
     margin-right: 16px;
     margin-bottom: 4px;
 }
 
-.modal-logout{
+.ryts-10-modal-logout {
+    font-family: Inter;
     background-color: #FFF;
     height: 200px;
     width: 590px;
@@ -89,22 +88,22 @@ a .logout-setting{
     justify-content: center;
 }
 
-.hr-border-thickness{
+.ryts-10-hr-border-thickness{
     background-color: #E8E7E7;
 }
 
-.logout-confirmation{
+.ryts-10-logout-confirmation{
    padding-top: 17px;
    margin-left: 30px;
    font-size: 16px;
    font-style: normal;
    font-weight: 650;
    line-height: 140%; 
-   letter-spacing: 0.15px;
+   letter-spacing: 0.ryts-10-15px;
    color: #101828;
 }
 
-.are-you-sure{
+.ryts-10-are-you-sure{
     padding-bottom: 95px;
     margin-left: 30px;
     color: #21334F;
@@ -114,17 +113,17 @@ a .logout-setting{
     line-height: 20px; 
 }
 
-.float-button-right{
+.ryts-10-float-button-right{
     float:right;
     padding-right: 30px;
     margin-top: -65px;
 }
 
-.float-button-right a{
+.ryts-10-float-button-right a{
     text-decoration: none;
 }
 
-.button-no{
+.ryts-10-button-no{
     border: none;
     padding: 5px 20px 5px 20px;
     background-color: #FCFCFC;
@@ -132,12 +131,12 @@ a .logout-setting{
     border-radius: 4px;
 }
 
-.button-no:hover{
+.ryts-10-button-no:hover{
    
     background-color: #f4f1f1;
 }
 
-.button-yes{  
+.ryts-10-button-yes{  
     padding: 5px 20px 5px 20px;
     background-color: #6938EF;
     color: white;
@@ -146,23 +145,24 @@ a .logout-setting{
    margin-left: 24px;
 }
 
-.button-yes:hover{  
+.ryts-10-button-yes:hover{  
     background-color: #301a6d;
     color: white;
   
 }
 
-.modal-appreciation{
+.ryts-10-modal-appreciation {
+    font-family: Inter;
     background-color: white;
     margin-bottom: 100px;
     width: 375px;
 }
 
-.modal-corner-margin{
+.ryts-10-modal-corner-margin{
     padding: 60px;
 }
 
-.sent-appreciation{
+.ryts-10-sent-appreciation{
     color: #21334F;
     text-align: center;
     font-size: 22px;
@@ -172,7 +172,7 @@ a .logout-setting{
     margin-bottom: 16px;
 }
 
-.thank-you-so-much{
+.ryts-10-thank-you-so-much{
     color: #21334F;
     text-align: center;
     font-size: 14px;
@@ -182,7 +182,7 @@ a .logout-setting{
     margin-bottom: 32px;
 }
 
-.button-message-teacher{
+.ryts-10-button-message-teacher{
     padding: 14px 30px 14px 30px;
     background-color: #6938EF;
     border: none;
@@ -191,30 +191,30 @@ a .logout-setting{
     font-style: normal;
     font-weight: 600;
     line-height: 140%; 
-    letter-spacing: 0.15px;
+    letter-spacing: 0.ryts-10-15px;
     color: white;
 }
 
 
-.button-message-teacher:hover{
+.ryts-10-button-message-teacher:hover{
     background-color: #301a6d;
     color: white;
 }
 
-.message-teacher{
+.ryts-10-message-teacher{
    margin-right: 8px;
    margin-bottom: 3px;
 }
 
-.message-teacher:hover{
+.ryts-10-message-teacher:hover{
     background-color: #301a6d;
 }
 
-.back-to-dashboard{
+.ryts-10-back-to-dashboard{
     padding-top: 40px;
 }
 
-.back-to-dashboard a{
+.ryts-10-back-to-dashboard a{
     text-decoration: none;
     font-size: 14px;
     font-style: normal;
@@ -223,11 +223,10 @@ a .logout-setting{
     color: #101828;
 }
 
-.back-to-dashboard a :hover{
+.ryts-10-back-to-dashboard a:hover{
     color:  #301a6d;
 }
 
-.modal-corner-margin a{
+.ryts-10-modal-corner-margin a{
     text-decoration: none;
 }
-
