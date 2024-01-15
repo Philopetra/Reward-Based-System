@@ -8,5 +8,9 @@ namespace RYT.Controllers
         {
             return View();
         }
+        public IActionResult StudentDashboardModals()
+        {
+            return View();
+        }
     }
 }

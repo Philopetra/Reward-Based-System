@@ -1,0 +1,233 @@
+body{
+    font-family: Inter;
+}
+
+.modal-settings{
+    background-color: white;
+    height: 190px;
+    width: 216px;
+}
+
+.settings-1{
+    margin-top: 18px;
+    margin-bottom: 24px;
+    padding-top: 18px;
+    padding-left: 16px;
+}
+
+.settings-1 a{
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #101828;
+}
+
+.settings-1 a:hover{
+    text-decoration: none;
+    color: #6938EF;
+}
+
+a .account-setting {
+    margin-right: 16px;
+    margin-bottom: 8px;
+}
+
+.settings-2{
+    margin-top: 18px;
+    margin-bottom: 24px;
+    padding-left: 16px;
+}
+
+.settings-2 a{
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #101828;
+}
+
+.settings-2 a:hover{
+    text-decoration: none;
+    color: #6938EF;
+}
+
+a .help-center-setting{
+    margin-right: 16px;
+    margin-bottom: 4px;
+}
+
+.settings-3{
+    margin-top: 18px;
+    padding-left: 16px;
+}
+
+.settings-3 a{
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #101828;
+}
+
+.settings-3 a:hover{
+    text-decoration: none;
+    color: #6938EF;
+}
+
+a .logout-setting{
+    margin-right: 16px;
+    margin-bottom: 4px;
+}
+
+.modal-logout{
+    background-color: #FFF;
+    height: 200px;
+    width: 590px;
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+}
+
+.hr-border-thickness{
+    background-color: #E8E7E7;
+}
+
+.logout-confirmation{
+   padding-top: 17px;
+   margin-left: 30px;
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 650;
+   line-height: 140%; 
+   letter-spacing: 0.15px;
+   color: #101828;
+}
+
+.are-you-sure{
+    padding-bottom: 95px;
+    margin-left: 30px;
+    color: #21334F;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; 
+}
+
+.float-button-right{
+    float:right;
+    padding-right: 30px;
+    margin-top: -65px;
+}
+
+.float-button-right a{
+    text-decoration: none;
+}
+
+.button-no{
+    border: none;
+    padding: 5px 20px 5px 20px;
+    background-color: #FCFCFC;
+    color: black;
+    border-radius: 4px;
+}
+
+.button-no:hover{
+   
+    background-color: #f4f1f1;
+}
+
+.button-yes{  
+    padding: 5px 20px 5px 20px;
+    background-color: #6938EF;
+    color: white;
+   border: none;
+   border-radius: 4px;
+   margin-left: 24px;
+}
+
+.button-yes:hover{  
+    background-color: #301a6d;
+    color: white;
+  
+}
+
+.modal-appreciation{
+    background-color: white;
+    margin-bottom: 100px;
+    width: 375px;
+}
+
+.modal-corner-margin{
+    padding: 60px;
+}
+
+.sent-appreciation{
+    color: #21334F;
+    text-align: center;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%; 
+    margin-bottom: 16px;
+}
+
+.thank-you-so-much{
+    color: #21334F;
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 32px;
+}
+
+.button-message-teacher{
+    padding: 14px 30px 14px 30px;
+    background-color: #6938EF;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 140%; 
+    letter-spacing: 0.15px;
+    color: white;
+}
+
+
+.button-message-teacher:hover{
+    background-color: #301a6d;
+    color: white;
+}
+
+.message-teacher{
+   margin-right: 8px;
+   margin-bottom: 3px;
+}
+
+.message-teacher:hover{
+    background-color: #301a6d;
+}
+
+.back-to-dashboard{
+    padding-top: 40px;
+}
+
+.back-to-dashboard a{
+    text-decoration: none;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: #101828;
+}
+
+.back-to-dashboard a :hover{
+    color:  #301a6d;
+}
+
+.modal-corner-margin a{
+    text-decoration: none;
+}
+
