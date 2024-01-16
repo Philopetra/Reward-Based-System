@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "List Of Schools";
 }
- <div class="container">
+ <div class="my-container">
 
     <div class="back-img">
         <div class="text-area">
@@ -23,61 +23,23 @@
             All Schools
         </p>
         <div class="search">
-           <div class="selector"><input placeholder="Select"/></div> 
-            <div class="filtery"><input placeholder="Filter"/></div>
+               <div class="selector">
+               
+                   <img src="~/Image/search.png"/>
+                   <input   placeholder="Select"/>
+
+               </div> 
+
+               <div class="filtery">
+
+                <img src="~/Image/filter.png"/>
+                <input placeholder="Filter"/>
+
+                </div>
         </div>
     </div>
     
-    @*
-<div class="input-header">
-        <h5>List of schools</h5>
-        <div class="input-fields">
-            <div class="content-region">
-                <div class="tiny-region">
-                    <input />
-                    <img src="/Image/Icon.png" />
-                </div>
-            </div>
-            <div class="content-region">
-                <div class="tiny-region">
-                    <input/>
-                    <img src="/Image/Icon.png" />
-                </div>
-            </div>
-            <div class="content-region">
-                <div class="tiny-region">
-                    <input />
-                    <img src="/Image/Icon.png" />
-                </div>
-            </div>
-            <div class="content-region">
-                <div class="tiny-region">
-                    <input />
-                    <img src="/Image/Icon.png" />
-                </div>
-            </div>
-            <div class="content-region">
-                <div class="tiny-region">
-                    <input />
-                    <img src="/Image/Icon.png" />
-                </div>
-            </div>
-            <div class="content-region">
-                <div class="tiny-region">
-                    <input />
-                    <img src="/Image/Icon.png" />
-                </div>
-            </div>
-            <div class="content-region">
-                <div class="tiny-region">
-                    <input />
-                    <img src="/Image/Icon.png" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div> 
+    @*    
     *@
     <div class="LOS-main">
         <div class="LOS-inner">
@@ -136,16 +98,17 @@
         </div>
 
               <div class="pagination">
-                  <button type="button">
+                  <button type="button" class="prev">
                       Previous
                   </button>
-                  <p>
+                  <p class="page-numb">
                       Page 1 of 10
                   </p>
-                  <button type="button">
+                  <button type="button" class="next">
                       Next
                   </button>
               </div>
     </div>
     
 
+</div>
