@@ -12,8 +12,13 @@ namespace RYT.Controllers
         {
             return View();
         }
+
         public IActionResult SettingLogoutAppreciationModal()
         {
+            return View();
+        }
+        public IActionResult StudentDashboardListOfSchools()
+        { 
             return View();
         }
     }
