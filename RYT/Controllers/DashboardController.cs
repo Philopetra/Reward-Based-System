@@ -8,7 +8,20 @@ namespace RYT.Controllers
         {
             return View();
         }
+
+
+        public IActionResult teacher_dashboard_messaging()
+        {
+            return View();
+        }
+
         public IActionResult MessagingUnderStudentDashboard()
+
+        {
+            return View();
+        }
+
+        public IActionResult SettingLogoutAppreciationModal()
         {
             return View();
         }
