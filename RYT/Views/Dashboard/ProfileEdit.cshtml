@@ -29,9 +29,15 @@
                     <input type="text" placeholder="07045889234" />
                     <br />
                     <label>Name of school</label>
-                    <img id="hiddenImage" src="~/Images/pen-square.jpg" alt="Hidden Image" />
 
-                    <input type="text" id="textInput" oninput="hideImage()" placeholder="Mainland Senior High School" />
+
+
+                    <input type="text" value="Mainland Senior High School" readonly id="textInput"/>
+                    
+                    <img id="hiddenImage" src="~/Images/pen-square.jpg" alt="Hidden Image" onclick="enableEditing()" />
+                    
+                    
+                   
 
                     <br />
                     <button type="submit"  class="save-button">Save</button>
@@ -45,23 +51,14 @@
 
 
 <script>
-        // JavaScript function to hide the image when typing starts
+    // JavaScript function to enable editing in the input
+    function enableEditing() {
+        var inputElement = document.getElementById("textInput");
 
-    function hideImage() {
-        var image = document.getElementById("hiddenImage");
-        var textbox = document.getElementById("textInput");
-        // Check if the textbox has any value 
-        if (textbox.value.trim() !== "")
-        {
-            // If there is text in the textbox, hide the image 
-            image.style.opacity = 0;
+        // Remove the "readonly" attribute to enable editing
+        inputElement.removeAttribute("readonly");
 
-        }
-        else 
-        {
-            // If the textbox is empty, show the image 
-            image.style.opacity = 6;
-        }
-
+        // Focus on the input to bring cursor
+        inputElement.focus();
     }
 </script>

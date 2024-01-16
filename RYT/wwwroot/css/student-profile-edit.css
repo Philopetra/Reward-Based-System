@@ -4,8 +4,13 @@
     margin-right: 186px;
     margin-top: 40px;
     position: relative;
+    
+    
 }
 
+.babs-body{
+    height: 180px;
+}
 
 .rectangletext {
     color: white;
@@ -22,18 +27,14 @@
     bottom: 53px;
     left: 388px;
 }
-.babs-school{
-    position:relative;
 
-}
-.babs-form-items img{
-    position:absolute;
+.babs-form-items img {
+    position: relative;
     width:20px;
-    height:20px;
-    bottom:50px;
-    right:26%;
+    height: 20px;
+   bottom: 8%;
     
- 
+    margin-left: 360px;
 }
 
 .babs-container {
@@ -63,7 +64,7 @@
 
 .babs-form-area{
     border-left: 1px solid grey;
-    height: 642px;
+    height: 542px;
     margin-left: 20px;
 }
 
@@ -75,7 +76,7 @@
 
 .babs-form-items {
     background: white;
-    height: 476px;
+    height: 465px;
     padding: 32px 40px;
 }
 
