@@ -29,5 +29,17 @@ namespace RYT.Controllers
         { 
             return View();
         }
+
+        public IActionResult AccountCreatedSuccessfullyModalUnderStudentDashboard()
+        {
+            return View();
+        }
+
+        public IActionResult NotificationModalUnderStudentDashboard()
+        {
+            return View();
+        }
+
+
     }
 }
