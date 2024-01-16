@@ -8,7 +8,7 @@ namespace RYT.Controllers
         {
             return View();
         }
-        public IActionResult SettingLogoutAppreciationModal()
+        public IActionResult MessagingUnderStudentDashboard()
         {
             return View();
         }
