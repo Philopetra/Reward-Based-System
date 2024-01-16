@@ -8,12 +8,15 @@ namespace RYT.Controllers
         {
             return View();
         }
-        public IActionResult MessagingUnderStudentDashboard()
+
+
+        public IActionResult teacher_dashboard_messaging()
         {
             return View();
         }
 
-        public IActionResult teacher_dashboard_messaging()
+        public IActionResult MessagingUnderStudentDashboard()
+
         {
             return View();
         }
