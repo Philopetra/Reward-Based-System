@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "StudentDashboardPopUps";
+}
+@* Student Profile modal starts here *@
+<div class="ryts-2-font">
+    <span class="ryts-2-span">
+        <span class="ryts-2-span-2">
+          <div class="ryts-2-div">Profile details</div>
+         <a href="#"> <img
+            loading="lazy"
+            src="~/Images/Cross.svg"
+            class="ryts-2-img"
+          />
+         </a>
+        </span>
+        <div class="ryts-2-div-2"></div>
+        <div class="ryts-2-div-3">
+          <img
+            loading="lazy"
+            src="~/Images/Avatar.png"
+            class="ryts-2-img-2"
+          />
+          <span class="ryts-2-span-3">
+            <div class="ryts-2-div-4">Patience Obi</div>
+            <div class="ryts-2-div-5">Mainland Senior School</div>
+            <div class="ryts-2-div-6">Head Teacher</div>
+          </span>
+        </div>
+        <div class="ryts-2-div-7">About</div>
+        <div class="ryts-2-div-8">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur feugiat
+          aenean morbi non pretium. Tortor lectus quam dictumst nunc, faucibus cursus.
+          Mi sit in bibendum faucibus sed ac id. Tortor lectus quam dictumst nunc,
+          faucibus cursus. Mi sit in bibendum faucibus sed ac id.
+        </div>
+        <div class="ryts-2-div-9">Other info</div>
+        <div class="ryts-2-div-10">choimaawoniyi@gmail.com</div>
+        <div class="ryts-2-div-11">08098556634</div>
+        <div class="ryts-2-div-12">
+              <a href="#" role="button" class="ryts-2-span-4"><div  class="ryts-2-span-4-1">Send Reward</div></a>
+              <a href="#" role="button" class="ryts-2-span-5"><div  class="ryts-2-span-5-1">Message</div></a>
+        </div>
+      </span> 
+</div>
+@* Student Profile modal ends here *@
+
+<div class="mt-5 mb-5"></div>
+
+@* Student send modal starts here *@
+<div class="ryts-2-font">
+    <div class="sendmodal-page-container">
+        <div class="main-ryts-2">
+            <div class="box-area-ryts-2">
+                <div class="title-ryts-2">
+                    <p class="send-reward-ryts-2">
+                        Send Reward
+                    </p>
+                    <img src="~/Images/Cross.svg" alt="image" class="img-ryts-2">
+                </div>
+                <hr class="hori-line-ryts-2">
+
+                <form method="Post" asp-action="#" asp-controller="#" class="form-ryts-2"> 
+                      <h5>Amount to Send</h5>
+                    <div class="input-field-ryts-2">
+                        <input class="input-layer-ryts-2" type="text" placeholder="N10,000">
+                    </div>
+                    <button class="btn-ryts-2">Send</button>
+                </form>
+                    
+               
+                
+            </div>
+        </div>
+   </div> 
+</div>
+@* Student send modal ends here *@
+
+<div class="mt-5 mb-5"></div>
+
+@* Student Success modal starts here *@
+<div class="ryts-2-font">
+    <div class="ryts-2-page-container">
+        <div class="ryts-2-main">
+           <div class="ryts-2-image">
+            <img src="~/Images/Succes-image.png" alt="Success Image">
+           </div>
+
+           <div class="ryts-2-text-container">
+              <p class="ryts-2-p1">Money is on the way</p>
+              <div class="ryts-2-text-wrap">
+               <p class="ryts-2-p2">
+                 You have successfully sent N15,000
+                to <span class="ryts-2-patience">Patience Obinna.</span> Cheers
+               </p>
+              </div>
+           </div>
+        </div>
+
+    </div>
+</div>
+@* Student success modal ends here *@
