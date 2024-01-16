@@ -1,21 +1,99 @@
-﻿<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RYT</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+﻿<style>
+    .ogm-btn-nav {
+        background-color: var(--Purple-600, #6938EF);
+        text-align: center;
+        font-weight: 600;
+        text-decoration: none;
+        letter-spacing: 0.15px;
+        line-height: 100%;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        width: 130px;
+        height: 46px;
+        padding-top: 13px;
+    }
+
+    .ogm-btn-nav :hover {
+        color: white;
+    }
+
+    .ogm-home-nav-flex {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+    }
+
+    .ogm-home-nav-flex .nav-item {
+        padding-right: 15px;
+        cursor: pointer;
+    }
+
+    #a-kick-left {
+        position: absolute;
+        left: 50px;
+    }
+
+</style>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            
+            <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarNAV" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
-            </div>
+            
+                @if (ViewData["Title"] == "Home Page")
+                {
+                    <div id="navbarNAV" class="navbar-collapse collapse ogm-home-nav-flex">
+                        <a id="kick-left" class="navbar-brand mb-0 h1" asp-area="" asp-controller="Home" asp-action="Index">
+                            <img class="d-inline-block align-top" src="~/images/ogm-main-logo.png" style="width: 141px; height: 35px" />
+                        </a>
+                        <ul class="navbar-nav">
+                            <li class="nav-item active text-center ">
+                                <a class="nav-link text" style="color: var(--Purple-600, #6938EF)" asp-area="" asp-controller="" asp-action="">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item text-center">
+                                <a class="nav-link text-black" asp-controller="" asp-action="">
+                                    About
+                                </a>
+                            </li>
+                            <li class="nav-item active text-center">
+                                <a class="nav-link text-black">
+                                    Contact Us
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white ogm-btn-nav">
+                                    Get Started
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a id="a-kick-left" class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Notification">
+                    <img src="~/images/ogm-main-logo.png" />
+                    </a>
+                    <div class="ogm-notify-flex-nav">
+                        <a class="navbar-brand" asp-area="" asp-controller="" asp-action="">
+                            <img src="~/images/ogm-notify-icon.png" />
+                        </a>
+
+                        <a class="nav-link" style="font-weight: bold; color: black;">
+                            <img src="~/images/ogm-dummy-image.png" style="width: 30px" /> Franca John
+                        </a>
+                    </div>
+                }
+                
+
         </div>
+
     </nav>
+
+
 </header>
