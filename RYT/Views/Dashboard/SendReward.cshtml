@@ -4,16 +4,21 @@
 }
 
 
+<Partial name="_NavbarPartial" />
+
+
+
 <div id="neo-teacher-info-container">
-    <a href="#"><button class="neo-arrow-back"><img class="neo-arrow" src="~/images/arrow-back.png"/> Go back</button></a>
+    <button class="neo-arrow-back"><img class="neo-img" src="~/images/arrow-back.png" /> Go back</button>
     <p class="neo-school-name">Teachers - Mainland Senior High School</p>
-    
+
     <div id="neo-teacher-search">
         <form id="neo-search-box">
             <input id="neo-search-input" placeholder="Name"/>
             <img class="neo-search-icon" src="~/images/search-alt-1.png"/>
-            <a href="#"><button id="neo-search-btn" type="submit"><img src="~/images/filter.png" /> Filter</button></a>
+            <button id="neo-search-btn" type="submit"><img class="neo-img" src="~/images/filter.png" /> Filter</button>
         </form>
+            
     </div>
 
     <br />
@@ -21,7 +26,7 @@
 
 
     <table class="neo-table-container">
-        <tr id="neo-table-head"">
+        <tr id="neo-table-head"s>
             <th>Name</th>
             <th>Position</th>
             <th>Period of Teaching</th>
@@ -64,8 +69,8 @@
     </table>
 
     <div id="neo-pagination">
-        <a href="#"><button id="neo-previous-page"type="button">Previous</button></a>
+        <button id="neo-previous-page"type="button">Previous</button>
         <p>Page 1 or 10</p>
-        <a href="#"><button id="neo-next-page"type="button">Next</button></a>
+        <button id="neo-next-page"type="button">Next</button>
     </div>
 </div>
