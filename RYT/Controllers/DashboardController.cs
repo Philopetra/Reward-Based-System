@@ -15,7 +15,7 @@ namespace RYT.Controllers
             return View();
         }
 
-        public IActionResult MessagingUnderStudentDashboard()
+        public IActionResult Messages()
 
         {
             return View();
