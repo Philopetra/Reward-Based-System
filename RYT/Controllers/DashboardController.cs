@@ -48,5 +48,12 @@ namespace RYT.Controllers
         {
             return View();  
         }
+
+        public IActionResult SendReward()
+        {
+            return View();
+        }
+
     }
+
 }
