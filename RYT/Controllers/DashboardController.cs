@@ -35,6 +35,10 @@ namespace RYT.Controllers
             return View();
         }
 
+        public IActionResult StudentDashboardTransfer()
+        {
+            return View();
+        }
     }
 
 }
