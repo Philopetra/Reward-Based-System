@@ -26,5 +26,9 @@ namespace RYT.Controllers
         {
             return View();
         }
+        public IActionResult TeacherLogin()
+        {
+            return View();
+        }
     }
 }
