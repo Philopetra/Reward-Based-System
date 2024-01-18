@@ -1,76 +1,114 @@
-﻿
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
 @{
-    ViewData["Title"] = "All Teachers";
+    ViewData["Title"] = "List Of Schools";
 }
+ <div class="my-container">
 
+    <div class="back-img">
+        <div class="text-area">
+            <p> 
+                Gift to Show appreciation <br />to teacher. <span class="text-money">Send the money!</span>
+            </P>
+        </div>
+        <div class="image-area">
+            <img src="~/Image/money.png" id="money"/>
+        </div>
 
-<Partial name="_NavbarPartial" />
-
-
-
-<div id="neo-teacher-info-container">
-    <button class="neo-arrow-back"><img class="neo-img" src="~/images/arrow-back.png" /> Go back</button>
-    <p class="neo-school-name">Teachers - Mainland Senior High School</p>
-
-    <div id="neo-teacher-search">
-        <form id="neo-search-box">
-            <input id="neo-search-input" placeholder="Name"/>
-            <img class="neo-search-icon" src="~/images/search-alt-1.png"/>
-            <button id="neo-search-btn" type="submit"><img class="neo-img" src="~/images/filter.png" /> Filter</button>
-        </form>
-            
     </div>
 
-    <br />
-    <br />
+    <div class="search-all">
+        <p>
+            All Schools
+        </p>
+        <div class="search">
+               <div class="selector">
+               
+                   <img src="~/Image/search.png"/>
+                   <input   placeholder="Select"/>
 
+               </div> 
 
-    <table class="neo-table-container">
-        <tr id="neo-table-head"s>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Period of Teaching</th>
-        </tr>
-        <tr>
-            <td><a href="#">Patience Obi</a></td>
-            <td>Head Teacher</td>
-            <td>15 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Okoroma Izudun</a></td>
-            <td>Teacher</td>
-            <td>10 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">John Doe</a></td>
-            <td>Teacher</td>
-            <td>8 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Matthew Oghene</a></td>
-            <td>Teacher</td>
-            <td>9 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Chuks Obi</a></td>
-            <td>Teacher</td>
-            <td>6 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Babatunde Ojo</a></td>
-            <td>Teacher</td>
-            <td>8 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Bola Ayoniyi</a></td>
-            <td>Teacher</td>
-            <td>7 years</td>
-        </tr>
-    </table>
+               <div class="filtery">
 
-    <div id="neo-pagination">
-        <button id="neo-previous-page"type="button">Previous</button>
-        <p>Page 1 or 10</p>
-        <button id="neo-next-page"type="button">Next</button>
+                <img src="~/Image/filter.png"/>
+                <input placeholder="Filter"/>
+
+                </div>
+        </div>
     </div>
+    
+    @*    
+    *@
+    <div class="LOS-main">
+        <div class="LOS-inner">
+             <div class="LOS-upper-text">
+                 <p>
+                     List Of Schools
+                 </p>
+             </div>
+                  <div class="LOS-inner-list">
+                   
+                      <div class="LOS-list">
+                          <a asp-action="teachers">
+                              MainLand Senior High School
+                          </a>
+                          <img src="~/Image/Icon.png"/>
+                      </div>
+                      <hr/>
+                      <div class="LOS-list">
+                          <p>
+                              Wesley Girls Senior Secondary School
+                          </p>
+                          <img src="~/Image/Icon.png"/>
+                      </div>
+                      <hr/>
+                      <div class="LOS-list">
+                          <p>
+                              Wesley Girls Junior Secondary School
+                          </p>
+                          <img src="~/Image/Icon.png"/>
+                      </div>
+                      <hr/>
+                      <div class="LOS-list">
+                          <p>
+                             Ebute-Metta High School
+                          </p>
+                          <img src="~/Image/Icon.png"/>
+                      </div>
+                      <hr/>
+                      <div class="LOS-list">
+                          <p>
+                              Marywood Senior Grammar School
+                          </p>
+                          <img src="~/Image/Icon.png"/>
+                      </div>
+                      <hr/>
+                      <div class="LOS-list" >
+                          <p>
+                              Akoka Junior High School
+                          </p>
+                          <img src="~/Image/Icon.png"/>
+                      </div>
+                      
+                     
+                      
+                  </div>
+        </div>
+
+              <div class="pagination">
+                  <button type="button" class="prev">
+                      Previous
+                  </button>
+                  <p class="page-numb">
+                      Page 1 of 10
+                  </p>
+                  <button type="button" class="next">
+                      Next
+                  </button>
+              </div>
+    </div>
+    
+
 </div>

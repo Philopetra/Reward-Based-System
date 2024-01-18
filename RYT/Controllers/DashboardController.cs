@@ -25,12 +25,12 @@ namespace RYT.Controllers
         {
             return View();
         }
-        public IActionResult StudentDashboardListOfSchools()
+        public IActionResult SendReward()
         { 
             return View();
         }
         
-        public IActionResult ProfileEdit() 
+        public IActionResult EditProfile() 
         {
             return View();
         }
@@ -44,12 +44,12 @@ namespace RYT.Controllers
             return View();
         }
 
-        public IActionResult TeacherChangePassword()
+        public IActionResult ChangePassword()
         {
             return View();  
         }
 
-        public IActionResult SendReward()
+        public IActionResult Teachers()
         {
             return View();
         }

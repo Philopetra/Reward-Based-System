@@ -46,7 +46,7 @@ html {
 .head--placer {
     display: flex;
     justify-content: space-between;
-    width: 170px;
+    width: 200px;
     height: 44px;
     align-items: center;
     margin-bottom: 20px;
@@ -81,6 +81,7 @@ html {
     margin: 10px;
     height: 70px;
     position: relative;
+    padding: 10px;
 }
 
 .input--area {
@@ -89,7 +90,12 @@ html {
     border-radius: 5px;
     border: 1px solid #D0D5DD;
     position: relative;
-    padding-left: 30px;
+    padding:10px 0px;
+    padding-left: 40px;
+}
+
+.input--area::placeholder {
+   color:#cccccc;
 }
 
 .email--signin {
@@ -104,8 +110,8 @@ html {
 .icon--21 {
     position: absolute;
     top: 40px;
-    left: 5px;
-    width: 40px;
+    left: 20px;
+    width: 30px;
     height: 50%;
     justify-content: center;
     align-items: center;

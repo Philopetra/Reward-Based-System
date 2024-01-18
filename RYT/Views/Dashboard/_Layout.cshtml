@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/fundWalllet-paySuccess.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/neo.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -13,7 +14,11 @@
     <link rel="stylesheet" href="~/css/student-profile-edit.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/og-murphy-style.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/TeacherChangePassword.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/UserManagementApp.styles.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/UserManagementApp.styles.css" asp-append-version="true" /> *@
+
+    <link rel="stylesheet" href="~/css/StudentProfileModal-ryts-2.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/StudentSendModal-ryts-2.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/StudentSuccessModal-ryts-2.css" asp-append-version="true" />
 
    @*  Settings modal, Logout confirmation modal, and appreciation modal css *@
     <link rel="stylesheet" href="~/css/RYTS-10-Setting-Logout-Appreciation-Modal.css" asp-append-version="true" />
@@ -38,20 +43,19 @@
                     <p>Overview</p>
                 </a>
 
-                <a asp-action="Message" asp-controller="Dashboard">
+                <a asp-action="Messages" asp-controller="Dashboard">
                     <p>Message</p>
                 </a>
 
                 <a asp-action="SendReward" asp-controller="Dashboard"><p>Send Reward</p></a>
 
 
-
-                
-
             </div>
             <div class="sperator"></div>
             <div class="side-drawer-inner">
-                <a asp-action="Logout" asp-controller="Account"><p>Logout</p></a>
+                <a data-bs-target="#logout" data-bs-toggle="modal"
+                    asp-action="Logout" asp-controller="Account">
+                    <p>Logout</p></a>
             
             </div>
 
@@ -65,13 +69,6 @@
             </div>
         </div>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - UserManagementApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

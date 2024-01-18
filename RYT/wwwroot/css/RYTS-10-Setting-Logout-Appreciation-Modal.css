@@ -82,7 +82,7 @@ a .ryts-10-logout-setting{
     font-family: Inter;
     background-color: #FFF;
     height: 200px;
-    width: 590px;
+    width: auto;
     border-radius: 3px;
     align-items: center;
     justify-content: center;

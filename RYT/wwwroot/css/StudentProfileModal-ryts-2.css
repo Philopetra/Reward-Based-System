@@ -8,6 +8,7 @@
     max-width: 609px;
     flex-direction: column;
     padding: 40px;
+    padding-top:0px;
 }
 
 @media (max-width: 991px) {
@@ -149,7 +150,7 @@
     color: var(--Main-Text, #101828);
     align-self: stretch;
     margin-top: 9px;
-    width:445px;
+    width:95%;
     display:flex;
     flex-wrap:wrap;
     /* Button Normal - 14 */
@@ -252,7 +253,7 @@
     background-color: var(--Grey-50, #f9fafb);
     flex-grow: 1;
     display: flex;
-    width: 255px;
+    width: auto;
     padding: 12px 16px;
     gap: 8px;
     text-decoration: none;

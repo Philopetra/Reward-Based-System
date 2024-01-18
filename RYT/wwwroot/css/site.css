@@ -45,7 +45,7 @@ a {
 .side-drawer {
     position: absolute;
     width: 250px;
-    height: 100vh;
+    height: 120%;
     background: #FFFFFF;
 }
 

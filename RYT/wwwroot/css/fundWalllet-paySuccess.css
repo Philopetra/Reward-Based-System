@@ -7,20 +7,19 @@
     align-items: center;
     gap: 32px;
     background-color: #ffff;
-    border: 50px;
+    /*border: 50px;*/
     margin-top: 0%;
     max-width: 502px;
     height: 599px;
     padding: 40px;
     border: none;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 
 .wey-1-1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 32px;
+    /*gap: 32px;*/
 }
 
 .wey-1-1-1 {
@@ -57,7 +56,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 32px;
+    /*margin-top: 20px;*/
 }
 
 .wey-1-2-1 {
@@ -65,7 +64,7 @@
     margin-left: 43.5px;
     margin-right: 43.5px;
     margin-bottom: 0px;
-    margin-top: 64px;
+    margin-top: 30px;
     width: 80px;
 }
 
@@ -152,7 +151,6 @@
     gap: 32px;
     background: var(--White, #FFF);
     border: none;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
 }
 
 .wey-fundWalletFont {
