@@ -1,7 +1,19 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using RYT.Data;
+using RYT.Models.Entities;
+using RYT.Services.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<RYTDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<RYTDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IRepository, Repository>();
 
 var app = builder.Build();
 

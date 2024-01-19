@@ -1,4 +1,4 @@
-namespace RYT.Models
+namespace RYT.Models.ViewModels
 {
     public class ErrorViewModel
     {

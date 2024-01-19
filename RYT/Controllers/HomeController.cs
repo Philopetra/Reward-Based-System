@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RYT.Models;
+using RYT.Models.ViewModels;
 using System.Diagnostics;
 
 namespace RYT.Controllers

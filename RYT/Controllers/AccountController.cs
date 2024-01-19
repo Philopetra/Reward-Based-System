@@ -14,5 +14,21 @@ namespace RYT.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult TeacherSignUp()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult TeacherSignUpStep2()
+        {
+            return View();
+        }
+        public IActionResult Login()
+        {
+            return View();
+        }
     }
 }

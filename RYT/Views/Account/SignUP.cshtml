@@ -16,15 +16,14 @@
     </div>
     </a>
     <div class="container--section">
-        <h2>Create an account</h2>
+        <h2 style="font-weight:bold;">Create an account</h2>
         <form action="form--panel">
             <div class="input--fields">
                 <label for="">User Type</label>
-                <select class="select--dropdown" id="cars" name="cars" class="">
-                    <option value="volvo">Select</option>
-                    <option value="saab">Student</option>
-                    <option value="saab">Teacher</option>
-                </select>
+                <div class="merged-buttons-panel">
+                    <a asp-action="SignUp" asp-controller="Account">Student</a>
+                    <a asp-action="TeacherSignUp" asp-controller="Account">Teacher</a>
+                </div>
             </div>
             <div class="input--fields">
                 <label for="Name">Name</label>
@@ -63,7 +62,7 @@
                 </div>
                 <button class="email--signin button--21">Google</button>
             </div>
-            <p class="login">Already have an account? <a href="#">Login</a></p>
+            <p class="login">Already have an account? <a asp-action="Login">Login</a></p>
         </form>
     </div>
     <Partial name="_AccountCreatedSuccessfullyPartial" />
