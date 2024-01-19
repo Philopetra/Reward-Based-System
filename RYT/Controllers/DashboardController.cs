@@ -35,10 +35,6 @@ namespace RYT.Controllers
             return View();
         }
 
-        public IActionResult TeacherFundingReceived()
-        {
-            return View();
-        }
 
     }
 
