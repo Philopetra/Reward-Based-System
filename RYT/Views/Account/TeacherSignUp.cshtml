@@ -13,17 +13,16 @@
                     <h3>Create an account</h3>
                     <p class="ryts-11-light-p">Step 1 of 2</p>
                 </div>
-                <div class="ryts-11-p">
+                <div class="ryts-11-p" style="visibility:hidden;">
                     <p>Update your profile information</p>
                 </div>
-                <form action="post">
+                <form method="post" asp-action="TeacherSignUpStep2">
                     <div class="ryts-11-input-main mb-3">
                         <label for="UserType" class="mb-2">User Type</label><br>
-                        <select class="select-user-type select-user-type-single ryts-11-input " name="UserType" aria-placeholder="Select">
-                            <option value="default">Select</option>
-                            <option value="student">Student</option>
-                            <option value="teacher">Teacher</option>
-                        </select>
+                        <div class="merged-buttons-panel">
+                            <a asp-action="SignUp" asp-controller="Account">Student</a>
+                            <a asp-action="TeacherSignUp" asp-controller="Account">Teacher</a>
+                        </div>
                     </div>
                     <div class="ryts-11-input-main mb-3">
                         <label for="user-name" class="mb-2">Name</label><br>
@@ -74,7 +73,7 @@
             </div>
             <div class="ryts-11-login py-4 mt-3">
                 <span>Already have an account? </span>
-                <span class="ps-2 "><a href="#">Login</a></span>
+                <span class="ps-2 "><a asp-action="Login">Login</a></span>
             </div>
         </div>
     </div>

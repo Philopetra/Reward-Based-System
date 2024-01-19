@@ -76,3 +76,26 @@ a {
     border: 1px solid #cccccc;
 }
 
+.merged-buttons-panel{
+    display: flex;
+    justify-content:center;
+    flex-wrap:nowrap;
+    align-items:center;
+    border: 1px solid #cccccc;
+    height:50px;
+    border-radius: 10px;
+    overflow:hidden;
+}
+.merged-buttons-panel a{
+    text-decoration: none;
+    color: #555555;
+    padding: 10px;
+    width:50%;
+    text-align:center;
+    background-color: #eeeeee;
+
+}
+.merged-buttons-panel a:hover{
+    background-color: #6938EF;
+    color: white;
+}
