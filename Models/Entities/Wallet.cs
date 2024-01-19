@@ -5,7 +5,7 @@ namespace RYT.Models.Entities
 {
     public class Wallet:BaseEntity
     {
-        public string AccountId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Balance { get; set; }
@@ -13,6 +13,6 @@ namespace RYT.Models.Entities
 
         // Navigation Props
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-        public AppUser? Account { get; set; }
+        public AppUser? User { get; set; }
     }
 }

@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "SignUp";
+}
+
+
+<div class="section--container">
+   <a asp-action="index" asp-controller="home">
+    <div class="head--placer">
+        <img src="~/images/Frame 12.png" alt="" style="margin-right:10px">
+        <div class="placer--text">
+            <div>
+                <img class="logo--img" src="~/images/RYT.png" alt=""><br><span class="logo--text">Reward your Teacher</span>
+            </div>
+            <!-- <p class="logo-text-2">Reward your Teacher</p> -->
+        </div>
+    </div>
+    </a>
+    <div class="container--section">
+        <h2 style="font-weight:bold;">Create an account</h2>
+        <form action="form--panel">
+            <div class="input--fields">
+                <label for="">User Type</label>
+                <div class="merged-buttons-panel">
+                    <a asp-action="SignUp" asp-controller="Account">Student</a>
+                    <a asp-action="TeacherSignUp" asp-controller="Account">Teacher</a>
+                </div>
+            </div>
+            <div class="input--fields">
+                <label for="Name">Name</label>
+                <input class="input--area" type="text" placeholder="Type your full name">
+                <div class="icon--21">
+                    <img src="~/images/Dribbble-Light-Preview.png">
+                </div>
+            </div>
+            <div class="input--fields">
+                <label for="Email">Email</label>
+                <input class="input--area" type="text" placeholder=" Type your email">
+                <div class="icon--21">
+                    <img src="~/images/Vector.png">
+                </div>
+            </div>
+            <div class="input--fields">
+                <label for="Password">Password</label>
+                <input class="input--area" type="text" placeholder="Type your password">
+                <div class="icon--21">
+                    <img src="~/images/Icon.png">
+                </div>
+            </div>
+            <div class="btn--field">
+                <button class="button--21">Sign Up</button>
+            </div>
+            <div class="line--class">
+                <div class="line--1">
+                </div>
+                Or
+                <div class="line--2">
+                </div>
+            </div>
+            <div class="btn--field--2">
+                <div class="google-img">
+                    <img src="~/images//Google.png" />
+                </div>
+                <button class="email--signin button--21">Google</button>
+            </div>
+            <p class="login">Already have an account? <a asp-action="Login">Login</a></p>
+        </form>
+    </div>
+    <Partial name="_AccountCreatedSuccessfullyPartial" />
+
+</div>
