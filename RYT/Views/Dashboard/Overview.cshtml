@@ -14,7 +14,7 @@
         <div class="ryts-9-balance-panel">
             <div class="ryts-9-balance-area1">
                 <div id="ryts-9-wallet-balance">My Wallet Balance</div>
-                <div id="ryts-9-withdraw-area"><a href="#">Withdraw</a></div>
+                <button id="ryts-9-withdraw-area">Withdraw</button>
                 @* <div id="withdraw-area" >Withdraw</div> *@
             </div>
             <div class="ryts-9-balance-area2">
@@ -50,23 +50,42 @@
             </div>
             <div class="ryts-9-divider-1d"></div>
         </div>
-        <div class="ryts-9-frame-1e">
-            <div class="ryts-9-frame-1f">
-                <span class="ryts-9-description">Description</span><span class="ryts-9-amount-sent">Amount</span><span class="ryts-9-date-time">Date/Time</span><span class="ryts-9-action">Action</span>
-            </div>
-            <div class="ryts-9-frame-20">
-                <span class="ryts-9-you-sent">Olajumoke sent you a reward</span><span class="ryts-9-n-21">N15,000</span><span class="ryts-9-date-time-22">4/08/2022 - 4:45pm</span><span class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></span>
-            </div>
-            <div class="ryts-9-divider-23"></div>
-            <div class="ryts-9-frame-24">
-                <span class="ryts-9-you-sent-25">Obinna sent you a reward</span><span class="ryts-9-n-21">N10,000</span><span class="ryts-9-date-time-22">10/06/2022 - 3:00pm</span><span class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></span>
-            </div>
-            <div class="ryts-9-divider-28"></div>
-            <div class="ryts-9-frame-24">
-                <span class="ryts-9-you-sent-25">You withdrew money from your wallet</span><span class="ryts-9-n-21">N35,000</span><span class="ryts-9-date-time-22">5/04/2022 - 1:45pm</span><span class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></span>
-            </div>
-            <div class="ryts-9-divider-28"></div>
-        </div>
+        
+        <table class="ryts-9-frame-1e">
+            <thead>
+                <tr class ="ryts-9-frame-1f">
+                    <th class="ryts-9-description">Description</th>
+                    <th class="ryts-9-amount-sent">Amount</th>
+                    <th class="ryts-9-date-time">Date/Time</th>
+                    <th class="ryts-9-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="ryts-9-frame-20">
+                    <td class="ryts-9-you-sent">Olajumoke sent you a reward</td>
+                    <td class="ryts-9-n-21">N15,000</td>
+                    <td class="ryts-9-date-time-22">4/08/2022 - 4:45pm</td>
+                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
+                </tr>
+                <tr class="ryts-9-frame-24">
+                    <td class="ryts-9-you-sent-25">Obinna sent you a reward</td>
+                    <td class="ryts-9-n-21">N10,000</td>
+                    <td class="ryts-9-date-time-22">10/06/2022 - 3:00pm</td>
+                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
+                </tr>
+                <tr class="ryts-9-frame-24">
+                    <td class="ryts-9-you-sent-25">You withdrew money from your wallet</td>
+                    <td class="ryts-9-n-21">N35,000</td>
+                    <td class="ryts-9-date-time-22">5/04/2022 - 1:45pm</td>
+                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+
+
 
     </div>
 
