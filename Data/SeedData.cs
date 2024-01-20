@@ -71,6 +71,29 @@ namespace RYT.Data
             "Akoka Junior High School",
             "Herbert Macaulay Junior Secondary School"
         };
+
+        public static IList<string> Subjects { get; set; } = new List<string>
+        {
+            "Mathematics",
+            "English",
+            "Biology",
+            "Geography",
+            "Physics",
+            "Technical Drawing",
+            "Fine and Applied Art",
+            "ECommerce"
+        };
+
+        public static IList<string> SchoolTypes { get; set; } = new List<string>
+        {
+            "Senior High School",
+            "Senior Grammar School",
+            "Junior Grammar School",
+            "Secondary School"
+        };
     }
 }
 
+/*
+ "ProdDb": "User ID=dtc_db_user;Password=idx1iNjvxL4AFwAX6Wf4gc4jmkBzjuJR;Host=dpg-ck6jo008elhc73ebtjv0-a.oregon-postgres.render.com;Port=5432;Database=dtc_db;Pooling=true;SSL Mode=Require;Trust Server Certificate=True;"
+ */

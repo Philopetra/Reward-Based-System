@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RYT.Data;
 using RYT.Models.Entities;
+using RYT.Services.Emailing;
 using RYT.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddScoped<IEmailService, Emailing>();
 
 var app = builder.Build();
 
@@ -33,7 +35,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-Seeder.SeedeMe(app);
+//Seeder.SeedeMe(app);
 
 app.MapControllerRoute(
     name: "default",
