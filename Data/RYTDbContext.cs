@@ -6,7 +6,7 @@ namespace RYT.Data
 {
     public class RYTDbContext: IdentityDbContext<AppUser>
     {
-        public RYTDbContext(DbContextOptions<RYTDbContext> options):base()
+        public RYTDbContext(DbContextOptions<RYTDbContext> options):base(options)
         {
             
         }

@@ -35,7 +35,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//Seeder.SeedeMe(app);
+Seeder.SeedeMe(app);
 
 app.MapControllerRoute(
     name: "default",

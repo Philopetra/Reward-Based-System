@@ -14,6 +14,6 @@ namespace RYT.Models.Entities
         // navigation props
         public ICollection<Message> Messages { get; set; } = new List<Message>();
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-        public Wallet Wallet { get; set; }
+        public Wallet? Wallet { get; set; }
     }
 }

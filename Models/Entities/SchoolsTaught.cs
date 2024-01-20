@@ -1,6 +1,6 @@
 ﻿namespace RYT.Models.Entities
 {
-    public class SchoolsTaught
+    public class SchoolsTaught: BaseEntity
     {
         public string TeacherId { get; set; } = string.Empty;
         public string School { get; set; } = string.Empty;
