@@ -369,3 +369,6 @@ RYT/obj
 # macOS intermidiate dirs
 *.DS_Store
 appsettings.Development.json
+
+# Jetbrains IDE
+**/.idea/*
