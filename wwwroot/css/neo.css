@@ -184,8 +184,8 @@ button .neo-img {
 }
 
 #neo-pagination {
-    position: fixed;
-    bottom: 0;
+    position: absolute;
+    bottom: -40px;
     left: 37%;
     display: flex;
     justify-content: space-between;
