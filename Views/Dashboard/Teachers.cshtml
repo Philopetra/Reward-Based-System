@@ -1,4 +1,5 @@
-﻿
+﻿@model RYT.Models.ViewModels.TeacherListViewModel
+
 @{
     ViewData["Title"] = "All Teachers";
 }
@@ -7,70 +8,67 @@
 <Partial name="_SendRewardPartial" />
 <Partial name="_SendRewardSuccessPartial" />
 
-
 <div id="neo-teacher-info-container">
-    <a asp-action="sendReward" class="neo-arrow-back"><img class="neo-img" src="~/images/arrow-back.png" /> Go back</a>
+    <a asp-action="sendReward" class="neo-arrow-back">
+        <img class="neo-img" src="~/images/arrow-back.png" /> Go back
+    </a>
     <p class="neo-school-name">Teachers - Mainland Senior High School</p>
 
     <div id="neo-teacher-search">
-        <form id="neo-search-box">
-            <input id="neo-search-input" placeholder="Name"/>
-            <img class="neo-search-icon" src="~/images/search-alt-1.png"/>
-            <button id="neo-search-btn" type="submit"><img class="neo-img" src="~/images/filter.png" /> Filter</button>
+        @* <img class="neo-img" src="~/images/filter.png" /> *@
+        <label>Filter By: </label>
+        <select name="SearchCriteria" id="searchCriteria">
+            <option value="All" selected>All</option>
+            <option value="Name" >Name</option>
+            <option value="Position">Position</option>
+            <option value="Period">Period of Teaching</option>
+        </select>
+        <form asp-action="Teachers" method="get" id="neo-search-box">
+            <input id="neo-search-input" name="SearchKeyword" placeholder="Name" value="@Model.SearchKeyword" />
+            <img class="neo-search-icon" src="~/images/search-alt-1.png" />
+
+            <button id="neo-search-btn" type="submit">
+                <img class="neo-search-icon" src="~/images/search-alt-1.png" />Search
+            </button>
         </form>
-            
     </div>
 
     <br />
     <br />
 
-
     <table class="neo-table-container">
-        <tr id="neo-table-head"s>
+        <tr id="neo-table-head">
             <th>Name</th>
             <th>Position</th>
             <th>Period of Teaching</th>
         </tr>
-        <tr>
-            <td><a href="#" data-bs-target="#sendReward" data-bs-toggle="modal">Patience Obi</a></td>
-            <td>Head Teacher</td>
-            <td>15 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Okoroma Izudun</a></td>
-            <td>Teacher</td>
-            <td>10 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">John Doe</a></td>
-            <td>Teacher</td>
-            <td>8 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Matthew Oghene</a></td>
-            <td>Teacher</td>
-            <td>9 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Chuks Obi</a></td>
-            <td>Teacher</td>
-            <td>6 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Babatunde Ojo</a></td>
-            <td>Teacher</td>
-            <td>8 years</td>
-        </tr>
-        <tr>
-            <td><a href="#">Bola Ayoniyi</a></td>
-            <td>Teacher</td>
-            <td>7 years</td>
-        </tr>
+
+
+        @foreach (var teacher in Model.TeacherList)
+        {
+            <tr>
+                <td><a href="#" data-bs-target="#sendReward" data-bs-toggle="modal">@(teacher.User?.FirstName + " " + teacher.User?.LastName)</a></td>
+                <td>Head Teacher</td>
+                <td>@teacher.YearsOfTeaching</td>
+            </tr>
+        }
     </table>
 
+
     <div id="neo-pagination">
-        <button id="neo-previous-page"type="button">Previous</button>
-        <p>Page 1 or 10</p>
-        <button id="neo-next-page"type="button">Next</button>
+        @if (Model.CurrentPage > 1)
+        {
+            <a asp-action="Teachers" asp-route-page="1" asp-route-searchString="@ViewBag.SearchKeyword" class="neo-previous-page">Previous</a>
+            <p>Page @Model.CurrentPage of @Model.TotalPages</p>
+            <a asp-action="Teachers" asp-route-page="@(Model.CurrentPage - 1)" asp-route-searchString="@ViewBag.SearchKeyword" class="neo-next-page">Next</a>
+        }
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a asp-action="Teachers" asp-route-page="@(Model.CurrentPage + 1)" asp-route-searchString="@ViewBag.SearchKeyword" class="neo-previous-page">Previous</a>
+            <p>Page @Model.CurrentPage of @Model.TotalPages</p>
+            <a asp-action="Teachers" asp-route-page="@Model.TotalPages" asp-route-searchString="@ViewBag.SearchKeyword" class="neo-next-page">Next</a>
+        }
     </div>
+
 </div>
