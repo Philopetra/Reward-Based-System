@@ -7,6 +7,6 @@ namespace RYT.Services.Payment
     {
         public Task<string> InitializePayment(SendRewardVM model, ClaimsPrincipal user);
         //public void VerifyPayment(string reference);
-        //public Task<string> Withdraw(WithdrawVM model);
+        public Task Withdraw(WithdrawVM model);
     }
 }
