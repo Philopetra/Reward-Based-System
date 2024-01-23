@@ -3,8 +3,8 @@ using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
 using RYT.Services.Repositories;
-using System.Security.Claims;
 using RYT.Utilities;
+using Bank = RYT.Models.ViewModels.Bank;
 
 namespace RYT.Services.Payment
 {
@@ -83,6 +83,19 @@ namespace RYT.Services.Payment
             });
 
             return result.Status;
+        }
+
+        public async Task<IEnumerable<Bank>> GetListOfBanks()
+        {
+            var result = _payStack.Get<ApiResponse<dynamic>>("bank?currency=NGN");
+            
+            if(!result.Status)
+                throw new Exception("Unable to fetch banks");
+            
+            var banks = (result.Data as IEnumerable<dynamic>)?
+                .Select(bank => new Bank(bank.name, bank.code));
+
+            return banks;
         }
     }
 }

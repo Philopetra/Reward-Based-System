@@ -1,5 +1,4 @@
 ﻿using RYT.Models.ViewModels;
-using System.Security.Claims;
 
 namespace RYT.Services.Payment
 {
@@ -8,6 +7,8 @@ namespace RYT.Services.Payment
         public Task<bool> InitializePayment(SendRewardVM model);
 
         public Task<bool> Withdraw(WithdrawVM model);
+
+        public Task<IEnumerable<Bank>> GetListOfBanks();
         //public void VerifyPayment(string reference);
         //public Task<string> Withdraw(WithdrawVM model);
     }
