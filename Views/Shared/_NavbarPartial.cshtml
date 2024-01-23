@@ -75,7 +75,15 @@
                                 </a>
                             </li>
                             <li>
-                            <a data-bs-target="#fund" data-bs-toggle="modal">Success modal</a>
+                            @if (ViewBag.isLogggedIn == true)
+                            {
+                                <a asp-action="LogOut" asp-controller="Account">LogOut</a> 
+                            }
+                            else
+                            {
+                                <a asp-action="Login" asp-controller="Account">Login</a>
+                            }
+                           @* <a data-bs-target="#fund" data-bs-toggle="modal">Success modal</a> *@
 
                             </li>
                         </ul>
