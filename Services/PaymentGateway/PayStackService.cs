@@ -6,7 +6,7 @@ using RYT.Services.Repositories;
 using RYT.Utilities;
 using Bank = RYT.Models.ViewModels.Bank;
 
-namespace RYT.Services.Payment
+namespace RYT.Services.PaymentGateway
 {
     public class PayStackService : IPaymentService
     {
@@ -24,7 +24,7 @@ namespace RYT.Services.Payment
             _payStack = new PayStackApi(_secretKey);
         }
 
-        public async Task<bool> InitializePayment(SendRewardVM model)
+        public async Task<TransactionInitializeResponse> Funding(SendRewardVM model)
         {
             var senderEmail = (await _repository.GetAsync<AppUser>())
                 .Where(s => s.Id == model.SenderId)
@@ -39,38 +39,21 @@ namespace RYT.Services.Payment
                 CallbackUrl = _configuration["Payment:PayStackCallbackUrl"],
                 Reference = TransactionHelper.GenerateTransRef(),
             };
-
             var response = _payStack.Transactions.Initialize(request);
+            if (!response.Status) return response;
+            return response;
+        }
 
-            if (!response.Status) return false;
-
-            var transaction = new Transaction
-            {
-                Amount = model.Amount,
-                SenderId = model.SenderId,
-                ReceiverId = model.ReceiverId,
-                WalletId = model.WalletId,
-                Reference = response.Data.Reference,
-                Status = false,
-                Description = model.Description,
-                TransactionType = model.TransactionType,
-            };
-            await _repository.AddAsync(transaction);
-            Url = response.Data.AuthorizationUrl;
-
+        public async Task<bool> VerifyFunding(SendRewardVM model)
+        {
+            var response = await Funding(model);
             //Verify transaction
             var verifyResponse = _payStack.Transactions.Verify(response.Data.Reference);
 
             if (verifyResponse.ToString() != "success")
                 return false;
-
-            transaction.Status = true;
-
-            await _repository.UpdateAsync(transaction);
-
             return true;
         }
-
         public async Task<bool> Withdraw(WithdrawVM model)
         {
             var result = _payStack.Post<ApiResponse<dynamic>, dynamic>("transferrecipient", new
@@ -88,14 +71,16 @@ namespace RYT.Services.Payment
         public async Task<IEnumerable<Bank>> GetListOfBanks()
         {
             var result = _payStack.Get<ApiResponse<dynamic>>("bank?currency=NGN");
-            
-            if(!result.Status)
+
+            if (!result.Status)
                 throw new Exception("Unable to fetch banks");
-            
+
             var banks = (result.Data as IEnumerable<dynamic>)?
                 .Select(bank => new Bank(bank.name, bank.code));
 
             return banks;
         }
+
+
     }
 }

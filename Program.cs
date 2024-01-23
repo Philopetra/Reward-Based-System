@@ -4,6 +4,7 @@ using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Services.Emailing;
 using RYT.Services.Payment;
+using RYT.Services.PaymentGateway;
 using RYT.Services.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddScoped<IEmailService, Emailing>();
 builder.Services.AddScoped<IPaymentService, PayStackService>();
+builder.Services.AddScoped<IPayments, Payments>();
 
 var app = builder.Build();
 
