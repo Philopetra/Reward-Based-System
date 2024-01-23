@@ -5,7 +5,9 @@ namespace RYT.Services.Payment
 {
     public interface IPaymentService
     {
-        public Task<string> InitializePayment(SendRewardVM model, ClaimsPrincipal user);
+        public Task<bool> InitializePayment(SendRewardVM model);
+
+        public Task<bool> Withdraw(WithdrawVM model);
         //public void VerifyPayment(string reference);
         //public Task<string> Withdraw(WithdrawVM model);
     }
