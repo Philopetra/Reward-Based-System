@@ -4,83 +4,98 @@ using RYT.Models.Entities;
 using RYT.Models.ViewModels;
 using RYT.Services.Repositories;
 using RYT.Utilities;
-using System.Security.Claims;
+using Bank = RYT.Models.ViewModels.Bank;
 
 namespace RYT.Services.Payment
 {
     public class PayStackService : IPaymentService
     {
         private readonly IConfiguration _configuration;
-        private readonly RYTDbContext _context;
-        private readonly IRepository Repository;
-        private readonly string token;
-        private PayStackApi PayStack { get; set; }
+        private readonly IRepository _repository;
+        private readonly string _secretKey;
+        private readonly PayStackApi _payStack;
         public string Url { get; set; }
+
         public PayStackService(IConfiguration configuration, RYTDbContext context, IRepository repository)
         {
             _configuration = configuration;
-            _context = context;
-            Repository = repository;
-            token = _configuration["Payment:PayStack"];
-            PayStack = new PayStackApi(token);
-
+            _repository = repository;
+            _secretKey = _configuration["Payment:PayStackSecretKey"];
+            _payStack = new PayStackApi(_secretKey);
         }
-        public async Task<string> InitializePayment(SendRewardVM model, ClaimsPrincipal user)
+
+        public async Task<bool> InitializePayment(SendRewardVM model)
         {
-            var senderId = user.FindFirstValue(ClaimTypes.NameIdentifier);
-            var senderEmail = (await Repository.GetAsync<AppUser>())
+            var senderEmail = (await _repository.GetAsync<AppUser>())
                 .Where(s => s.Id == model.SenderId)
-                .Select(s => new { s.Email })
-                .First()
-                .Email;
+                .Select(s => s.Email)
+                .First();
 
-
-            var request = new TransactionInitializeRequest()
+            var request = new TransactionInitializeRequest
             {
                 AmountInKobo = (int)model.Amount * 100,
                 Email = senderEmail,
                 Currency = "NGN",
-                CallbackUrl = "https://localhost:7238/dashboard/listofrewards"
+                CallbackUrl = _configuration["Payment:PayStackCallbackUrl"],
+                Reference = TransactionHelper.GenerateTransRef(),
             };
-            TransactionInitializeResponse response = PayStack.Transactions.Initialize(request);
-            if (response.Status)
+
+            var response = _payStack.Transactions.Initialize(request);
+
+            if (!response.Status) return false;
+
+            var transaction = new Transaction
             {
-                var transaction = new Transaction()
-                {
-                    Amount = model.Amount,
-                    SenderId = Helper.SenderId(),
-                    ReceiverId = "",
-                    WalletId = "",
-                    Reference = response.Data.Reference,
-                    Status = false,
-                    Description = model.Description,
-                    TransactionType = model.TransactionType.ToString(),
-                };
-                await Repository.AddAsync<Transaction>(transaction);
-                Url = response.Data.AuthorizationUrl.ToString();
+                Amount = model.Amount,
+                SenderId = model.SenderId,
+                ReceiverId = model.ReceiverId,
+                WalletId = model.WalletId,
+                Reference = response.Data.Reference,
+                Status = false,
+                Description = model.Description,
+                TransactionType = model.TransactionType,
+            };
+            await _repository.AddAsync(transaction);
+            Url = response.Data.AuthorizationUrl;
 
+            //Verify transaction
+            var verifyResponse = _payStack.Transactions.Verify(response.Data.Reference);
 
-                //Verify transaction
-                TransactionVerifyResponse verifyResponse = PayStack.Transactions.Verify(response.Data.Reference);
-                if (verifyResponse.ToString() == "success")
-                {
-                    var transactionRef = _context.Transactions.Where(x => x.Reference == response.Data.Reference).FirstOrDefault();
-                    if (transactionRef != null)
-                    {
-                        transaction.Status = true;
-                    }
-                }
-                await Repository.UpdateAsync<Transaction>(transaction);
+            if (verifyResponse.ToString() != "success")
+                return false;
 
+            transaction.Status = true;
 
-            }
-            return Url;
+            await _repository.UpdateAsync(transaction);
+
+            return true;
         }
 
-        //public Task<string> Withdraw(SendRewardVM model)
-        //{
+        public async Task<bool> Withdraw(WithdrawVM model)
+        {
+            var result = _payStack.Post<ApiResponse<dynamic>, dynamic>("transferrecipient", new
+            {
+                type = "nuban",
+                name = model.AccountName,
+                account_number = model.AccountNumber,
+                bank_code = model.BankCode,
+                currency = "NGN",
+            });
 
-        //}
+            return result.Status;
+        }
 
+        public async Task<IEnumerable<Bank>> GetListOfBanks()
+        {
+            var result = _payStack.Get<ApiResponse<dynamic>>("bank?currency=NGN");
+            
+            if(!result.Status)
+                throw new Exception("Unable to fetch banks");
+            
+            var banks = (result.Data as IEnumerable<dynamic>)?
+                .Select(bank => new Bank(bank.name, bank.code));
+
+            return banks;
+        }
     }
 }
