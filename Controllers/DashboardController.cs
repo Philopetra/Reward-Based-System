@@ -44,10 +44,16 @@ namespace RYT.Controllers
         }
 
 
-        public async Task<IActionResult> Teachers (TeacherListViewModel model, int page = 1)
+        public async Task<IActionResult> Teachers (TeacherListViewModel model, int page = 1 )
         {
             int pageSize = 7;
-            
+
+            //string schoolName
+            //var listOfSchoolTaught = await _repository.GetAsync<SchoolsTaught>();
+            //if(listOfSchoolTaught != null && listOfSchoolTaught.Any())
+            //{
+            //    var schoolTeachers = listOfSchoolTaught.Where(x => x.School == schoolName).ToList();
+            //}
 
             // Hardcore some details for Teachers
             var teachers = new List<Teacher>
@@ -55,52 +61,62 @@ namespace RYT.Controllers
                 new Teacher
                 {
                     User = new AppUser { FirstName = "John", LastName = "Doe" },
+                    Position = "Head Teacher",
                     YearsOfTeaching = "15 years"
                 },
                 new Teacher
                 {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
+                    User = new AppUser { FirstName = "Neo", LastName = "Smart" },
+                    Position = "Head Teacher",
+                    YearsOfTeaching = "5 years"
+                },
+                new Teacher
+                {
+                    User = new AppUser { FirstName = "Bite", LastName = "Man" },
+                    Position = "Teacher",
                     YearsOfTeaching = "10 years"
                 },
                 new Teacher
                 {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
+                    User = new AppUser { FirstName = "Favour", LastName = "Philopetra" },
+                    Position = "Head Teacher",
+                    YearsOfTeaching = "17 years"
+                },
+                new Teacher
+                {
+                    User = new AppUser { FirstName = "Vain", LastName = "GoldSmith" },
+                    Position = "Teacher",
                     YearsOfTeaching = "10 years"
                 },
                 new Teacher
                 {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
+                    User = new AppUser { FirstName = "Water", LastName = "Fire" },
+                    Position = "Teacher",
                     YearsOfTeaching = "10 years"
                 },
                 new Teacher
                 {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
+                    User = new AppUser { FirstName = "Pepper", LastName = "Rice" },
+                    Position = "Teacher",
                     YearsOfTeaching = "10 years"
                 },
                 new Teacher
                 {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
+                    User = new AppUser { FirstName = "Joy", LastName = "Ozo" },
+                    Position = "Teacher",
                     YearsOfTeaching = "10 years"
                 },
                 new Teacher
                 {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
+                    User = new AppUser { FirstName = "Joe", LastName = "Mark" },
+                    Position = "Teacher",
                     YearsOfTeaching = "10 years"
                 },
                 new Teacher
                 {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
-                    YearsOfTeaching = "10 years"
-                },
-                new Teacher
-                {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
-                    YearsOfTeaching = "10 years"
-                },
-                new Teacher
-                {
-                    User = new AppUser { FirstName = "Jane", LastName = "Smith" },
-                    YearsOfTeaching = "10 years"
+                    User = new AppUser { FirstName = "Babs", LastName = "Meme" },
+                    Position = "Head Teacher",
+                    YearsOfTeaching = "15 years"
                 }
                 
             };
@@ -109,6 +125,7 @@ namespace RYT.Controllers
 
             var query =  teachers.AsQueryable();
 
+            //query = query.Where(t => t.SchoolId == model.SchoolId);
             //var query = await _repository.GetAsync<Teacher>();
 
             // Apply search and filter logic
@@ -119,14 +136,30 @@ namespace RYT.Controllers
                 switch (searchCriteria)
                 {
                     case "all":
-                        query = query.Where(t => t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                        query = query.Where(t => (t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
                                                   t.User.LastName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                                  t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase));
+                                                  (t.User.FirstName + " " + t.User.LastName).Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                                                  t.Position.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                                                  t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase)));
+
+                        //query = query.Where(t => t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                        //                          t.User.LastName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                        //                          t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) &&
+                        //                          t.User.LastName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                        //                          t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase));
                         break;
+
                     case "name":
-                        query = query.Where(t => t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                                  t.User.LastName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase));
+                        query = query.Where(t => (t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                                                  t.User.LastName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                                                  (t.User.FirstName + " " + t.User.LastName).Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
+                                                  t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase)));
                         break;
+
+                    case "position":
+                        query = query.Where(t => t.Position.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase));
+                        break;
+
                     case "period":
                         query = query.Where(t => t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase));
                         break;

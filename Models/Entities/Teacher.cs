@@ -4,6 +4,7 @@
     {
         public string UserId { get; set; } = string.Empty;
         public string YearsOfTeaching { get; set; } = string.Empty;
+        public string Position { get; set; } = string.Empty;
         public IList<SubjectsTaught> TeacherSubjects { get; set; } = new List<SubjectsTaught>();
         public IList<SchoolsTaught> SchoolsTaughts { get; set; } = new List<SchoolsTaught>();
 
