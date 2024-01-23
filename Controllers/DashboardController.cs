@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
@@ -31,31 +32,26 @@ namespace RYT.Controllers
 
         public IActionResult SendReward(ListOfSchoolViewModel model, string searchString, int page = 1)
         {
-            const int pageSize = 5;
+             int pageSize = 5;
 
             IQueryable<string> schools = SeedData.Schools.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 schools = schools.Where(s => s.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) == 0);
-                //schools = schools.Where(s => s.Contains(searchString));
+                
                 
             }
+                    List<string> schoolsOnPage;
+                    int totalItems, totalPages;
 
-            int totalItems = schools.Count();
-            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+                    Pagination.UsePagination(schools, page, pageSize, out schoolsOnPage, out totalItems, out totalPages);
 
-            List<string> schoolsOnPage = schools
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            model.Schools = schoolsOnPage;
-            model.CurrentPage = page;
-            model.TotalPages = totalPages;
-            model.Count = totalItems;
-
-            return View(model);
+                        model.Schools = schoolsOnPage;
+                        model.CurrentPage = page;
+                        model.TotalPages = totalPages;
+                        model.Count = totalItems;
+                        return View(model);
         }
 
         public IActionResult EditProfile() 
