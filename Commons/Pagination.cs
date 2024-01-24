@@ -13,7 +13,6 @@ namespace RYT.Commons
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-
         }
     }
 }
