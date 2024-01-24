@@ -1,4 +1,6 @@
-﻿<style>
+﻿@inject UserManager<AppUser> _userManager
+@inject SignInManager<AppUser> _signInManager
+<style>
     #navbar_bg{
         background-color: #FFFFFF !important;
     }
@@ -53,6 +55,8 @@
                         <a id="kick-left" class="navbar-brand mb-0 h1" asp-area="" asp-controller="Home" asp-action="Index">
                             <img class="d-inline-block align-top" src="~/images/ogm-main-logo.png" style="width: 141px; height: 35px" />
                         </a>
+                    @if (!_signInManager.IsSignedIn(User))
+                    {
                         <ul class="navbar-nav">
                             <li class="nav-item active text-center ">
                                 <a class="nav-link text" style="color: var(--Purple-600, #6938EF)" asp-area="" asp-controller="" asp-action="">
@@ -75,34 +79,24 @@
                                 </a>
                             </li>
                             <li>
-                            @if (ViewBag.isLogggedIn == true)
-                            {
-                                <a asp-action="LogOut" asp-controller="Account">LogOut</a> 
-                            }
-                            else
-                            {
-                                <a asp-action="Login" asp-controller="Account">Login</a>
-                            }
-                           @* <a data-bs-target="#fund" data-bs-toggle="modal">Success modal</a> *@
+                                @* <a data-bs-target="#fund" data-bs-toggle="modal">Success modal</a> *@
 
                             </li>
                         </ul>
-                    </div>
+                    }
+                    else
+                    {
+                        <Partial name="_ThumbnailPartial" />
+                    }
+                </div>
                 }
                 else
                 {
                     <a id="a-kick-left" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/images/ogm-main-logo.png" />
                     </a>
-                    <div class="ogm-notify-flex-nav">
-                        <a class="navbar-brand" href="#" data-bs-target="#notification" data-bs-toggle="modal" >
-                            <img src="~/images/ogm-notify-icon.png" />
-                        </a>
 
-                    <a href="#" data-bs-target="#account_settings" data-bs-toggle="modal" class="nav-link" style="font-weight: bold; color: black;">
-                            <img src="~/images/ogm-dummy-image.png" style="width: 30px" /> Franca John
-                        </a>
-                    </div>
+                    <Partial name="_ThumbnailPartial" />
                 }
                 
         </div>
@@ -172,7 +166,7 @@
                         </div>
 
                         <div class="ryts-10-settings-3">
-                            <a href="#">
+                            <a asp-action="Logout" asp-controller="Account">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" class="ryts-10-logout-setting">
                                     <path d="M17 8L15.59 9.41L17.17 11H9V13H17.17L15.59 14.58L17 16L21 12L17 8ZM5 5H12V3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H12V19H5V5Z" fill="#6938EF" />
                                 </svg> Logout
@@ -197,8 +191,8 @@
                     <hr class="ryts-10-hr-border-thickness">
                     <p class="ryts-10-are-you-sure">Are you sure you want to logout from your account?</p>
                     <div class="ryts-10-float-button-right">
-                        <a class="ryts-10-button-no" href="#">No</a>
-                        <a class="ryts-10-button-yes" href="#">Yes</a>
+                        <a class="ryts-10-button-no">No</a>
+                        <a asp-action="Logout" asp-controller="Account" class="ryts-10-button-yes">Yes</a>
                     </div>
                 </div>
             </div>
