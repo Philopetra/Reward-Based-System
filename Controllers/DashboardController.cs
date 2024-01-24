@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
@@ -14,9 +15,11 @@ namespace RYT.Controllers
     public class DashboardController : Controller
     {
         private readonly IRepository _repository;
-        public DashboardController(IRepository repository)
+        private readonly UserManager<AppUser> _userManager;
+        public DashboardController(IRepository repository, UserManager<AppUser> userManager)
         {
             _repository = repository;
+            _userManager = userManager;
         }
 
         public IActionResult Overview()
@@ -55,22 +58,31 @@ namespace RYT.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditProfile(string id) //pass in you VM
+        public async Task<IActionResult> EditProfile() //pass in you VM
         {
-            var user = await _repository.GetAsync<AppUser>(id);
+            var user = await _userManager.GetUserAsync(User); ;
 
-            return View(user);
+            var editProfileViewModel = new EditProfileVM()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email   = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                NameofSchool = user.NameofSchool
+            };
+
+            return View(editProfileViewModel);
 
 
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProfile(string id, EditProfileVM editProfileVM)
+        public async Task<IActionResult> EditProfile(EditProfileVM editProfileVM)
         {
-
-            var user = await _repository.GetAsync<AppUser>(id);
             if (ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(User);
                 user.FirstName = editProfileVM.FirstName;
                 user.LastName = editProfileVM.LastName;
                 user.Email = editProfileVM.Email;
