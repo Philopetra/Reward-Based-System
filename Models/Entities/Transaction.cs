@@ -13,6 +13,7 @@ namespace RYT.Models.Entities
         public string ReceiverId { get; set; } = string.Empty;
         public string TransactionType { get; set; } = TransactionTypes.Funding.ToString();
         public string Description { get; set; } = string.Empty;
+        public string Reference { get; set; } = string.Empty;
 
         // Navigation Props
         public AppUser? Sender { get; set; }
