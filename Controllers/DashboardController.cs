@@ -74,6 +74,52 @@ namespace RYT.Controllers
         {
             return View();
         }
+
+        public async Task<IActionResult> GetSentTransaction(string userId)
+        {
+            List<SentTransactionViewModel> sentTransactionViewModels = new List<SentTransactionViewModel>();
+            var getTransactions = await _repository.GetAsync<Transaction>();
+            List<Transaction> transactions = getTransactions.Where(transaction => transaction.SenderId == userId && transaction.TransactionType == "Sent").ToList();
+            foreach (var transaction in transactions)
+            {
+                SentTransactionViewModel transactionsView = new SentTransactionViewModel()
+                {
+                    Amount = transaction.Amount,
+                    timeOfTransaction = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                sentTransactionViewModels.Add(transactionsView);
+            }
+            OverviewViewModel overviewViewModel = new OverviewViewModel()
+            {
+                MySentTransactions = sentTransactionViewModels
+            };
+
+            return View(overviewViewModel);
+        }
+
+        public async Task<IActionResult> GetReceivedTransaction(string userId)
+        {
+            List<ReceivedTransactionsViewModel> receivedTransactionViewModels = new List<ReceivedTransactionsViewModel>();
+            var GetTransactions = await _repository.GetAsync<Transaction>();
+            List<Transaction> transactions = GetTransactions.Where(transaction => transaction.ReceiverId == userId && transaction.TransactionType == "Received").ToList();
+            foreach (var transaction in transactions)
+            {
+                ReceivedTransactionsViewModel transactionsView = new ReceivedTransactionsViewModel()
+                {
+                    Amount = transaction.Amount,
+                    timeOfTransaction = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                receivedTransactionViewModels.Add(transactionsView);
+            }
+            OverviewViewModel overviewViewModel = new OverviewViewModel()
+            {
+                MyReceivedTransactions = receivedTransactionViewModels
+            };
+
+            return View(overviewViewModel);
+        }
     }
 
 }

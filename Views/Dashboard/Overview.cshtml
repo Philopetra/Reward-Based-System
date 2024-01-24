@@ -1,93 +1,138 @@
-﻿@{
+﻿@model OverviewViewModel
+@{
     ViewData["Title"] = "Overview";
 }
 
-<div class="ryts-9-container-RYTS-9">
-    <div class="ryts-9-welcome-panel">
-        <div id="ryts-9-greeting-area">
-            <div class="ryts-9-greetings">Good afternoon Patience,</div>
-            <p id="ryts-9-greeting-area2">Welcome to your Dashboard <img id="ryts-9-emoji-image" src="/Images/ryts-9-emoji.png" /></p>
+<div style="background-color: #F5F5F5;height:90vh">
+    <div style="margin-left:5%;margin-right:10%;width:85%" class="">
+        <div class="ryt-xlarge" style="font-weight:bold;margin-top:50px">
+            Good morning Franca,
+        </div>
+        <div style="margin-bottom:25px">
+            <span class="ryt-small">Welcome to your Dashboard</span>
+            <img style="width:1%" src="~/images/Emoji.png">
+        </div>
+        <div class="ryt-row">
+            <span class="ryt-row ryt-col ryt-round-xlarge ryt-card-4 ryt-padding-large" style="width:47.5%;height:120px">
+                <span class="ryt-col" style="width:45%;margin-right:27.5%">
+                    <div class="ryt-small ryt-margin-bottom"> Wallet Balance</div>
+                    <div class="ryt-xlarge" style="font-weight:bold">N28,500</div>
+                </span>
+                <span class="ryt-col " style="width:27.5%">
+                    <div class="ryt-round-xxlarge ryt-card-4 ryt-padding-small ryt-center ryt-margin-bottom ryt-text-white" style="background-color: #6938EF;"><a style="color: white; " href="#">Add Money</a></div>
+                    <div class="ryt-right-align ryt-text-green">Active</div>
+                </span>
+            </span>
+
+
+            <span class="ryt-row ryt-col ryt-round-xlarge ryt-card-4 ryt-padding-large" style="height:120px;background-color:#FEFDF0;width:47.5%;margin-left:5%">
+                <span class="ryt-col" style="width:45%;margin-right:45%">
+                    <div class="ryt-small ryt-margin-bottom"> Total money sent</div>
+                    <div class="ryt-xlarge" style="font-weight:bold">N28,500</div>
+                </span>
+                <span class="ryt-col" style="width:10%;position:asolute">
+                    <p class="ryt-round-xxlarge" style="background-color:#FEF7C3;padding:6px"><img style="width: 100%" src="~/images/RYTS-3-send.png"></p>
+                </span>
+            </span>
+        </div>
+        <div class="ryt-row" style="background-color:#F5F5F5">
+            <div style="font-weight:bold;margin-top:35px" class="ryt-col s12 ryt-margin-bottom">Transaction History</div>
+            <div class="ryts-9-frame-transfer">
+                <div class="ryts-9-frame-19">
+                    <div class="ryts-9-frame-1a">
+
+                        <div class="ryts-9-frame-1b" >
+
+                            <button id="toggleButton1" class="toggle-button active ryts-9-received" onclick="toggleTable('table1', 'table2', 'toggleButton1', 'toggleButton2')">Received</button>
+
+                            @* <div class="ryts-9-divider-1c"></div> *@
+                        </div>
+                        <button id="toggleButton2" class="toggle-button ryts-9-sent" onclick="toggleTable('table2', 'table1', 'toggleButton2', 'toggleButton1')">Sent</button>
+
+                    </div>
+                    <div class="ryts-9-divider-1d"></div>
+                </div>
+
+                <table class="ryts-9-frame-1e" id="table1">
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description">Description</th>
+                            <th class="ryts-9-amount-sent">Amount</th>
+                            <th class="ryts-9-date-time">Date/Time</th>
+                            <th class="ryts-9-action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">No received transactions yet...</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (ReceivedTransactionsViewModel transaction in Model.MyReceivedTransactions)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transaction.Description</td>
+                                    <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                    <td class="ryts-9-date-time-22-transfer">@transaction.timeOfTransaction</td>
+                                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <table class="ryts-9-frame-1e" id="table2" style="display: none;">
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description">Description</th>
+                            <th class="ryts-9-amount-sent">Amount</th>
+                            <th class="ryts-9-date-time">Date/Time</th>
+                            <th class="ryts-9-action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">No sent transactions yet...</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (SentTransactionViewModel transaction in Model.MySentTransactions)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transaction.Description</td>
+                                    <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                    <td class="ryts-9-date-time-22-transfer">@transaction.timeOfTransaction</td>
+                                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+
         </div>
     </div>
-
-    <div class="ryts-9-wallet-panel">
-        <div class="ryts-9-balance-panel">
-            <div class="ryts-9-balance-area1">
-                <div id="ryts-9-wallet-balance">My Wallet Balance</div>
-                <button id="ryts-9-withdraw-area">Withdraw</button>
-                @* <div id="withdraw-area" >Withdraw</div> *@
-            </div>
-            <div class="ryts-9-balance-area2">
-                <p id="ryts-9-funds-area">N28,500</p>
-                <p id="ryts-9-active-area">Active</p>
-            </div>
-        </div>
-
-        <div class="ryts-9-received-panel">
-            <div class="ryts-9-inner-received-panel">
-                <div class="ryts-9-money-box">
-                    <p id="ryts-9-total-money">Total money received</p>
-                    <p id="ryts-9-total-money-area">N28,500</p>
-                </div>
-                <div class="ryts-9-button-area">
-                    <img id="ryts-9-send-icon" src="/Images/ryt-9-icon.png" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="ryts-9-transaction-history-panel">Transaction History</div>
-
-    <div class="ryts-9-frame-18">
-        <div class="ryts-9-frame-19">
-            <div class="ryts-9-frame-1a">
-
-                <div class="ryts-9-frame-1b">
-                    <span class="ryts-9-received">Received</span>
-                    <div class="ryts-9-divider-1c"></div>
-                </div>
-                <span class="ryts-9-sent">Sent</span>
-            </div>
-            <div class="ryts-9-divider-1d"></div>
-        </div>
-        
-        <table class="ryts-9-frame-1e">
-            <thead>
-                <tr class ="ryts-9-frame-1f">
-                    <th class="ryts-9-description">Description</th>
-                    <th class="ryts-9-amount-sent">Amount</th>
-                    <th class="ryts-9-date-time">Date/Time</th>
-                    <th class="ryts-9-action">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="ryts-9-frame-20">
-                    <td class="ryts-9-you-sent">Olajumoke sent you a reward</td>
-                    <td class="ryts-9-n-21">N15,000</td>
-                    <td class="ryts-9-date-time-22">4/08/2022 - 4:45pm</td>
-                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
-                </tr>
-                <tr class="ryts-9-frame-24">
-                    <td class="ryts-9-you-sent-25">Obinna sent you a reward</td>
-                    <td class="ryts-9-n-21">N10,000</td>
-                    <td class="ryts-9-date-time-22">10/06/2022 - 3:00pm</td>
-                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
-                </tr>
-                <tr class="ryts-9-frame-24">
-                    <td class="ryts-9-you-sent-25">You withdrew money from your wallet</td>
-                    <td class="ryts-9-n-21">N35,000</td>
-                    <td class="ryts-9-date-time-22">5/04/2022 - 1:45pm</td>
-                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
-                </tr>
-            </tbody>
-        </table>
-
-
-
-
-
-
-    </div>
-
-
 </div>
+
+<script>
+    function toggleTable(showTableId, hideTableId, activeButtonId, inactiveButtonId) {
+        const showTable = document.getElementById(showTableId);
+        const hideTable = document.getElementById(hideTableId);
+        const activeButton = document.getElementById(activeButtonId);
+        const inactiveButton = document.getElementById(inactiveButtonId);
+
+        showTable.style.display = 'table';
+        hideTable.style.display = 'none';
+
+        activeButton.classList.add('active');
+        inactiveButton.classList.remove('active');
+    }
+</script>
