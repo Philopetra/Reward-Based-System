@@ -30,6 +30,32 @@ namespace RYT.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string Email, string token)
+        {
+            var user = await _userManager.FindByEmailAsync(Email);
+            if (user != null)
+            {
+                var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, token);
+                if (confirmEmailResult.Succeeded)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
+                }
+
+                foreach (var err in confirmEmailResult.Errors)
+                {
+                    ModelState.AddModelError(err.Code, err.Description);
+                }
+                return View(ModelState);
+            }
+
+            ModelState.AddModelError("", "Email confirmation failed");
+
+            return View(ModelState);
+
+        }
+
+        [HttpGet]
         public IActionResult TeacherSignUp()
         {
             return View();
