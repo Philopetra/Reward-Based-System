@@ -54,9 +54,33 @@ namespace RYT.Controllers
                         return View(model);
         }
 
-        public IActionResult EditProfile() 
+        [HttpGet]
+        public async Task<IActionResult> EditProfile(string id) //pass in you VM
         {
-            return View();
+            var user = await _repository.GetAsync<AppUser>(id);
+
+            return View(user);
+
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(string id, EditProfileVM editProfileVM)
+        {
+
+            var user = await _repository.GetAsync<AppUser>(id);
+            if (ModelState.IsValid)
+            {
+                user.FirstName = editProfileVM.FirstName;
+                user.LastName = editProfileVM.LastName;
+                user.Email = editProfileVM.Email;
+                user.PhoneNumber = editProfileVM.PhoneNumber;
+                user.NameofSchool = editProfileVM.NameofSchool;
+
+                await _repository.UpdateAsync<AppUser>(user);
+
+            }
+            return RedirectToAction("Overview");
         }
 
         public IActionResult ChangePassword()
