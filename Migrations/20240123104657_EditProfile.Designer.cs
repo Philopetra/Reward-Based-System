@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RYT.Data;
@@ -11,9 +12,10 @@ using RYT.Data;
 namespace RYT.Migrations
 {
     [DbContext(typeof(RYTDbContext))]
-    partial class RYTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240123104657_EditProfile")]
+    partial class EditProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,7 +269,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Notification", b =>
@@ -287,7 +289,7 @@ namespace RYT.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.SchoolsTaught", b =>
@@ -313,7 +315,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("schoolsTaughts", (string)null);
+                    b.ToTable("schoolsTaughts");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.SubjectsTaught", b =>
@@ -339,7 +341,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("SubjectsTaughts", (string)null);
+                    b.ToTable("SubjectsTaughts");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Teacher", b =>
@@ -377,7 +379,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Transaction", b =>
@@ -420,7 +422,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("Transactions", (string)null);
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Wallet", b =>
@@ -449,7 +451,7 @@ namespace RYT.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wallets", (string)null);
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
