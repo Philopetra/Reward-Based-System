@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
+using RYT.Services.Emailing;
 using System.Diagnostics.Eventing.Reader;
 
 namespace RYT.Controllers
@@ -10,12 +11,15 @@ namespace RYT.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IEmailService _emailService;
 
 
-        public AccountController (UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+
+        public AccountController (UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -90,5 +94,26 @@ namespace RYT.Controllers
             return RedirectToAction("Index","Home");
         }
 
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var link = Url.Action("ResetPassword", "Action", new { user.Email, token, Request.Scheme });
+                    var body = @$"Hi{user.FirstName}{user.LastName},
+						please, click the link <a href='{link}'>here</a> to reset your password";
+
+                    await _emailService.SendEmailAsync(user.Email, "Forgot Password", body);
+
+                    ViewBag.Message = "Password Reset details has been sent to your email";
+                    return View();
+                }
+                ModelState.AddModelError("", "Invalid Email");
+            }
+            return View(model);
+        }
     }
 }
