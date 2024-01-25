@@ -14,6 +14,7 @@ namespace RYT.Models.Entities
         public string TransactionType { get; set; } = TransactionTypes.Funding.ToString();
         public string Description { get; set; } = string.Empty;
         public string Reference { get; set; } = string.Empty;
+        public bool Status { get; set; } 
 
         // Navigation Props
         public AppUser? Sender { get; set; }
