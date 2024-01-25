@@ -7,7 +7,6 @@
     .ogm-btn-nav {
         background-color: #FFFFFF !important;
         text-align: center;
-        font-weight: 600;
         text-decoration: none;
         letter-spacing: 0.15px;
         line-height: 100%;
@@ -18,6 +17,15 @@
         height: 46px;
         padding-top: 13px;
     }
+
+    .overview-navbar {
+       z-index: 100;
+    }
+
+    /* .overview-navbar-right {
+        display: flex;
+        float: right;
+    } */
 
     .ogm-btn-nav :hover {
         color: white;
@@ -38,6 +46,19 @@
         position: absolute;
         left: 50px;
     }
+       
+
+    .oval-shape{
+        width: 30px;
+        height: 30px;
+        border-radius: 100%;
+        overflow: hidden;
+    }
+
+
+    .oval-shape img {
+        width: 100%;
+    }
 
 </style>
 
@@ -51,52 +72,67 @@
             
                 @if (ViewData["Title"] == "Home Page")
                 {
-                    <div id="navbarNAV" class="navbar-collapse collapse ogm-home-nav-flex">
-                        <a id="kick-left" class="navbar-brand mb-0 h1" asp-area="" asp-controller="Home" asp-action="Index">
-                            <img class="d-inline-block align-top" src="~/images/ogm-main-logo.png" style="width: 141px; height: 35px" />
-                        </a>
-                    @if (!_signInManager.IsSignedIn(User))
-                    {
-                        <ul class="navbar-nav">
-                            <li class="nav-item active text-center ">
-                                <a class="nav-link text" style="color: var(--Purple-600, #6938EF)" asp-area="" asp-controller="" asp-action="">
-                                    Home
-                                </a>
-                            </li>
-                            <li class="nav-item text-center">
-                                <a class="nav-link text-black" asp-controller="" asp-action="">
-                                    About
-                                </a>
-                            </li>
-                            <li class="nav-item active text-center">
-                                <a class="nav-link text-black">
-                                    Contact Us
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white ogm-btn-nav">
-                                    Get Started
-                                </a>
-                            </li>
-                            <li>
-                                @* <a data-bs-target="#fund" data-bs-toggle="modal">Success modal</a> *@
+                    <div id="navbarNAV" class="navbar-collapse collapse ogm-home-nav-flex p-3">
+                        <div class="nav-listing-flex-right">
+                            <a id="kick-left" class="navbar-brand mb-0 h1" asp-area="" asp-controller="Home" asp-action="Index">
+                            <img class="d-inline-block align-top" src="~/images/ogm-main-logo.png" style="width: 141px; height: 35px;" />
+                            </a>
+                        </div>                  
 
-                            </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <Partial name="_ThumbnailPartial" />
-                    }
-                </div>
+                        
+                        <div class="nav-listing-flex-left">
+                            <ul class="navbar-nav">
+                                <li class="nav-item active text-center ">
+                                    <a class="nav-link text" style="color: var(--Purple-600, #6938EF)" asp-area="" asp-controller="" asp-action="">
+                                        Home
+                                    </a>
+                                </li>
+                                <li class="nav-item text-center">
+                                    <a class="nav-link text-black" asp-controller="" asp-action="">
+                                        About
+                                    </a>
+                                </li>
+                                <li class="nav-item active text-center">
+                                    <a class="nav-link text-black">
+                                        Contact Us
+                                    </a>
+                                </li>
+                                <li class="nav-item active text-center" style="padding-right: 30px;">
+                                    @if (!_signInManager.IsSignedIn(User))
+                                    {
+                                        <a asp-action="signup" asp-controller="account">
+                                            <span class="ryt-padding ryt-button" style="background-color:#6938EF;color:white"> Get Started</span>
+                                        </a>                                    
+
+                                    }
+                                </li>
+                                <li class="" styl="padding-top: 30px;">
+                                    @if (_signInManager.IsSignedIn(User))
+                                    {
+                                        <Partial name="_ThumbnailPartial" />
+
+                                    }
+
+                                </li>
+                            </ul>
+
+                        </div>                            
+
+                    </div>
                 }
                 else
                 {
-                    <a id="a-kick-left" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="~/images/ogm-main-logo.png" />
-                    </a>
+                   <div class="overview-navbar">
+                        <div class="overview-nav-left">
+                            <a id="a-kick-left" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                            <img src="~/images/ogm-main-logo.png" style="width: 141px; height: 35px; margin-top: 10px;" />
+                            </a>
+                        </div>
 
-                    <Partial name="_ThumbnailPartial" />
+                        <div style="margin-left: 1050px;" class="">
+                            <Partial name="_ThumbnailPartial" />
+                        </div>
+                   </div>
                 }
                 
         </div>

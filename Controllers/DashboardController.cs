@@ -4,6 +4,7 @@ using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
+using RYT.Services.CloudinaryService;
 using RYT.Services.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,14 @@ namespace RYT.Controllers
     public class DashboardController : Controller
     {
         private readonly IRepository _repository;
+        private readonly IPhotoService _photoService;
         private readonly UserManager<AppUser> _userManager;
-        public DashboardController(IRepository repository, UserManager<AppUser> userManager)
+
+        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService)
         {
             _repository = repository;
             _userManager = userManager;
+            _photoService = photoService;
         }
 
         public IActionResult Overview()
@@ -109,6 +113,52 @@ namespace RYT.Controllers
         public IActionResult Transfer()
         {
             return View();
+        }
+
+        public IActionResult UpdateImage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateImage(UploadImageVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                //To get User
+                var user = await _userManager.GetUserAsync(User);
+
+                //To go to the database and get the AppUser properties so that we can confirm if the picture is  if (user.PhotoUrl == null)
+                if (user != null)
+                {
+                    Dictionary<string, string> cloudinaryResponse = await _photoService.UploadImage(model.Image, $"{user.LastName} {user.FirstName}");
+                    if (cloudinaryResponse["Code"] == "200")
+                    {
+                        string photoUrl = cloudinaryResponse["Url"];
+                        string publicId = cloudinaryResponse["PublicId"];
+                        user.PhotoUrl = photoUrl;
+                        user.PublicId = publicId;
+                        var result = await _userManager.UpdateAsync(user);
+
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction("UpdateImage");
+                        }
+                        else
+                        {
+                            foreach (var err in result.Errors)
+                            {
+                                ModelState.AddModelError(err.Code, err.Description);
+                            }
+                        }
+                    }
+
+                    ModelState.AddModelError("", cloudinaryResponse["Message"]);
+                }
+            }
+            return View();
+
+
         }
     }
 

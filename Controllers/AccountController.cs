@@ -68,7 +68,7 @@ namespace RYT.Controllers
                         var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false,false);
                         if (loginResult.Succeeded)
                            {
-                              return RedirectToAction("Index", "Home");
+                              return RedirectToAction("overview", "dashboard");
                            }
                         else
                            {

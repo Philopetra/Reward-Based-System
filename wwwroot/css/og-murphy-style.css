@@ -5,9 +5,14 @@ p {
 
 .ogm-notify-flex-nav {
     display: flex;
-    justify-content: flex-end;
+    padding: 20px;
+    justify-content: ;
     width: 100%;
 }
+
+.ogm-notify-flex-nav .nav-inner-flex {
+    display:flex;
+ }
 
 .ogm-notify-panel {
     display: flex;
@@ -60,17 +65,14 @@ p {
     flex-direction: row;
 }
 
-.ogm-btn-1 {
-    background-color: var(--Purple-600, #6938EF);
-    color: white;
+button .ogm-btn-1 {
+    background: var(--Purple-600, #6938EF);
     padding: 8px 16px;
     text-decoration: none;
-    font-size: 16px;
     margin: 3px 2px;
     border-radius: 6px;
     justify-content: center;
     width: 300px;
-    display: flex;
 }
 
 .ogm-btn-1:hover {
