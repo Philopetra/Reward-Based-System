@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
+using RYT.Services.CloudinaryService;
 using RYT.Services.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +17,14 @@ namespace RYT.Controllers
     public class DashboardController : Controller
     {
         private readonly IRepository _repository;
-        public DashboardController(IRepository repository)
+        private readonly IPhotoService _photoService;
+        private readonly UserManager<AppUser> _userManager;
+
+        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService)
         {
             _repository = repository;
+            _userManager = userManager;
+            _photoService = photoService;
         }
 
         public IActionResult Overview()
@@ -53,9 +60,43 @@ namespace RYT.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> EditProfile() //pass in you VM
+        {
+            var user = await _userManager.GetUserAsync(User); ;
+
+            var editProfileViewModel = new EditProfileVM()
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email   = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                NameofSchool = user.NameofSchool
+            };
+
+            return View(editProfileViewModel);
+
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(EditProfileVM editProfileVM)
         public IActionResult EditProfile()
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                user.FirstName = editProfileVM.FirstName;
+                user.LastName = editProfileVM.LastName;
+                user.Email = editProfileVM.Email;
+                user.PhoneNumber = editProfileVM.PhoneNumber;
+                user.NameofSchool = editProfileVM.NameofSchool;
+
+                await _repository.UpdateAsync<AppUser>(user);
+
+            }
+            return RedirectToAction("Overview");
         }
 
         public IActionResult ChangePassword()
@@ -126,6 +167,52 @@ namespace RYT.Controllers
         public IActionResult Transfer()
         {
             return View();
+        }
+
+        public IActionResult UpdateImage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateImage(UploadImageVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                //To get User
+                var user = await _userManager.GetUserAsync(User);
+
+                //To go to the database and get the AppUser properties so that we can confirm if the picture is  if (user.PhotoUrl == null)
+                if (user != null)
+                {
+                    Dictionary<string, string> cloudinaryResponse = await _photoService.UploadImage(model.Image, $"{user.LastName} {user.FirstName}");
+                    if (cloudinaryResponse["Code"] == "200")
+                    {
+                        string photoUrl = cloudinaryResponse["Url"];
+                        string publicId = cloudinaryResponse["PublicId"];
+                        user.PhotoUrl = photoUrl;
+                        user.PublicId = publicId;
+                        var result = await _userManager.UpdateAsync(user);
+
+                        if (result.Succeeded)
+                        {
+                            return RedirectToAction("UpdateImage");
+                        }
+                        else
+                        {
+                            foreach (var err in result.Errors)
+                            {
+                                ModelState.AddModelError(err.Code, err.Description);
+                            }
+                        }
+                    }
+
+                    ModelState.AddModelError("", cloudinaryResponse["Message"]);
+                }
+            }
+            return View();
+
+
         }
     }
 }
