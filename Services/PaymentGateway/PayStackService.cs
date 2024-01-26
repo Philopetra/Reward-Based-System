@@ -24,7 +24,7 @@ namespace RYT.Services.PaymentGateway
             _payStack = new PayStackApi(_secretKey);
         }
 
-        public async Task<TransactionInitializeResponse> Funding(SendRewardVM model)
+        public async Task<string> Funding(SendRewardVM model)
         {
             var senderEmail = (await _repository.GetAsync<AppUser>())
                 .Where(s => s.Id == model.SenderId)
@@ -40,15 +40,15 @@ namespace RYT.Services.PaymentGateway
                 Reference = TransactionHelper.GenerateTransRef(),
             };
             var response = _payStack.Transactions.Initialize(request);
-            if (!response.Status) return response;
-            return response;
+            if (!response.Status) return response.Message;
+            return response.Data.AuthorizationUrl;
         }
 
         public async Task<bool> VerifyFunding(SendRewardVM model)
         {
             var response = await Funding(model);
             //Verify transaction
-            var verifyResponse = _payStack.Transactions.Verify(response.Data.Reference);
+            var verifyResponse = _payStack.Transactions.Verify(response);
 
             if (verifyResponse.ToString() != "success")
                 return false;

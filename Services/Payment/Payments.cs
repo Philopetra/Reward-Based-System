@@ -25,7 +25,7 @@ namespace RYT.Services.Payment
                     SenderId = model.SenderId,
                     ReceiverId = model.ReceiverId,
                     WalletId = model.WalletId,
-                    Reference = response.Data.Reference,
+                    Reference = response,
                     Status = false,
                     Description = model.Description,
                     TransactionType = model.TransactionType,
