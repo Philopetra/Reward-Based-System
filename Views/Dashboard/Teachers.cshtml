@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "All Teachers";
+    Model.CurrentSchool = Model.SchoolName;
 }
 
 <Partial name="_ProfileDetailPartial" />
@@ -17,16 +18,9 @@
     @* Mainland Senior High School *@
 
     <div id="neo-teacher-search">
-        @* <img class="neo-img" src="~/images/filter.png" /> *@
-        <label>Filter By: </label>
-        <select name="SearchCriteria" id="searchCriteria">
-            <option value="all" selected>All</option>
-            <option value="name">Name</option>
-            <option value="position">Position</option>
-            <option value="period">Period of Teaching</option>
-        </select>
-        <form asp-action="Teachers" method="get" id="neo-search-box">
+        <form asp-action="Teachers" method="post" id="neo-search-box">
             <input id="neo-search-input" name="SearchKeyword" placeholder="Search" value="@Model.SearchKeyword" />
+            <input hidden asp-for="CurrentSchool" />
             <img class="neo-search-icon" src="~/images/search-alt-1.png" />
 
             <button id="neo-search-btn" type="submit">

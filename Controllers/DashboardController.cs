@@ -139,6 +139,39 @@ namespace RYT.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Teachers(string schoolName, int page = 1)
+        {
+            int pageSize = 5;
+
+            var listOfSchoolTaught = await _repository.GetAsync<SchoolsTaught>();
+
+            var model = new TeacherListViewModel();
+
+            if (listOfSchoolTaught != null && listOfSchoolTaught.Any())
+            {
+                var schoolsTaught = (await _repository.GetAsync<SchoolsTaught>())
+                                    .Include(x => x.Teacher)
+                                    .ThenInclude(x => x.User).ToList();
+
+                var paginated = new List<SchoolsTaught>();
+                int totalItems;
+                int totalPages;
+
+                Pagination.UsePagination(schoolsTaught.AsQueryable(), page, pageSize, out paginated, out totalItems, out totalPages);
+                model.TeacherList = paginated.Select(x => x.Teacher).ToList();
+                model.SchoolName = schoolName;
+                model.CurrentPage = page;
+                model.Count = totalItems;
+                model.TotalPages = totalPages;
+
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Teachers(TeacherListViewModel model, string schoolName, int page = 1)
         {
             int pageSize = 5;
@@ -146,54 +179,24 @@ namespace RYT.Controllers
             var listOfSchoolTaught = await _repository.GetAsync<SchoolsTaught>();
             if (listOfSchoolTaught != null && listOfSchoolTaught.Any())
             {
-                var schoolTeachers = listOfSchoolTaught
-                    .Where(x => x.School == schoolName)
-                    .Include(x => x.Teacher.User) 
-                    .Select(x => x.Teacher) 
-                    .AsQueryable();
+                var schoolsTaught = (await _repository.GetAsync<SchoolsTaught>())
+                                    .Include(x => x.Teacher)
+                                    .ThenInclude(x => x.User).ToList();
 
-
-
-          
-                // Apply search and filter logic
                 if (!string.IsNullOrEmpty(model.SearchKeyword))
                 {
-                    string searchCriteria = model.SearchCriteria?.ToLower();
-                    string searchKeyword = model.SearchKeyword.ToLower();
-
-                    switch (searchCriteria)
-                    {
-                        case "all":
-                            schoolTeachers = schoolTeachers.Where(t =>
-                                (t.User.FirstName.ToLower().Contains(searchKeyword) ||
-                                 t.User.LastName.ToLower().Contains(searchKeyword) ||
-                                 (t.User.FirstName + " " + t.User.LastName).ToLower().Contains(searchKeyword) ||
-                                 t.Position.ToLower().Contains(searchKeyword) ||
-                                 t.YearsOfTeaching.ToLower().Contains(searchKeyword)));
-                            break;
-                        case "name":
-                            schoolTeachers = schoolTeachers.Where(t =>
-                                (t.User.FirstName.ToLower().Contains(searchKeyword) ||
-                                 t.User.LastName.ToLower().Contains(searchKeyword) ||
-                                 (t.User.FirstName + " " + t.User.LastName).ToLower().Contains(searchKeyword) ||
-                                 t.YearsOfTeaching.ToLower().Contains(searchKeyword)));
-                            break;
-                        case "position":
-                            schoolTeachers = schoolTeachers.Where(t => t.Position.ToLower().Contains(searchKeyword));
-                            break;
-                        case "period":
-                            schoolTeachers = schoolTeachers.Where(t => t.YearsOfTeaching.ToLower().Contains(searchKeyword));
-                            break;
-                    }
+                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) || 
+                                                             s.Teacher.User.LastName.ToLower().Equals(model.SearchKeyword)).ToList();
                 }
 
-                //Pagination logic
-                int totalItems, totalPages;
-                List<Teacher> paginatedTeachers;
+                var paginated = new List<SchoolsTaught>();
+                int totalItems;
+                int totalPages;
 
-                Pagination.UsePagination(schoolTeachers, page, pageSize, out paginatedTeachers, out totalItems, out totalPages);
+                Pagination.UsePagination(schoolsTaught.AsQueryable(), page, pageSize, out paginated, out totalItems, out totalPages);
 
-                model.TeacherList = paginatedTeachers.AsQueryable().ToList();
+                model.TeacherList = paginated.Select(x => x.Teacher).ToList();
+                model.SchoolName = model.CurrentSchool;
                 model.CurrentPage = page;
                 model.Count = totalItems;
                 model.TotalPages = totalPages;

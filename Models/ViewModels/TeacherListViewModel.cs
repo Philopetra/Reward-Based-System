@@ -5,7 +5,7 @@ namespace RYT.Models.ViewModels
 {
     public class TeacherListViewModel
     {
-        public IList<Teacher>? TeacherList { get; set; }
+        public IList<Teacher>? TeacherList { get; set; } = new List<Teacher>();
         public string SchoolName { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
@@ -15,6 +15,8 @@ namespace RYT.Models.ViewModels
         public int TotalPages { get; set; }
         public int Count { get; set; }
         public int SchoolId { get; set; }
+
+        public string CurrentSchool { get; set; }
 
 
 
