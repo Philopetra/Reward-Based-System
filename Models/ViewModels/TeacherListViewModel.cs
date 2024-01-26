@@ -5,9 +5,11 @@ namespace RYT.Models.ViewModels
 {
     public class TeacherListViewModel
     {
-        public IQueryable<Teacher>? TeacherList { get; set; }
+        public IList<Teacher>? TeacherList { get; set; }
         public string SchoolName { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
+        public string Position { get; set; } = string.Empty;
+        public string YearsOfTeaching {  get; set; } = string.Empty;
         public int PageSize { get; set; } = 10;
         public int CurrentPage { get; set; } 
         public int TotalPages { get; set; }
@@ -32,7 +34,7 @@ namespace RYT.Models.ViewModels
         {
             get
             {
-                return ((CurrentPage < TotalPages) || (CurrentPage == TotalPages));
+                return (CurrentPage < TotalPages);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
@@ -82,7 +83,6 @@ namespace RYT.Controllers
 
         [HttpPost]
         public async Task<IActionResult> EditProfile(EditProfileVM editProfileVM)
-        public IActionResult EditProfile()
         {
             if (ModelState.IsValid)
             {
@@ -113,56 +113,62 @@ namespace RYT.Controllers
             {
                 var schoolTeachers = listOfSchoolTaught
                     .Where(x => x.School == schoolName)
-                    .Select(x => x.Teacher)
+                    .Include(x => x.Teacher.User) 
+                    .Select(x => x.Teacher) 
                     .AsQueryable();
 
+
+
+          
                 // Apply search and filter logic
                 if (!string.IsNullOrEmpty(model.SearchKeyword))
                 {
                     string searchCriteria = model.SearchCriteria?.ToLower();
+                    string searchKeyword = model.SearchKeyword.ToLower();
+
                     switch (searchCriteria)
                     {
                         case "all":
                             schoolTeachers = schoolTeachers.Where(t =>
-                                (t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                t.User.LastName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                (t.User.FirstName + " " + t.User.LastName).Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                t.Position.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase)));
+                                (t.User.FirstName.ToLower().Contains(searchKeyword) ||
+                                 t.User.LastName.ToLower().Contains(searchKeyword) ||
+                                 (t.User.FirstName + " " + t.User.LastName).ToLower().Contains(searchKeyword) ||
+                                 t.Position.ToLower().Contains(searchKeyword) ||
+                                 t.YearsOfTeaching.ToLower().Contains(searchKeyword)));
                             break;
                         case "name":
                             schoolTeachers = schoolTeachers.Where(t =>
-                                (t.User.FirstName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                t.User.LastName.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                (t.User.FirstName + " " + t.User.LastName).Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase) ||
-                                t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase)));
+                                (t.User.FirstName.ToLower().Contains(searchKeyword) ||
+                                 t.User.LastName.ToLower().Contains(searchKeyword) ||
+                                 (t.User.FirstName + " " + t.User.LastName).ToLower().Contains(searchKeyword) ||
+                                 t.YearsOfTeaching.ToLower().Contains(searchKeyword)));
                             break;
                         case "position":
-                            schoolTeachers = schoolTeachers.Where(t => t.Position.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase));
+                            schoolTeachers = schoolTeachers.Where(t => t.Position.ToLower().Contains(searchKeyword));
                             break;
                         case "period":
-                            schoolTeachers = schoolTeachers.Where(t => t.YearsOfTeaching.Contains(model.SearchKeyword, StringComparison.OrdinalIgnoreCase));
+                            schoolTeachers = schoolTeachers.Where(t => t.YearsOfTeaching.ToLower().Contains(searchKeyword));
                             break;
                     }
                 }
 
-                List<Teacher> paginatedTeachers;
+                //Pagination logic
                 int totalItems, totalPages;
+                List<Teacher> paginatedTeachers;
 
                 Pagination.UsePagination(schoolTeachers, page, pageSize, out paginatedTeachers, out totalItems, out totalPages);
 
-                model.TeacherList = paginatedTeachers.AsQueryable();
+                model.TeacherList = paginatedTeachers.AsQueryable().ToList();
                 model.CurrentPage = page;
                 model.Count = totalItems;
                 model.TotalPages = totalPages;
-
-                model.SchoolName = schoolName; // Set the school name in the model
 
                 return View(model);
             }
 
             return View(model);
         }
+
 
         public IActionResult Transfer()
         {
