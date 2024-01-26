@@ -1,13 +1,7 @@
 ﻿body {
 }
 
-/*.container{
-    width:100%;
-    display:flex;
-    justify-content:center;
-    text-align:center;
-    flex-direction:column;
-}*/
+
 
 .my-container{
     display:flex;
@@ -24,7 +18,7 @@
     background: url("/Image/background.png");
     display: flex;
     justify-content: space-between;
-    width: 850px;
+    width: 880px;
     height: 130px;
     align-items: center;
     margin-left:30px;
@@ -70,120 +64,74 @@
     margin-bottom:5px;
 }
 
-.search{
-    display:flex;
-    justify-content:space-between;
-    width:846px;
-    
-
-}
-.selector {
-    width: 727px;
-    border-radius: 5px;
-    border: 0.7px solid #cdcaca;
-    background: white;
-    margin-right: 1px
-}
- .selector img{
-     width:18px;
-     height:15px;
-     margin-left:9px;
- }
-
-    .selector input {
-        width: 691px;
-        height: 40px;
-        font-family:Inter;
-        font-size: 14px;
-        font-weight:400;
-        line-height:20px;
-        margin-left: 3px;
-        border:none;
-        border-radius:5px 5px;
-        
-        
-    }
-.filtery {
-    width: 90px;
-    border-radius: 5px;
-    border: 0.5px solid #cdcaca;
-    margin-right: 1px;
-    background: #eaecf04c;
-}
-.filtery img {
-    width: 15px;
-    height: 15px;
-    margin-left: 2px;
-    padding-left:3px;
+.search-list {
+    width: 880px;
 }
 
-    .filtery input {
-        width: 67px;
-        height: 40px;
-        font-size: 14px;    
-        border-radius:5px;
-        border:none;
-        background:none;
-        font-family:Inter;
-        font-weight:400;
-        line-height:20px;
-        
-    }
-
-/*
-    .input-header{
-    width: 846px;
-    margin-left:100px;
-    margin-top:50px;
+div .search-list-icon {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    width: 25px;
+    height: 25px;
 }
 
-.input-header h5 {
-    width: 846px;
-    background: #EAECF0;
+.search-list-box {
+    position: relative;
+    left: 0px;
 }
 
-.input-fields div {
-    border: none;
-    border-bottom: solid #EEEEEE 1px;
+.search-list-icon {
+    position: absolute;
+    left: 0px;
+    width: 7%;
+    height: 100%;
+    align-content: center;
+    padding-top: 10px;
+    padding-left: 10px;
 }
 
-.input-header input {
-    width: 846px;
-    padding: 5px;
-    border: none;
+.search-list-input {
+    background: #ffffff;
+    color: #98A2B3;
+    position: absolute;
+    left: 0px;
+    width: 728px;
+    height: 44px;
+    border: 1px solid #D0D5DD;
+    border-radius: 6px;
+    padding: 20px;
+    padding-left: 40px;
+    font-size: 14px;
 }
 
-.content-region{
-    display:flex;
-    justify-content:space-between;
+.search-list-input:focus {
+    outline: 1px solid #6938EF;
 }
 
-.content-region img{
-    width:20px
+.search-list-btn {
+    position: absolute;
+    right: 0px;
+    background: #ffffff;
+    color: #98A2B3;
+    width: 120px;
+    height: 44px;
+    border-radius: 6px;
+    border: 1px solid #6938EF;
+    font-size: 15px;
+    padding-top: 5px;
 }
 
-.tiny-region input{
-    width:846px;
-    height:20px;
+.search-list-btn:hover {
+    background: #6938EF;
+    color: #ffffff;
 }
 
-.tiny-region{
-    display:flex;
-}
 
-.tiny-region img {
-    height: 20px
-}
-
-.input-fields{
-    background:black;
-    width:200px;
-}
-*/
 .LOS-main{
     background-color:#cdcaca0a;
-    width:846px;
-    height:440px;
+    width:880px;
+    height:370px;
     margin-top:30px;
     margin-left:30px;
 }
@@ -240,27 +188,40 @@
     border-bottom: 0.5px solid #cdcaca4c;
     margin-left:5px;
 }
-    .pagination{
-        height:56px;
-        width:500px;
-        display:flex;
-        justify-content:space-between;
-        text-align:center;
-        margin-left:170px;
-        padding-left:20px;
-        padding-right:20px;
-    }
-     .prev{
-        width:80px;
-        height:28px;
-        margin:10px 5px 5px 5px;
-        background-color:white;
-        border-radius:7px;
-        font-size:12px;
-        font-weight:500;
-        font-family:Inter;
-        border: 0.5px solid #cdcaca;
-     }
+
+.pagination{
+    height:56px;
+    width:500px;
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+    margin-left:170px;
+    padding-left:20px;
+    padding-right:20px;
+}
+
+.pagination a {
+    width: 86px;
+    height: 36px;
+    padding: 8px, 14px, 8px, 14px;
+    border-radius: 8px;
+    border: 1px solid #D0D5DD;
+    background: #FFFFFF;
+    box-shadow: 0px 1px 2px 0px #1018280D;
+    padding-top: 5px;
+}
+
+.prev{
+    width:80px;
+    height:28px;
+    margin:10px 5px 5px 5px;
+    background-color:white;
+    border-radius:7px;
+    font-size:12px;
+    font-weight:500;
+    font-family:Inter;
+    border: 0.5px solid #cdcaca;
+}
 
 .next {
     width: 50px;
@@ -273,6 +234,7 @@
     font-family: Inter;
     font-weight: 500;
 }
+
 .page-numb {
     font-weight: 500;
     font-size: 12px;
