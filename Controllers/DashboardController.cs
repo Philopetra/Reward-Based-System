@@ -108,7 +108,6 @@ namespace RYT.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Teachers(TeacherListViewModel model, string schoolName, int page = 1)
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -140,7 +139,7 @@ namespace RYT.Controllers
             return View(model);
         }
 
-        public IActionResult Teachers()
+        public async Task<IActionResult> Teachers(TeacherListViewModel model, string schoolName, int page = 1)
         {
             int pageSize = 5;
 
