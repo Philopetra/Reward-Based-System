@@ -6,6 +6,7 @@ using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
 using RYT.Services.CloudinaryService;
+using RYT.Services.Emailing;
 using RYT.Services.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,14 @@ namespace RYT.Controllers
         private readonly IRepository _repository;
         private readonly IPhotoService _photoService;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IEmailService _emailService;
 
-        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService)
+        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService, IEmailService emailService)
         {
             _repository = repository;
             _userManager = userManager;
             _photoService = photoService;
+            _emailService = emailService;
         }
 
         public IActionResult Overview()
@@ -99,12 +102,45 @@ namespace RYT.Controllers
             return RedirectToAction("Overview");
         }
 
+        [HttpGet]
         public IActionResult ChangePassword()
         {
             return View();
         }
 
         public async Task<IActionResult> Teachers(TeacherListViewModel model, string schoolName, int page = 1)
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        ViewBag.PasswordChangeSuccess = "Password change was successful!";
+                        return View();
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+
+                        }
+                        return View(model);
+                    }
+
+                }
+                ModelState.AddModelError("", "User not found");
+            }
+            return View(model);
+        }
+
+        public IActionResult Teachers()
         {
             int pageSize = 5;
 
