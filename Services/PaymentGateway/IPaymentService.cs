@@ -4,12 +4,10 @@ namespace RYT.Services.PaymentGateway
 {
     public interface IPaymentService
     {
-        public Task<string> PaystackAuthorizationUrl(SendRewardVM model);
-
-        public Task<bool> Withdraw(WithdrawVM model);
-        public Task<bool> VerifyFunding(SendRewardVM model);
+        public Task<Tuple<bool, string, string>> InitializePayment(FundWalletVM model);
+        public Task<Tuple<bool, string>> Withdraw(CreateWithdrawalVM model);
+        public Task<bool> Verify(string reference);
 
         public Task<IEnumerable<Bank>> GetListOfBanks();
-
     }
 }
