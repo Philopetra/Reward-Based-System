@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RYT.Models.Entities;
-using RYT.Models.Enums;
 using RYT.Models.ViewModels;
 using RYT.Services.Payment;
 

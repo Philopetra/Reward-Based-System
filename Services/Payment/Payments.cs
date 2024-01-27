@@ -19,7 +19,7 @@ namespace RYT.Services.Payment
         }
         public async Task<Tuple<bool, string>> Initialize(FundWalletVM model, string userId)
         {
-            var response = await _paymentService.InitializePayment(model);
+            var response = await _paymentService.InitializePayment(model, userId);
 
             if (!response.Item1) return new Tuple<bool, string>(response.Item1, response.Item2);
             

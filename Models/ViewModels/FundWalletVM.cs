@@ -1,6 +1,4 @@
-﻿using RYT.Models.Enums;
-
-namespace RYT.Models.ViewModels
+﻿namespace RYT.Models.ViewModels
 {
     public class FundWalletVM
     {

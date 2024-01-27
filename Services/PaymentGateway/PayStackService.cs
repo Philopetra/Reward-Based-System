@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using PayStack.Net;
+﻿using PayStack.Net;
 using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
@@ -25,10 +24,10 @@ public class PayStackService : IPaymentService
         _payStack = new PayStackApi(_secretKey);
     }
 
-    public async Task<Tuple<bool, string, string>> InitializePayment(FundWalletVM model)
+    public async Task<Tuple<bool, string, string>> InitializePayment(FundWalletVM model, string userId)
     {
         var senderEmail = (await _repository.GetAsync<AppUser>())
-            .Where(s => s.Id == model.SenderId)
+            .Where(s => s.Id == userId)
             .Select(s => s.Email)
             .First();
 
