@@ -5,6 +5,9 @@ using RYT.Models.Entities;
 using RYT.Models.ViewModels;
 using RYT.Services.Emailing;
 using System.Diagnostics.Eventing.Reader;
+using System.Text.Json;
+using RYT.Models.Enums;
+using RYT.Services.Repositories;
 
 namespace RYT.Controllers
 {
@@ -13,14 +16,15 @@ namespace RYT.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IEmailService _emailService;
+        private readonly IRepository _repository;
 
-
-
-        public AccountController (UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
+            IEmailService emailService, IRepository repository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _repository = repository;
         }
 
         public IActionResult Index()
@@ -51,13 +55,13 @@ namespace RYT.Controllers
                 {
                     ModelState.AddModelError(err.Code, err.Description);
                 }
+
                 return View(ModelState);
             }
 
             ModelState.AddModelError("", "Email confirmation failed");
 
             return View(ModelState);
-
         }
 
         [HttpGet]
@@ -67,6 +71,22 @@ namespace RYT.Controllers
             model.SchoolsTaught = SeedData.Schools;
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TeacherSignUp1([FromForm] TeacherSignUpStep1ViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user is not null)
+            {
+                ModelState.AddModelError("Email", "Email already exists");
+
+                return View("TeacherSignUp", model);
+            }
+
+            HttpContext.Session.SetString("TeacherSignUpStep1ViewModel", JsonSerializer.Serialize(model));
+
+            return RedirectToAction("TeacherSignUpStep2");
         }
 
         // To loadUp the Options in the SeedData
@@ -81,36 +101,77 @@ namespace RYT.Controllers
             return View(step2ViewModel);
         }
 */
-        [HttpPost]
-        public IActionResult TeacherSignUpStep2(TeacherSignUpStep2ViewModel model)
+
+        [HttpGet]
+        public IActionResult TeacherSignUpStep2()
         {
-            var modelToDisplay = new TeacherSignUpStep2ViewModel();
-            modelToDisplay.SchoolsTaught = SeedData.Schools;
-            modelToDisplay.listOfSubjectsTaught = SeedData.Subjects;
-            modelToDisplay.listOfSchoolTypes = SeedData.SchoolTypes;
+            var model = new TeacherSignUpStep2ViewModel();
+            model.ListOfSchoolTypes = SeedData.SchoolTypes;
+            model.listOfSubjectsTaught = SeedData.Subjects;
 
-            if (ModelState.IsValid)
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TeacherSignUpStep2(TeacherSignUpStep2ViewModel model)
+        {
+            var step1ViewModel =
+                JsonSerializer.Deserialize<TeacherSignUpStep1ViewModel>(
+                    HttpContext.Session.GetString("TeacherSignUpStep1ViewModel"));
+            HttpContext.Session.Clear();
+            if (step1ViewModel is null)
             {
-
-                var stepTwoViewModel = new TeacherSignUpStep2ViewModel
-                {
-                    Name = model.Name,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Email = model.Email,
-                    Password = model.Password,
-                    SelectedSchool = model.SelectedSchool,
-                    SchoolsTaught = model.SchoolsTaught,
-                    YearsOfTeaching = model.YearsOfTeaching,
-                    CalculatedYearsOfTeaching= model.CalculatedYearsOfTeaching,
-                    SelectedSchoolType= model.SelectedSchoolType,
-                    SelectedSubject=model.SelectedSubject,
-                    listOfSubjectsTaught = SeedData.Subjects,
-                    listOfSchoolTypes = SeedData.SchoolTypes
-                };
-                return View(stepTwoViewModel);
+                return RedirectToAction("TeacherSignUp");
             }
-                return View(model);
+
+            var user = new AppUser
+            {
+                FirstName = step1ViewModel.FirstName,
+                LastName = step1ViewModel.LastName,
+                Email = step1ViewModel.Email,
+                UserName = step1ViewModel.Email,
+                NameofSchool = step1ViewModel.SelectedSchool,
+            };
+
+            await _userManager.CreateAsync(user, step1ViewModel.Password);
+            await _userManager.AddToRoleAsync(user, "teacher");
+
+            var teacher = new Teacher
+            {
+                UserId = user.Id,
+                YearsOfTeaching = model.YearsOfTeaching,
+                SchoolType = model.SelectedSchoolType,
+                NINUploadUrl = "", // added url returned from cloudinary
+                NINUploadPublicId = "" // added public id returned from cloudinary
+            };
+            await _repository.AddAsync(teacher);
+
+            var teacherSubject = new SubjectsTaught
+            {
+                TeacherId = teacher.Id,
+                Subject = model.SelectedSubject
+            };
+            await _repository.AddAsync(teacherSubject);
+
+            var teacherSchool = new SchoolsTaught
+            {
+                TeacherId = teacher.Id,
+                School = step1ViewModel.SelectedSchool
+            };
+            await _repository.AddAsync(teacherSchool);
+
+            var wallet = new Wallet
+            {
+                UserId = user.Id,
+                Balance = 0,
+                Status = WalletStatus.Active
+            };
+            await _repository.AddAsync(wallet);
+
+            // confirm teacher email
+
+            // redirect to confirm email view
+            return RedirectToAction("Overview", "Dashboard");
         }
 
         [HttpGet]
@@ -122,7 +183,7 @@ namespace RYT.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 //if(user == null)
@@ -131,35 +192,36 @@ namespace RYT.Controllers
                 //}
                 if (user != null)
                 {
-                    if(await _userManager.IsEmailConfirmedAsync(user))
-                        {
-                        var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false,false);
+                    if (await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                         if (loginResult.Succeeded)
-                           {
-                              return RedirectToAction("overview", "dashboard");
-                           }
-                        else
-                           {
-                            ModelState.AddModelError("", "Email or Password is incorrect");
-                           }
+                        {
+                            return RedirectToAction("overview", "dashboard");
                         }
+                        else
+                        {
+                            ModelState.AddModelError("", "Email or Password is incorrect");
+                        }
+                    }
                     else
                     {
                         ModelState.AddModelError("", "Email is not yet Confirmed");
                     }
-          
                 }
                 else
                 {
                     ModelState.AddModelError("", "Invalid Credentials");
                 }
             }
+
             return View(model);
         }
+
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -179,8 +241,10 @@ namespace RYT.Controllers
                     ViewBag.Message = "Password Reset details has been sent to your email";
                     return View();
                 }
+
                 ModelState.AddModelError("", "Invalid Email");
             }
+
             return View(model);
         }
     }

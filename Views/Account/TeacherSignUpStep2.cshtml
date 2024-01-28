@@ -18,42 +18,42 @@
                     <div class="ryts-11-p">
                         <p>Update your profile information</p>
                     </div>
-                    <form action="post" >
-                        <div class="ryts-11-input-main mb-3" style="display:none">
-                            <label for="user-name" class="mb-2">@Html.DisplayNameFor(model => model.Name)</label><br>
-                            <input type="text" class="ryts-11-input" name="user-name" placeholder="Type your full name" asp-for="Name" hidden>
-                            <div class="ryts-11-icon">
-                                <i class="uil uil-user icon"></i>
-                            </div>
-                        </div>
-                        <div class="ryts-11-input-main mb-3" style="display:none">
-                            <label for="user-email" class="mb-2">@Html.DisplayNameFor(model => model.Email)</label><br>
-                        <input type="email" class="ryts-11-input " name="user-email" placeholder="Type your email" asp-for="Email" hidden>
-                            <div class="ryts-11-icon">
-                                <i class="uil uil-envelope icon"></i>
-                            </div>
-                        </div>
-                        <div class="ryts-11-input-main mb-3" style="display:none">
-                            <label for="user-password" class="mb-2">@Html.DisplayNameFor(model => model.Password)</label><br>
-                        <input type="password" class="ryts-11-input" name="user-password" required minlength="6" placeholder="Type your password" asp-for="Password" hidden>
-                            <div class="ryts-11-icon">
-                                <img src="~/Images/ryts-11-key-alt.svg" alt="">
-                            </div>
-                        </div>
-
-                        <div class="ryts-11-input-main mb-3" style="display:none">
-                            <label for="UserType" class="mb-2">@Html.DisplayNameFor(model => model.SelectedSchool)</label><br>
-                            <select class="select-user-type ryts-11-input" placeholder="Type name of school" asp-for="SelectedSchool">
-                                <option value="Placeholder">Select name of school</option>
-                                @foreach (var school in Model.SchoolsTaught)
-                                {
-                                    <option value="@school">@school</option>
-                                }
-                            </select>
-                            <div class="ryts-11-icon">
-                                <i><img src="~/Images/ryts-11-school.svg" alt=""></i>
-                            </div>
-                        </div>
+                    <form action="post" enctype="multipart/form-data" >
+                        @* <div class="ryts-11-input-main mb-3" style="display:none"> *@
+                        @*     <label for="user-name" class="mb-2">@Html.DisplayNameFor(model => model.Name)</label><br> *@
+                        @*     <input type="text" class="ryts-11-input" name="user-name" placeholder="Type your full name" asp-for="Name" hidden> *@
+                        @*     <div class="ryts-11-icon"> *@
+                        @*         <i class="uil uil-user icon"></i> *@
+                        @*     </div> *@
+                        @* </div> *@
+                        @* <div class="ryts-11-input-main mb-3" style="display:none"> *@
+                        @*     <label for="user-email" class="mb-2">@Html.DisplayNameFor(model => model.Email)</label><br> *@
+                        @* <input type="email" class="ryts-11-input " name="user-email" placeholder="Type your email" asp-for="Email" hidden> *@
+                        @*     <div class="ryts-11-icon"> *@
+                        @*         <i class="uil uil-envelope icon"></i> *@
+                        @*     </div> *@
+                        @* </div> *@
+                        @* <div class="ryts-11-input-main mb-3" style="display:none"> *@
+                        @*     <label for="user-password" class="mb-2">@Html.DisplayNameFor(model => model.Password)</label><br> *@
+                        @* <input type="password" class="ryts-11-input" name="user-password" required minlength="6" placeholder="Type your password" asp-for="Password" hidden> *@
+                        @*     <div class="ryts-11-icon"> *@
+                        @*         <img src="~/Images/ryts-11-key-alt.svg" alt=""> *@
+                        @*     </div> *@
+                        @* </div> *@
+                        @* *@
+                        @* <div class="ryts-11-input-main mb-3" style="display:none"> *@
+                        @*     <label for="UserType" class="mb-2">@Html.DisplayNameFor(model => model.SelectedSchool)</label><br> *@
+                        @*     <select class="select-user-type ryts-11-input" placeholder="Type name of school" asp-for="SelectedSchool"> *@
+                        @*         <option value="Placeholder">Select name of school</option> *@
+                        @*         @foreach (var school in Model.SchoolsTaught) *@
+                        @*         { *@
+                        @*             <option value="@school">@school</option> *@
+                        @*         } *@
+                        @*     </select> *@
+                        @*     <div class="ryts-11-icon"> *@
+                        @*         <i><img src="~/Images/ryts-11-school.svg" alt=""></i> *@
+                        @*     </div> *@
+                        @* </div> *@
 
                         <div class="ryts-11-input-main mb-3">
                             <label for="teaching-year" class="mb-2">Years of Teaching</label><br>
@@ -75,7 +75,7 @@
                             <label for="school-type" class="mb-2">School Type</label><br>
                         <select class="select-user-type ryts-11-input" placeholder="Select School Type" asp-for="SelectedSchoolType">
                             <option value="Placeholder">Select name of school Type</option>
-                            @foreach (var school in Model.listOfSchoolTypes)
+                            @foreach (var school in Model.ListOfSchoolTypes)
                             {
                                 <option value="@school">@school</option>
                             }
@@ -83,7 +83,7 @@
                         </div>
                         <div class="ryts-11-input-main mb-3">
                             <label for="upload-picture" class="mb-2">Upload NIN</label><br>
-                            <input type="text" class="ryts-11-input" name="upload-picture" placeholder="Upload picture">
+                            <input type="file" class="ryts-11-input" name="upload-picture" placeholder="Upload picture">
                             <div class="ryts-11-icon">
                                 <img src="~/Images/ryts-11-image-square.svg" alt="">
                             </div>

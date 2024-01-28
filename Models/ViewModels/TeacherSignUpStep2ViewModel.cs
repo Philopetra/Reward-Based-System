@@ -4,45 +4,45 @@ namespace RYT.Models.ViewModels
 {
     public class TeacherSignUpStep2ViewModel
     {
-        [Required]
-        [Display(Name = "Name")]
-        public string Name { get; set; } = string.Empty;
-
-        public string FirstName
-        {
-            get
-            {
-                string[] value = Name.Split(' ');
-                return value.Length > 0 ? value[0] : string.Empty;
-            }
-            set { }
-        }
-
-        public string LastName
-        {
-            get
-            {
-                string[] value = Name.Split(' ');
-                return value.Length > 1 ? value[1] : string.Empty;
-            }
-            set { }
-        }
-
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; } = string.Empty;
-
-        [Required]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Please select a school")]
-        [Display(Name = "Schools where you taught")]
-        public string SelectedSchool { get; set; } = string.Empty;
-
-        public IList<string> SchoolsTaught { get; set; } = new List<string>();
+        // [Required]
+        // [Display(Name = "Name")]
+        // public string Name { get; set; } = string.Empty;
+        //
+        // public string FirstName
+        // {
+        //     get
+        //     {
+        //         string[] value = Name.Split(' ');
+        //         return value.Length > 0 ? value[0] : string.Empty;
+        //     }
+        //     set { }
+        // }
+        //
+        // public string LastName
+        // {
+        //     get
+        //     {
+        //         string[] value = Name.Split(' ');
+        //         return value.Length > 1 ? value[1] : string.Empty;
+        //     }
+        //     set { }
+        // }
+        //
+        // [Required]
+        // [EmailAddress]
+        // [Display(Name = "Email")]
+        // public string Email { get; set; } = string.Empty;
+        //
+        // [Required]
+        // [DataType(DataType.Password)]
+        // [Display(Name = "Password")]
+        // public string Password { get; set; } = string.Empty;
+        //
+        // [Required(ErrorMessage = "Please select a school")]
+        // [Display(Name = "Schools where you taught")]
+        // public string SelectedSchool { get; set; } = string.Empty;
+        //
+        // public IList<string> SchoolsTaught { get; set; } = new List<string>();
 
 
         [Required]
@@ -78,9 +78,9 @@ namespace RYT.Models.ViewModels
         [Display(Name = "School Type")]
         public string SelectedSchoolType { get; set; } = string.Empty;
 
-        public IList<string> listOfSchoolTypes { get; set; } = new List<string>();
+        public IList<string> ListOfSchoolTypes { get; set; } = new List<string>();
 
-        public string NINUploadUrl { get; set; } = string.Empty;
+        public IFormFile NINUploadUrl { get; set; }
 
     }
 }
