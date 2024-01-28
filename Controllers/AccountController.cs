@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RYT.Data;
 using RYT.Models.Entities;
 using RYT.Models.ViewModels;
 using RYT.Services.Emailing;
@@ -62,13 +63,54 @@ namespace RYT.Controllers
         [HttpGet]
         public IActionResult TeacherSignUp()
         {
-            return View();
+            var model = new TeacherSignUpStep1ViewModel();
+            model.SchoolsTaught = SeedData.Schools;
+
+            return View(model);
         }
 
-        [HttpPost]
-        public IActionResult TeacherSignUpStep2()
+        // To loadUp the Options in the SeedData
+/*        [HttpGet]
+        public IActionResult TeacherSignUpStep2(TeacherSignUpStep2GetViewModel model)
         {
-            return View();
+            var step2ViewModel = new TeacherSignUpStep2GetViewModel
+            {
+                listOfSubjectsTaught = SeedData.Subjects,
+                listOfSchoolTypes = SeedData.SchoolTypes
+            };
+            return View(step2ViewModel);
+        }
+*/
+        [HttpPost]
+        public IActionResult TeacherSignUpStep2(TeacherSignUpStep2ViewModel model)
+        {
+            var modelToDisplay = new TeacherSignUpStep2ViewModel();
+            modelToDisplay.SchoolsTaught = SeedData.Schools;
+            modelToDisplay.listOfSubjectsTaught = SeedData.Subjects;
+            modelToDisplay.listOfSchoolTypes = SeedData.SchoolTypes;
+
+            if (ModelState.IsValid)
+            {
+
+                var stepTwoViewModel = new TeacherSignUpStep2ViewModel
+                {
+                    Name = model.Name,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    Password = model.Password,
+                    SelectedSchool = model.SelectedSchool,
+                    SchoolsTaught = model.SchoolsTaught,
+                    YearsOfTeaching = model.YearsOfTeaching,
+                    CalculatedYearsOfTeaching= model.CalculatedYearsOfTeaching,
+                    SelectedSchoolType= model.SelectedSchoolType,
+                    SelectedSubject=model.SelectedSubject,
+                    listOfSubjectsTaught = SeedData.Subjects,
+                    listOfSchoolTypes = SeedData.SchoolTypes
+                };
+                return View(stepTwoViewModel);
+            }
+                return View(model);
         }
 
         [HttpGet]
