@@ -74,7 +74,7 @@ namespace RYT.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Email   = user.Email,
+                Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 NameofSchool = user.NameofSchool
             };
@@ -185,7 +185,7 @@ namespace RYT.Controllers
 
                 if (!string.IsNullOrEmpty(model.SearchKeyword))
                 {
-                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) || 
+                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) ||
                                                              s.Teacher.User.LastName.ToLower().Equals(model.SearchKeyword)).ToList();
                 }
 
@@ -213,10 +213,52 @@ namespace RYT.Controllers
             return View();
         }
 
-        public IActionResult UpdateImage()
+        public async Task<IActionResult> GetSentTransaction(string userId)
         {
-            return View();
+            List<SentTransactionViewModel> sentTransactionViewModels = new List<SentTransactionViewModel>();
+            var getTransactions = await _repository.GetAsync<Transaction>();
+            List<Transaction> transactions = getTransactions.Where(transaction => transaction.SenderId == userId && transaction.TransactionType == "Sent").ToList();
+            foreach (var transaction in transactions)
+            {
+                SentTransactionViewModel transactionsView = new SentTransactionViewModel()
+                {
+                    Amount = transaction.Amount,
+                    timeOfTransaction = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                sentTransactionViewModels.Add(transactionsView);
+            }
+            OverviewViewModel overviewViewModel = new OverviewViewModel()
+            {
+                MySentTransactions = sentTransactionViewModels
+            };
+
+            return View(overviewViewModel);
         }
+
+        public async Task<IActionResult> GetReceivedTransaction(string userId)
+        {
+            List<ReceivedTransactionsViewModel> receivedTransactionViewModels = new List<ReceivedTransactionsViewModel>();
+            var GetTransactions = await _repository.GetAsync<Transaction>();
+            List<Transaction> transactions = GetTransactions.Where(transaction => transaction.ReceiverId == userId && transaction.TransactionType == "Received").ToList();
+            foreach (var transaction in transactions)
+            {
+                ReceivedTransactionsViewModel transactionsView = new ReceivedTransactionsViewModel()
+                {
+                    Amount = transaction.Amount,
+                    timeOfTransaction = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                receivedTransactionViewModels.Add(transactionsView);
+            }
+            OverviewViewModel overviewViewModel = new OverviewViewModel()
+            {
+                MyReceivedTransactions = receivedTransactionViewModels
+            };
+
+            return View(overviewViewModel);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateImage(UploadImageVM model)
@@ -259,5 +301,8 @@ namespace RYT.Controllers
 
         }
     }
+
+   
+    
 }
 
