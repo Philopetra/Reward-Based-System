@@ -74,7 +74,7 @@ namespace RYT.Controllers
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Email   = user.Email,
+                Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 NameofSchool = user.NameofSchool
             };
@@ -185,7 +185,7 @@ namespace RYT.Controllers
 
                 if (!string.IsNullOrEmpty(model.SearchKeyword))
                 {
-                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) || 
+                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) ||
                                                              s.Teacher.User.LastName.ToLower().Equals(model.SearchKeyword)).ToList();
                 }
 
@@ -258,7 +258,7 @@ namespace RYT.Controllers
 
             return View(overviewViewModel);
         }
-    }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateImage(UploadImageVM model)
@@ -301,5 +301,8 @@ namespace RYT.Controllers
 
         }
     }
+
+   
+    
 }
 
