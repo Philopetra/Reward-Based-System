@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RYT.Data;
@@ -11,9 +12,10 @@ using RYT.Data;
 namespace RYT.Migrations
 {
     [DbContext(typeof(RYTDbContext))]
-    partial class RYTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240125070609_models-update-migration")]
+    partial class modelsupdatemigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -372,10 +374,6 @@ namespace RYT.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("NINUploadUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Position")
                         .IsRequired()
                         .HasColumnType("text");
 

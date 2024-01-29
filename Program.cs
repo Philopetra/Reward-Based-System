@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RYT.Data;
 using RYT.Models.Entities;
+using RYT.Services.CloudinaryService;
 using RYT.Services.Emailing;
 using RYT.Services.Repositories;
 
@@ -16,6 +17,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 
 builder.Services.AddScoped<IRepository, Repository>();
 builder.Services.AddScoped<IEmailService, Emailing>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 var app = builder.Build();
 

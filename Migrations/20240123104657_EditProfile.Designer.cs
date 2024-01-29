@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RYT.Data;
@@ -11,9 +12,10 @@ using RYT.Data;
 namespace RYT.Migrations
 {
     [DbContext(typeof(RYTDbContext))]
-    partial class RYTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240123104657_EditProfile")]
+    partial class EditProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,26 +254,9 @@ namespace RYT.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("DeliverdOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("MessageId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ReadOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
@@ -375,10 +360,6 @@ namespace RYT.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("SchoolType")
                         .IsRequired()
                         .HasColumnType("text");
@@ -420,16 +401,9 @@ namespace RYT.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Reference")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("TransactionType")
                         .IsRequired()

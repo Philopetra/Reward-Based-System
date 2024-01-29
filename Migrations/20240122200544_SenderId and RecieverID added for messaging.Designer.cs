@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RYT.Data;
@@ -11,9 +12,10 @@ using RYT.Data;
 namespace RYT.Migrations
 {
     [DbContext(typeof(RYTDbContext))]
-    partial class RYTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240122200544_SenderId and RecieverID added for messaging")]
+    partial class SenderIdandRecieverIDaddedformessaging
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,10 +192,6 @@ namespace RYT.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("NameofSchool")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -252,17 +250,20 @@ namespace RYT.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("DeliverdOn")
+                    b.Property<DateTime>("DeliverOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("MessageId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ReadOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReciverId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -281,6 +282,8 @@ namespace RYT.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ReciverId");
 
                     b.HasIndex("UserId");
 
@@ -375,10 +378,6 @@ namespace RYT.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Position")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("SchoolType")
                         .IsRequired()
                         .HasColumnType("text");
@@ -420,16 +419,9 @@ namespace RYT.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Reference")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("SenderId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("TransactionType")
                         .IsRequired()
@@ -533,11 +525,19 @@ namespace RYT.Migrations
 
             modelBuilder.Entity("RYT.Models.Entities.Message", b =>
                 {
+                    b.HasOne("RYT.Models.Entities.AppUser", "Reciver")
+                        .WithMany()
+                        .HasForeignKey("ReciverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RYT.Models.Entities.AppUser", "User")
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Reciver");
 
                     b.Navigation("User");
                 });
