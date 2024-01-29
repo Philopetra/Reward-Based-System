@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
+using RYT.Models.Enums;
 using RYT.Models.ViewModels;
 using RYT.Services.CloudinaryService;
 using RYT.Services.Emailing;
@@ -299,6 +300,57 @@ namespace RYT.Controllers
             return View();
 
 
+        }
+        public async Task<IActionResult> StudentTransferAndFundingHistory(string userId)
+        {
+            FundAndTransferCombinedViewModel fundAndTransferCombinedViewModel = new FundAndTransferCombinedViewModel();
+
+            IQueryable<Transaction> GetTransactions = await _repository.GetAsync<Transaction>();
+
+            // fetch transactions of transactionType = transfer
+            List<Transaction> transactions = GetTransactions
+                .Where(transaction => transaction.TransactionType == TransactionTypes.Transfer.ToString() && userId == transaction.SenderId)
+                                            .ToList();
+
+            foreach (Transaction transaction in transactions)
+            {
+                var getTeacher = await _repository.GetAsync<Teacher>();
+
+                var getUser = await _repository.GetAsync<AppUser>();
+
+                AppUser receiver = await _repository.GetAsync<AppUser>(transaction.ReceiverId);
+                Teacher teacher = (await _repository.GetAsync<Teacher>()).FirstOrDefault(t => t.UserId == receiver.Id);
+
+                var school = teacher.SchoolsTaughts.OrderByDescending(x => x.CreatedOn).FirstOrDefault().School;
+
+                TransferTransactionHistoryViewModel transferTransactionHistoryViewModel
+                    = new TransferTransactionHistoryViewModel()
+                    {
+                        NameOfTeacher = receiver.FirstName + " " + receiver.LastName,
+                        Amount = transaction.Amount,
+                        dateTime = transaction.CreatedOn,
+                        School = school,
+                    };
+
+                fundAndTransferCombinedViewModel.TransferTransactions.Add(transferTransactionHistoryViewModel);
+            }
+
+            // fetch transactions of transactionType = funding
+            List<Transaction> fundTransactions = GetTransactions.Where(transaction => transaction
+            .SenderId == userId && transaction.TransactionType == TransactionTypes.Funding.ToString()).ToList();
+
+            foreach (var transaction in fundTransactions)
+            {
+                FundingTransactionHistoryViewModel transactionsView = new FundingTransactionHistoryViewModel()
+                {
+                    Amount = transaction.Amount,
+                    CreatedOn = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                fundAndTransferCombinedViewModel.FundingTransactions.Add(transactionsView);
+            }
+
+            return View(fundAndTransferCombinedViewModel);
         }
     }
 
