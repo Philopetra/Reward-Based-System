@@ -177,11 +177,9 @@ namespace RYT.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
@@ -212,11 +210,9 @@ namespace RYT.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("PhotoUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PublicId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
@@ -267,7 +263,6 @@ namespace RYT.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Text")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("TimeStamp")
@@ -277,7 +272,6 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -296,7 +290,6 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
@@ -316,11 +309,9 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("School")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TeacherId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
@@ -342,11 +333,9 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Subject")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TeacherId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
@@ -368,11 +357,9 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NINUploadPublicId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("NINUploadUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Position")
@@ -380,18 +367,15 @@ namespace RYT.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("SchoolType")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("YearsOfTeaching")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -413,11 +397,12 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ReceiverId")
-                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Reference")
                         .HasColumnType("text");
 
                     b.Property<string>("Reference")
@@ -425,21 +410,18 @@ namespace RYT.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("SenderId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("Status")
                         .HasColumnType("boolean");
 
                     b.Property<string>("TransactionType")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("WalletId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -469,7 +451,6 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -535,9 +516,7 @@ namespace RYT.Migrations
                 {
                     b.HasOne("RYT.Models.Entities.AppUser", "User")
                         .WithMany("Messages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -546,9 +525,7 @@ namespace RYT.Migrations
                 {
                     b.HasOne("RYT.Models.Entities.Teacher", "Teacher")
                         .WithMany("SchoolsTaughts")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TeacherId");
 
                     b.Navigation("Teacher");
                 });
@@ -557,9 +534,7 @@ namespace RYT.Migrations
                 {
                     b.HasOne("RYT.Models.Entities.Teacher", "Teacher")
                         .WithMany("TeacherSubjects")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TeacherId");
 
                     b.Navigation("Teacher");
                 });
@@ -568,9 +543,7 @@ namespace RYT.Migrations
                 {
                     b.HasOne("RYT.Models.Entities.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -579,15 +552,11 @@ namespace RYT.Migrations
                 {
                     b.HasOne("RYT.Models.Entities.AppUser", "Sender")
                         .WithMany("Transactions")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SenderId");
 
                     b.HasOne("RYT.Models.Entities.Wallet", "Wallet")
                         .WithMany("Transactions")
-                        .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WalletId");
 
                     b.Navigation("Sender");
 
@@ -598,9 +567,7 @@ namespace RYT.Migrations
                 {
                     b.HasOne("RYT.Models.Entities.AppUser", "User")
                         .WithOne("Wallet")
-                        .HasForeignKey("RYT.Models.Entities.Wallet", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RYT.Models.Entities.Wallet", "UserId");
 
                     b.Navigation("User");
                 });

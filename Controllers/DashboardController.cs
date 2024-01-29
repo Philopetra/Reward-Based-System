@@ -24,7 +24,8 @@ namespace RYT.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
 
-        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService, IEmailService emailService)
+        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService,
+            IEmailService emailService)
         {
             _repository = repository;
             _userManager = userManager;
@@ -43,6 +44,12 @@ namespace RYT.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult SendReward()
+        {
+            return View();
+        }
+
         public IActionResult SendReward(ListOfSchoolViewModel model, string searchString, int page = 1)
         {
             int pageSize = 5;
@@ -53,6 +60,7 @@ namespace RYT.Controllers
             {
                 schools = schools.Where(s => s.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) == 0);
             }
+
             List<string> schoolsOnPage;
             int totalItems, totalPages;
 
@@ -68,7 +76,7 @@ namespace RYT.Controllers
         [HttpGet]
         public async Task<IActionResult> EditProfile() //pass in you VM
         {
-            var user = await _userManager.GetUserAsync(User); ;
+            var user = await _userManager.GetUserAsync(User);
 
             var editProfileViewModel = new EditProfileVM()
             {
@@ -81,8 +89,6 @@ namespace RYT.Controllers
             };
 
             return View(editProfileViewModel);
-
-
         }
 
         [HttpPost]
@@ -98,8 +104,8 @@ namespace RYT.Controllers
                 user.NameofSchool = editProfileVM.NameofSchool;
 
                 await _repository.UpdateAsync<AppUser>(user);
-
             }
+
             return RedirectToAction("Overview");
         }
 
@@ -129,14 +135,15 @@ namespace RYT.Controllers
                         foreach (var error in result.Errors)
                         {
                             ModelState.AddModelError(string.Empty, error.Description);
-
                         }
+
                         return View(model);
                     }
-
                 }
+
                 ModelState.AddModelError("", "User not found");
             }
+
             return View(model);
         }
 
@@ -272,7 +279,8 @@ namespace RYT.Controllers
                 //To go to the database and get the AppUser properties so that we can confirm if the picture is  if (user.PhotoUrl == null)
                 if (user != null)
                 {
-                    Dictionary<string, string> cloudinaryResponse = await _photoService.UploadImage(model.Image, $"{user.LastName} {user.FirstName}");
+                    Dictionary<string, string> cloudinaryResponse =
+                        await _photoService.UploadImage(model.Image, $"{user.LastName} {user.FirstName}");
                     if (cloudinaryResponse["Code"] == "200")
                     {
                         string photoUrl = cloudinaryResponse["Url"];
@@ -297,9 +305,8 @@ namespace RYT.Controllers
                     ModelState.AddModelError("", cloudinaryResponse["Message"]);
                 }
             }
+
             return View();
-
-
         }
         public async Task<IActionResult> StudentTransferAndFundingHistory(string userId)
         {
@@ -353,8 +360,5 @@ namespace RYT.Controllers
             return View(fundAndTransferCombinedViewModel);
         }
     }
-
-   
-    
 }
 
