@@ -3,6 +3,7 @@
     public enum TransactionTypes
     {
         Funding,
-        Withdrawal
+        Withdrawal,
+        Transfer
     }
 }
