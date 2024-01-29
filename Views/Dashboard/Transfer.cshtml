@@ -62,7 +62,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model == null)
+                        @if (Model?.FundingTransactions == null)
                         {
                             <tr>
                                 <td class="p-5" colspan="3">You have no funding transaction history yet</td>
@@ -92,7 +92,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model == null)
+                        @if (Model?.TransferTransactions == null)
                         {
                             <tr>
                                 <td class="p-5" colspan="3">You have no transfer transaction history yet</td>
