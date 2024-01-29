@@ -1,4 +1,5 @@
-﻿@{
+﻿@model FundAndTransferCombinedViewModel
+@{
     ViewData["Title"] = "Student Dashboard Transfer";
 }
 
@@ -20,7 +21,7 @@
                 <span class="ryt-col " style="width:27.5%">
                     <div class="ryt-round-xxlarge ryt-card-4 ryt-padding-small ryt-center ryt-margin-bottom ryt-text-white" style="background-color: #6938EF;"><a style="color: white; " href="#">Add Money</a></div>
                     <div class="ryt-right-align ryt-text-green">Active</div>
-                </span>  
+                </span>
             </span>
 
 
@@ -36,29 +37,100 @@
         </div>
         <div class="ryt-row" style="background-color:#F5F5F5">
             <div style="font-weight:bold;margin-top:35px" class="ryt-col s12 ryt-margin-bottom">Transaction History</div>
-            <div class="ryt-margin-bottom ryt-col s12">
-                <span class="ryt-col ryt-center s6 ryt-border-bottom">Funding</span>
-                <span class="ryt-col ryt-center s6" style="border-bottom:2.5px solid #6938EF">Transfer</span>
-            </div>
-            <div style="background-color:#F9FAFB;" class="ryt-padding ryt-col s12">
-                <span class="ryt-col ryt-center" style="width:20%;font-weight:bold;">Name of Teacher</span>
-                <span class="ryt-col ryt-center" style="width:40%;font-weight:bold;">School</span>
-                <span class="ryt-col ryt-center" style="width:20%;font-weight:bold;">Amount Sent</span>
-                <span class="ryt-col ryt-center" style="width:20%;font-weight:bold;">Date/time</span>
-            </div>
-            <div class="ryt-white ryt-col s12" style="height:45vh">
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:20%">Mary Ogunsola</div>
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:40%">Ijegun Comprehensive Senior High School</div>
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:20%">N20,000</div>
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:20%">4/08/2022 - 4:45pm</div>
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:20%">Ikechukwu Obi</div>
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:40%">Ijegun Comprehensive Senior High School</div>
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:20%">N10,000</div>
-                <div class="ryt-col ryt-center ryt-padding-large ryt-border-bottom ryt-white ryt-small" style="width:20%">2/06/2022 - 3:00pm</div>
-            </div>
+            <div class="ryts-9-frame-transfer">
+                <div class="ryts-9-frame-19">
+                    <div class="ryts-9-frame-1a">
 
+                        <div class="ryts-9-frame-1b">
 
+                            <button id="toggleButton1" class="toggle-button active ryts-9-received" onclick="toggleTable('table1', 'table2', 'toggleButton1', 'toggleButton2')">Funding</button>
+
+                            <div class="ryts-9-divider-1c-trans"></div>
+                        </div>
+                        <button id="toggleButton2" class="toggle-button ryts-9-sent" onclick="toggleTable('table2', 'table1', 'toggleButton2', 'toggleButton1')">Transfer</button>
+
+                    </div>
+                    <div class="ryts-9-divider-1d-trans"></div>
+                </div>
+
+                <table class="ryts-9-frame-1e" id="table1">
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description-transfer">Description</th>
+                            <th class="ryts-9-amount-sent-transfer">Amount</th>
+                            <th class="ryts-9-date-time-transfer">Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">You have no funding transaction history yet</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var transaction in Model.FundingTransactions)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transaction.Description</td>
+                                    <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                    <td class="ryts-9-date-time-22-transfer">@transaction.CreatedOn</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <table class="ryts-9-frame-1e" id="table2" style="display: none;">
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description-trans">Name of Teacher</th>
+                            <th class="ryts-9-amount-sent-trans">School</th>
+                            <th class="ryts-9-date-time">Amount Sent</th>
+                            <th class="ryts-9-action-trans">Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">You have no transfer transaction history yet</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var transfer in Model.TransferTransactions)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transfer.NameOfTeacher</td>
+                                    <td class="ryts-9-n-21-trans">@transfer.School</td>
+                                    <td class="ryts-9-you-sent-trans">@transfer.Amount</td>
+                                    <td class="ryts-9-date-time-22-trans">@transfer.dateTime</td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
 
         </div>
     </div>
 </div>
+
+<script>
+    function toggleTable(showTableId, hideTableId, activeButtonId, inactiveButtonId) {
+        const showTable = document.getElementById(showTableId);
+        const hideTable = document.getElementById(hideTableId);
+        const activeButton = document.getElementById(activeButtonId);
+        const inactiveButton = document.getElementById(inactiveButtonId);
+
+        showTable.style.display = 'table';
+        hideTable.style.display = 'none';
+
+        activeButton.classList.add('active');
+        inactiveButton.classList.remove('active');
+    }
+</script>
