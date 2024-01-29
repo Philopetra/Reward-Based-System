@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
@@ -10,6 +11,7 @@ using RYT.Services.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 namespace RYT.Controllers
@@ -144,9 +146,72 @@ namespace RYT.Controllers
             return View(model);
         }
 
-        public IActionResult Teachers()
+        [HttpGet]
+        public async Task<IActionResult> Teachers(string schoolName, int page = 1)
         {
-            return View();
+            int pageSize = 5;
+
+            var listOfSchoolTaught = await _repository.GetAsync<SchoolsTaught>();
+
+            var model = new TeacherListViewModel();
+
+            if (listOfSchoolTaught != null && listOfSchoolTaught.Any())
+            {
+                var schoolsTaught = (await _repository.GetAsync<SchoolsTaught>())
+                                    .Include(x => x.Teacher)
+                                    .ThenInclude(x => x.User).ToList();
+
+                var paginated = new List<SchoolsTaught>();
+                int totalItems;
+                int totalPages;
+
+                Pagination.UsePagination(schoolsTaught.AsQueryable(), page, pageSize, out paginated, out totalItems, out totalPages);
+                model.TeacherList = paginated.Select(x => x.Teacher).ToList();
+                model.SchoolName = schoolName;
+                model.CurrentPage = page;
+                model.Count = totalItems;
+                model.TotalPages = totalPages;
+
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Teachers(TeacherListViewModel model, string schoolName, int page = 1)
+        {
+            int pageSize = 5;
+
+            var listOfSchoolTaught = await _repository.GetAsync<SchoolsTaught>();
+            if (listOfSchoolTaught != null && listOfSchoolTaught.Any())
+            {
+                var schoolsTaught = (await _repository.GetAsync<SchoolsTaught>())
+                                    .Include(x => x.Teacher)
+                                    .ThenInclude(x => x.User).ToList();
+
+                if (!string.IsNullOrEmpty(model.SearchKeyword))
+                {
+                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) || 
+                                                             s.Teacher.User.LastName.ToLower().Equals(model.SearchKeyword)).ToList();
+                }
+
+                var paginated = new List<SchoolsTaught>();
+                int totalItems;
+                int totalPages;
+
+                Pagination.UsePagination(schoolsTaught.AsQueryable(), page, pageSize, out paginated, out totalItems, out totalPages);
+
+                model.TeacherList = paginated.Select(x => x.Teacher).ToList();
+                model.SchoolName = model.CurrentSchool;
+                model.CurrentPage = page;
+                model.Count = totalItems;
+                model.TotalPages = totalPages;
+
+                return View(model);
+            }
+
+            return View(model);
         }
 
 
@@ -201,4 +266,6 @@ namespace RYT.Controllers
             return View();
         }
     }
+
 }
+
