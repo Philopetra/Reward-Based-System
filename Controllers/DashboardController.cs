@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
+using RYT.Models.Enums;
 using RYT.Models.ViewModels;
 using RYT.Services.CloudinaryService;
 using RYT.Services.Emailing;
@@ -192,7 +193,7 @@ namespace RYT.Controllers
 
                 if (!string.IsNullOrEmpty(model.SearchKeyword))
                 {
-                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) || 
+                    schoolsTaught = schoolsTaught.Where(s => s.Teacher.User.FirstName.ToLower().Equals(model.SearchKeyword) ||
                                                              s.Teacher.User.LastName.ToLower().Equals(model.SearchKeyword)).ToList();
                 }
 
@@ -220,10 +221,52 @@ namespace RYT.Controllers
             return View();
         }
 
-        public IActionResult UpdateImage()
+        public async Task<IActionResult> GetSentTransaction(string userId)
         {
-            return View();
+            List<SentTransactionViewModel> sentTransactionViewModels = new List<SentTransactionViewModel>();
+            var getTransactions = await _repository.GetAsync<Transaction>();
+            List<Transaction> transactions = getTransactions.Where(transaction => transaction.SenderId == userId && transaction.TransactionType == "Sent").ToList();
+            foreach (var transaction in transactions)
+            {
+                SentTransactionViewModel transactionsView = new SentTransactionViewModel()
+                {
+                    Amount = transaction.Amount,
+                    timeOfTransaction = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                sentTransactionViewModels.Add(transactionsView);
+            }
+            OverviewViewModel overviewViewModel = new OverviewViewModel()
+            {
+                MySentTransactions = sentTransactionViewModels
+            };
+
+            return View(overviewViewModel);
         }
+
+        public async Task<IActionResult> GetReceivedTransaction(string userId)
+        {
+            List<ReceivedTransactionsViewModel> receivedTransactionViewModels = new List<ReceivedTransactionsViewModel>();
+            var GetTransactions = await _repository.GetAsync<Transaction>();
+            List<Transaction> transactions = GetTransactions.Where(transaction => transaction.ReceiverId == userId && transaction.TransactionType == "Received").ToList();
+            foreach (var transaction in transactions)
+            {
+                ReceivedTransactionsViewModel transactionsView = new ReceivedTransactionsViewModel()
+                {
+                    Amount = transaction.Amount,
+                    timeOfTransaction = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                receivedTransactionViewModels.Add(transactionsView);
+            }
+            OverviewViewModel overviewViewModel = new OverviewViewModel()
+            {
+                MyReceivedTransactions = receivedTransactionViewModels
+            };
+
+            return View(overviewViewModel);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateImage(UploadImageVM model)
@@ -265,7 +308,57 @@ namespace RYT.Controllers
 
             return View();
         }
-    }
+        public async Task<IActionResult> StudentTransferAndFundingHistory(string userId)
+        {
+            FundAndTransferCombinedViewModel fundAndTransferCombinedViewModel = new FundAndTransferCombinedViewModel();
 
+            IQueryable<Transaction> GetTransactions = await _repository.GetAsync<Transaction>();
+
+            // fetch transactions of transactionType = transfer
+            List<Transaction> transactions = GetTransactions
+                .Where(transaction => transaction.TransactionType == TransactionTypes.Transfer.ToString() && userId == transaction.SenderId)
+                                            .ToList();
+
+            foreach (Transaction transaction in transactions)
+            {
+                var getTeacher = await _repository.GetAsync<Teacher>();
+
+                var getUser = await _repository.GetAsync<AppUser>();
+
+                AppUser receiver = await _repository.GetAsync<AppUser>(transaction.ReceiverId);
+                Teacher teacher = (await _repository.GetAsync<Teacher>()).FirstOrDefault(t => t.UserId == receiver.Id);
+
+                var school = teacher.SchoolsTaughts.OrderByDescending(x => x.CreatedOn).FirstOrDefault().School;
+
+                TransferTransactionHistoryViewModel transferTransactionHistoryViewModel
+                    = new TransferTransactionHistoryViewModel()
+                    {
+                        NameOfTeacher = receiver.FirstName + " " + receiver.LastName,
+                        Amount = transaction.Amount,
+                        dateTime = transaction.CreatedOn,
+                        School = school,
+                    };
+
+                fundAndTransferCombinedViewModel.TransferTransactions.Add(transferTransactionHistoryViewModel);
+            }
+
+            // fetch transactions of transactionType = funding
+            List<Transaction> fundTransactions = GetTransactions.Where(transaction => transaction
+            .SenderId == userId && transaction.TransactionType == TransactionTypes.Funding.ToString()).ToList();
+
+            foreach (var transaction in fundTransactions)
+            {
+                FundingTransactionHistoryViewModel transactionsView = new FundingTransactionHistoryViewModel()
+                {
+                    Amount = transaction.Amount,
+                    CreatedOn = transaction.CreatedOn,
+                    Description = transaction.Description
+                };
+                fundAndTransferCombinedViewModel.FundingTransactions.Add(transactionsView);
+            }
+
+            return View(fundAndTransferCombinedViewModel);
+        }
+    }
 }
 
