@@ -14,8 +14,8 @@ namespace RYT.Controllers
         private readonly IEmailService _emailService;
 
 
-
-        public AccountController (UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -50,13 +50,13 @@ namespace RYT.Controllers
                 {
                     ModelState.AddModelError(err.Code, err.Description);
                 }
+
                 return View(ModelState);
             }
 
             ModelState.AddModelError("", "Email confirmation failed");
 
             return View(ModelState);
-
         }
 
         [HttpGet]
@@ -80,7 +80,7 @@ namespace RYT.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 //if(user == null)
@@ -89,35 +89,36 @@ namespace RYT.Controllers
                 //}
                 if (user != null)
                 {
-                    if(await _userManager.IsEmailConfirmedAsync(user))
-                        {
-                        var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false,false);
+                    if (await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                         if (loginResult.Succeeded)
-                           {
-                              return RedirectToAction("overview", "dashboard");
-                           }
-                        else
-                           {
-                            ModelState.AddModelError("", "Email or Password is incorrect");
-                           }
+                        {
+                            return RedirectToAction("overview", "dashboard");
                         }
+                        else
+                        {
+                            ModelState.AddModelError("", "Email or Password is incorrect");
+                        }
+                    }
                     else
                     {
                         ModelState.AddModelError("", "Email is not yet Confirmed");
                     }
-          
                 }
                 else
                 {
                     ModelState.AddModelError("", "Invalid Credentials");
                 }
             }
+
             return View(model);
         }
+
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -137,8 +138,10 @@ namespace RYT.Controllers
                     ViewBag.Message = "Password Reset details has been sent to your email";
                     return View();
                 }
+
                 ModelState.AddModelError("", "Invalid Email");
             }
+
             return View(model);
         }
     }
