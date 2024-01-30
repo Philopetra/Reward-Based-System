@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RYT.Models.Entities;
+using RYT.Models.Enums;
 using RYT.Models.ViewModels;
 using RYT.Services.Emailing;
 using System.Diagnostics.Eventing.Reader;
@@ -32,6 +33,72 @@ namespace RYT.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SignUp(StudentSignUpViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //var user = _mapper.Map<AppUser>(model);
+                var user = new AppUser
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    Email = model.Email,
+                    UserName = model.Email,
+                };
+
+                user.Wallet = new Wallet
+                {
+                    UserId = user.Id,
+                    Balance = 0,
+                    Status = WalletStatus.Active
+                };
+
+                var emailToCheck = await _userManager.FindByEmailAsync(model.Email);
+                if (emailToCheck == null)
+                {
+                    var createUser = await _userManager.CreateAsync(user, model.Password);
+                    if (createUser.Succeeded)
+                    {
+                        var addRole = await _userManager.AddToRoleAsync(user, "student");
+                        if (addRole.Succeeded)
+                        {
+                            // send email confirmation link
+                            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                            var link = Url.Action("ConfirmEmail", "Account", new { user.Email, token }, Request.Scheme);
+                            var body = @$"Hi{user.FirstName},
+Please click the link <a href='{link}'>here</a> to confirm your account's email";
+                            await _emailService.SendEmailAsync(user.Email, "Confirm Email", body);
+
+                            return RedirectToAction("RegisterCongrats", "Account", new { name = user.FirstName });
+                        }
+
+                        foreach (var err in addRole.Errors)
+                        {
+                            ModelState.AddModelError(err.Code, err.Description);
+
+                        }
+                    }
+                    foreach (var err in createUser.Errors)
+                    {
+                        ModelState.AddModelError(err.Code, err.Description);
+                    }
+                }
+                ModelState.AddModelError("", "email already exists");
+
+
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult RegisterCongrats(string name)
+        {
+            ViewBag.Name = name;
+            return View();
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string Email, string token)

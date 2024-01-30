@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RYT.Data;
@@ -11,9 +12,10 @@ using RYT.Data;
 namespace RYT.Migrations
 {
     [DbContext(typeof(RYTDbContext))]
-    partial class RYTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240130112908_New")]
+    partial class New
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,6 +193,7 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NameofSchool")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")

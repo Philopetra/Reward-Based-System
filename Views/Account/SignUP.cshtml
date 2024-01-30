@@ -1,4 +1,5 @@
-﻿@{
+﻿@model StudentSignUpViewModel
+@{
     ViewData["Title"] = "SignUp";
 }
 
@@ -17,7 +18,8 @@
     </a>
     <div class="container--section">
         <h2 style="font-weight:bold;">Create an account</h2>
-        <form action="form--panel">
+        <form asp-action="SignUp" asp-controller="Account" method="post">
+            <div asp-validation-summary="All"></div>
             <div class="input--fields">
                 <label for="">User Type</label>
                 <div class="merged-buttons-panel">
@@ -26,22 +28,22 @@
                 </div>
             </div>
             <div class="input--fields">
-                <label for="Name">Name</label>
-                <input class="input--area" type="text" placeholder="Type your full name">
+                <label asp-for="FullName">FullName</label>
+                <input asp-for="FullName" class="input--area" type="text" placeholder="Type your full name">
                 <div class="icon--21">
                     <img src="~/images/Dribbble-Light-Preview.png">
                 </div>
             </div>
             <div class="input--fields">
-                <label for="Email">Email</label>
-                <input class="input--area" type="text" placeholder=" Type your email">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" class="input--area" type="text" placeholder=" Type your email">
                 <div class="icon--21">
                     <img src="~/images/Vector.png">
                 </div>
             </div>
             <div class="input--fields">
-                <label for="Password">Password</label>
-                <input class="input--area" type="text" placeholder="Type your password">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" class="input--area" placeholder="Type your password">
                 <div class="icon--21">
                     <img src="~/images/Icon.png">
                 </div>
