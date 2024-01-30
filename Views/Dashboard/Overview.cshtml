@@ -1,7 +1,7 @@
-﻿@{
+﻿@model OverviewViewModel
+@{
     ViewData["Title"] = "Overview";
 }
-
 <div class="ryts-9-container-RYTS-9">
     <div class="ryts-9-welcome-panel">
         <div id="ryts-9-greeting-area">
@@ -35,59 +35,104 @@
             </div>
         </div>
     </div>
+        <div class="ryt-row" style="background-color:#F5F5F5">
+            <div style="font-weight:bold;margin-top:35px" class="ryt-col s12 ryt-margin-bottom">Transaction History</div>
+            <div class="ryts-9-frame-transfer">
+                <div class="ryts-9-frame-19">
+                    <div class="ryts-9-frame-1a">
 
-    <div class="ryts-9-transaction-history-panel">Transaction History</div>
+                        <div class="ryts-9-frame-1b" >
 
-    <div class="ryts-9-frame-18">
-        <div class="ryts-9-frame-19">
-            <div class="ryts-9-frame-1a">
+                            <button id="toggleButton1" class="toggle-button active ryts-9-received" onclick="toggleTable('table1', 'table2', 'toggleButton1', 'toggleButton2')">Received</button>
 
-                <div class="ryts-9-frame-1b">
-                    <span class="ryts-9-received">Received</span>
-                    <div class="ryts-9-divider-1c"></div>
+                            @* <div class="ryts-9-divider-1c"></div> *@
+                        </div>
+                        <button id="toggleButton2" class="toggle-button ryts-9-sent" onclick="toggleTable('table2', 'table1', 'toggleButton2', 'toggleButton1')">Sent</button>
+
+                    </div>
+                    <div class="ryts-9-divider-1d"></div>
                 </div>
-                <span class="ryts-9-sent">Sent</span>
+
+                <table class="ryts-9-frame-1e" id="table1">
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description">Description</th>
+                            <th class="ryts-9-amount-sent">Amount</th>
+                            <th class="ryts-9-date-time">Date/Time</th>
+                            <th class="ryts-9-action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">No received transactions yet...</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (ReceivedTransactionsViewModel transaction in Model.MyReceivedTransactions)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transaction.Description</td>
+                                    <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                    <td class="ryts-9-date-time-22-transfer">@transaction.timeOfTransaction</td>
+                                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <table class="ryts-9-frame-1e" id="table2" style="display: none;">
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description">Description</th>
+                            <th class="ryts-9-amount-sent">Amount</th>
+                            <th class="ryts-9-date-time">Date/Time</th>
+                            <th class="ryts-9-action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">No sent transactions yet...</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (SentTransactionViewModel transaction in Model.MySentTransactions)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transaction.Description</td>
+                                    <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                    <td class="ryts-9-date-time-22-transfer">@transaction.timeOfTransaction</td>
+                                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+
             </div>
-            <div class="ryts-9-divider-1d"></div>
+
         </div>
-        
-        <table class="ryts-9-frame-1e">
-            <thead>
-                <tr class ="ryts-9-frame-1f">
-                    <th class="ryts-9-description">Description</th>
-                    <th class="ryts-9-amount-sent">Amount</th>
-                    <th class="ryts-9-date-time">Date/Time</th>
-                    <th class="ryts-9-action">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="ryts-9-frame-20">
-                    <td class="ryts-9-you-sent">Olajumoke sent you a reward</td>
-                    <td class="ryts-9-n-21">N15,000</td>
-                    <td class="ryts-9-date-time-22">4/08/2022 - 4:45pm</td>
-                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
-                </tr>
-                <tr class="ryts-9-frame-24">
-                    <td class="ryts-9-you-sent-25">Obinna sent you a reward</td>
-                    <td class="ryts-9-n-21">N10,000</td>
-                    <td class="ryts-9-date-time-22">10/06/2022 - 3:00pm</td>
-                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
-                </tr>
-                <tr class="ryts-9-frame-24">
-                    <td class="ryts-9-you-sent-25">You withdrew money from your wallet</td>
-                    <td class="ryts-9-n-21">N35,000</td>
-                    <td class="ryts-9-date-time-22">5/04/2022 - 1:45pm</td>
-                    <td class="ryts-9-view-profile"><a id="ryts-9-view-profile-color" href="#">View profile</a></td>
-                </tr>
-            </tbody>
-        </table>
-
-
-
-
-
-
     </div>
-
-
 </div>
+
+<script>
+    function toggleTable(showTableId, hideTableId, activeButtonId, inactiveButtonId) {
+        const showTable = document.getElementById(showTableId);
+        const hideTable = document.getElementById(hideTableId);
+        const activeButton = document.getElementById(activeButtonId);
+        const inactiveButton = document.getElementById(inactiveButtonId);
+
+        showTable.style.display = 'table';
+        hideTable.style.display = 'none';
+
+        activeButton.classList.add('active');
+        inactiveButton.classList.remove('active');
+    }
+</script>
