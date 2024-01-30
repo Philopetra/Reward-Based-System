@@ -10,7 +10,7 @@ namespace RYT.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<DateTime>(
-                name: "DeliverOn",
+                name: "DeliveredOn",
                 table: "Messages",
                 type: "timestamp with time zone",
                 nullable: false,
@@ -37,12 +37,12 @@ namespace RYT.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.AddColumn<string>(
-                name: "ReciverId",
-                table: "Messages",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
+            //migrationBuilder.AddColumn<string>(
+            //    name: "ReciverId",
+            //    table: "Messages",
+            //    type: "text",
+            //    nullable: false,
+            //    defaultValue: "");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "TimeStamp",
@@ -51,18 +51,18 @@ namespace RYT.Migrations
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_ReciverId",
-                table: "Messages",
-                column: "ReciverId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Messages_ReciverId",
+            //    table: "Messages",
+            //    column: "ReciverId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Messages_AspNetUsers_ReciverId",
-                table: "Messages",
-                column: "ReciverId",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_Messages_AspNetUsers_ReciverId",
+            //    table: "Messages",
+            //    column: "ReciverId",
+            //    principalTable: "AspNetUsers",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -76,7 +76,7 @@ namespace RYT.Migrations
                 table: "Messages");
 
             migrationBuilder.DropColumn(
-                name: "DeliverOn",
+                name: "DeliveredOn",
                 table: "Messages");
 
             migrationBuilder.DropColumn(
@@ -91,9 +91,9 @@ namespace RYT.Migrations
                 name: "ReceiverId",
                 table: "Messages");
 
-            migrationBuilder.DropColumn(
-                name: "ReciverId",
-                table: "Messages");
+            //migrationBuilder.DropColumn(
+            //    name: "ReciverId",
+            //    table: "Messages");
 
             migrationBuilder.DropColumn(
                 name: "TimeStamp",

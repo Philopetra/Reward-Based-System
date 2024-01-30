@@ -284,7 +284,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Notification", b =>
@@ -304,7 +304,7 @@ namespace RYT.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.SchoolsTaught", b =>
@@ -330,7 +330,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("schoolsTaughts");
+                    b.ToTable("schoolsTaughts", (string)null);
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.SubjectsTaught", b =>
@@ -356,7 +356,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("SubjectsTaughts");
+                    b.ToTable("SubjectsTaughts", (string)null);
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Teacher", b =>
@@ -394,7 +394,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Transaction", b =>
@@ -444,7 +444,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Wallet", b =>
@@ -473,7 +473,7 @@ namespace RYT.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wallets");
+                    b.ToTable("Wallets", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
