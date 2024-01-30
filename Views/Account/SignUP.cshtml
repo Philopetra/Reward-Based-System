@@ -19,7 +19,7 @@
     <div class="container--section">
         <h2 style="font-weight:bold;">Create an account</h2>
         <form asp-action="SignUp" asp-controller="Account" method="post">
-            <div asp-validation-summary="All"></div>
+            <div style="list-style-type:none; color:red;" asp-validation-summary="All"></div>
             <div class="input--fields">
                 <label for="">User Type</label>
                 <div class="merged-buttons-panel">

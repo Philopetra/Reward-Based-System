@@ -9,7 +9,7 @@ namespace RYT.Models.ViewModels
         //[Required]
         ////public string LastName { get; set; } = string.Empty;
         [Required]
-        public string FullName {  get; set; } = string.Empty;
+        public string? FullName {  get; set; } = string.Empty;
 
         public string FirstName { get
             {
