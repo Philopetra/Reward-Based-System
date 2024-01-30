@@ -23,7 +23,7 @@ namespace RYT.Data
                 {
                     foreach (var role in SeedData.Roles)
                     {
-                        roleMgr.CreateAsync(new IdentityRole(role));
+                        roleMgr.CreateAsync(new IdentityRole(role)).Wait();
                     }
                 }
 
