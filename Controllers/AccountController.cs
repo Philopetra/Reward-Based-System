@@ -103,13 +103,7 @@ Please click the link <a href='{link}'>here</a> to confirm your account's email"
             return View(model);
         }
 
-        [HttpGet]
-        public IActionResult RegisterCongrats(string name)
-        {
-            ViewBag.Name = name;
-            return View();
-        }
-
+       
 
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string Email, string token)
