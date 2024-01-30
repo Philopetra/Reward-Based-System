@@ -308,16 +308,17 @@ namespace RYT.Controllers
 
             return View();
         }
-        public async Task<IActionResult> StudentTransferAndFundingHistory(string userId)
+       
+        [HttpGet]
+        public async Task<IActionResult> TransferHistory(string userId)
         {
             FundAndTransferCombinedViewModel fundAndTransferCombinedViewModel = new FundAndTransferCombinedViewModel();
 
             IQueryable<Transaction> GetTransactions = await _repository.GetAsync<Transaction>();
-
-            // fetch transactions of transactionType = transfer
+        
             List<Transaction> transactions = GetTransactions
-                .Where(transaction => transaction.TransactionType == TransactionTypes.Transfer.ToString() && userId == transaction.SenderId)
-                                            .ToList();
+                .Where(transaction => transaction.TransactionType == TransactionTypes.Transfer
+                .ToString() && userId == transaction.SenderId).ToList();
 
             foreach (Transaction transaction in transactions)
             {
@@ -340,9 +341,18 @@ namespace RYT.Controllers
                     };
 
                 fundAndTransferCombinedViewModel.TransferTransactions.Add(transferTransactionHistoryViewModel);
-            }
+            }        
 
-            // fetch transactions of transactionType = funding
+            return View(fundAndTransferCombinedViewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FundingHistory(string userId)
+        {
+            FundAndTransferCombinedViewModel fundAndTransferCombinedViewModel = new FundAndTransferCombinedViewModel();
+
+            IQueryable<Transaction> GetTransactions = await _repository.GetAsync<Transaction>();
+                    
             List<Transaction> fundTransactions = GetTransactions.Where(transaction => transaction
             .SenderId == userId && transaction.TransactionType == TransactionTypes.Funding.ToString()).ToList();
 

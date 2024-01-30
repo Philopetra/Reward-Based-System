@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*using Microsoft.AspNetCore.Mvc;
 using RYT.Models.ViewModels;
 using RYT.Services.Payment;
 
@@ -120,4 +120,4 @@ public class PaymentController : Controller
         
         return Ok(banks);
     }
-}
+}*/
