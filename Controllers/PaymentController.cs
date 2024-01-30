@@ -16,7 +16,7 @@ public class PaymentController : Controller
     
     public async Task<IActionResult> FundWallet([FromForm] FundWalletVM model)
     {
-        // var userId = User.Claims.First(c => c.Type == "id").Value;
+         var userId = User.Claims.First(c => c.Type == "id").Value;
         var response = await _payments.Initialize(model, userId);
 
         if (!response.Item1)
@@ -31,7 +31,7 @@ public class PaymentController : Controller
     [HttpGet("callback")]
     public async Task<IActionResult> VerifyPayment([FromQuery] string reference)
     {
-        // var userId = User.Claims.First(c => c.Type == "id").Value;
+        var userId = User.Claims.First(c => c.Type == "id").Value;
         
         var isSuccessful = await _payments.Verify(reference);
         
@@ -62,7 +62,7 @@ public class PaymentController : Controller
     [HttpPost("withdraw")]
     public async Task<IActionResult> Withdraw([FromForm] CreateWithdrawalVM model)
     {
-        // var userId = User.Claims.First(c => c.Type == "id").Value;
+         var userId = User.Claims.First(c => c.Type == "id").Value;
         ViewBag.IsSuccessful = false;
         try
         {
@@ -89,7 +89,7 @@ public class PaymentController : Controller
     [HttpPost("transfer/{receiverId}")]
     public async Task<IActionResult> Transfer([FromRoute] string receiverId, [FromForm] SendRewardVM model)
     {
-        // var userId = User.Claims.First(c => c.Type == "id").Value;
+        var userId = User.Claims.First(c => c.Type == "id").Value;
         ViewBag.IsSuccessful = false;
         try
         {
