@@ -5,6 +5,8 @@ using RYT.Models.ViewModels;
 using RYT.Services.Emailing;
 using System.Diagnostics.Eventing.Reader;
 
+
+
 namespace RYT.Controllers
 {
     public class AccountController : Controller
@@ -72,6 +74,41 @@ namespace RYT.Controllers
         }
 
         [HttpGet]
+        public IActionResult ResetPassword(string Email, String Token)
+        {
+            var resetPasswordModel = new ResetPasswordViewModel { Email = Email, Token = Token };
+            return View(resetPasswordModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+              var user =   await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                   var resetPasswordResult = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+                    if (resetPasswordResult.Succeeded)
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
+                    else
+                    {
+                        foreach (var error in resetPasswordResult.Errors)
+                        {
+                            ModelState.AddModelError(error.Code, error.Description);
+                        }
+                        return View(model);
+                    }
+                }
+                ModelState.AddModelError("", "Email Not Recognized");
+            }
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
@@ -129,7 +166,7 @@ namespace RYT.Controllers
                 if (user != null)
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                    var link = Url.Action("ResetPassword", "Action", new { user.Email, token, Request.Scheme });
+                    var link = Url.Action("ResetPassword", "Account", new { user.Email, token }, Request.Scheme );
                     var body = @$"Hi{user.FirstName}{user.LastName},
 						please, click the link <a href='{link}'>here</a> to reset your password";
 
