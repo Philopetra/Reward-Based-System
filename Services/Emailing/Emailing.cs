@@ -15,7 +15,7 @@ namespace RYT.Services.Emailing
         {
             try
             {
-                var senderEmail = _config.GetSection("EmailSettings:sender").Value;
+                var senderEmail = _config.GetSection("EmailSettings:SenderEmail").Value;
                 var port = Convert.ToInt32(_config.GetSection("EmailSettings:port").Value);
                 var host = _config.GetSection("EmailSettings:host").Value;
                 var appPassword = _config.GetSection("EmailSettings:appPassword").Value;

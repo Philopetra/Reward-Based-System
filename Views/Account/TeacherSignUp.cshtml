@@ -7,7 +7,9 @@
 <div class="ryts-11-container-main">
     <div class="ryts-11-container py-5">
 
-        <div class="ryts-11-logo-container"><img src="~/Images/ryts-11-RewardYourTeacherLogo.svg" alt=""></div>
+        <a asp-action="index" asp-controller="home">
+            <div class="ryts-11-logo-container"><img src="~/Images/ryts-11-RewardYourTeacherLogo.svg" alt=""></div>
+        </a>
         <div class="ryts-11-form">
             <div class="ryts-11-sign-up">
                 <div class="ryts-11-title">
@@ -17,7 +19,7 @@
                 <div class="ryts-11-p" style="visibility:hidden;">
                     <p>Update your profile information</p>
                 </div>
-                <form method="post" asp-action="TeacherSignUpStep2">
+                <form method="post" asp-action="TeacherSignUp">
                     <div class="ryts-11-input-main mb-3">
                         <label for="UserType" class="mb-2">User Type</label><br>
                         <div class="merged-buttons-panel">
@@ -25,6 +27,7 @@
                             <a asp-action="TeacherSignUp" asp-controller="Account">Teacher</a>
                         </div>
                     </div>
+                    <div asp-validation-summary="All"></div>
                     <div class="ryts-11-input-main mb-3">
                         <label for="user-name" class="mb-2">Name</label><br>
                         <input type="text" class="ryts-11-input" placeholder="Type your full name" asp-for="Name">

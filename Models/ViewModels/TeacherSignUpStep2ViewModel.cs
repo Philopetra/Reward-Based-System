@@ -80,7 +80,12 @@ namespace RYT.Models.ViewModels
 
         public IList<string> ListOfSchoolTypes { get; set; } = new List<string>();
 
-        public IFormFile NINUploadUrl { get; set; }
+        public IFormFile? NINUploadImage { get; set; }
+        
+        /*
+        public string NINUploadPublicId { get; set; } = string.Empty;
+        public string FolderName { get; set; } = string.Empty;
+        public string PhotoUrl { get; set; } = string.Empty;*/
 
     }
 }
