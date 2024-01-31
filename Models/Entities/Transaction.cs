@@ -15,10 +15,10 @@ namespace RYT.Models.Entities
         public string Description { get; set; } = string.Empty;
 
         public bool Status { get; set; }
-        public string Reference { get; set; } 
+        public string Reference { get; set; }
 
         // Navigation Props
         public AppUser? Sender { get; set; }
-        public Wallet? Wallet { get; set; }
+        public Wallet? Wallet { get; set; } = new Wallet();
     }
 }

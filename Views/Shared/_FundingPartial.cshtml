@@ -1,4 +1,10 @@
-﻿
+﻿@model FundWalletVM
+@inject SignInManager<AppUser> _signInManager
+@inject UserManager<AppUser> _userManager
+@{
+    var user = _userManager.GetUserAsync(User).Result;
+}
+
 <div class="modal fade" id="fund" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -13,21 +19,33 @@
                         <div class="wey-fundExplain"><p>Use the details below to send money to your wallet.</p></div>
                     </div>
                     <div class="wey-fund-2">
-                        <form>
+                        <form method="post" asp-controller="Payment" asp-action="FundWallet">
+                             <div class="mb-3" hidden>
+                                <label for="userId" class="form-label wey-EnterAmount"></label>
+                                <input type="text" asp-for="@user.Id"form-control wey-input">
+                            </div> 
+                    @*         <div class="mb-3" hidden>
+                                <label for="userId" class="form-label wey-EnterAmount"></label>
+                                <input type="text" asp-for="@user.Email" form-control wey-input">
+                            </div> *@
+                                                                                  
                             <div class="mb-3">
                                 <label for="EnterAmount" class="form-label wey-EnterAmount">Enter Amount</label>
-                                <input type="email" placeholder="NGN 0.00" class="form-control wey-input" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                <input type="number" asp-for="Amount" placeholder="NGN 0.00" class="form-control wey-input" required>
                             </div>
                             <div class="dropdown">
-                                <label for="EnterAmount" class="form-label wey-EnterAmount">Payment Type</label>
-                                <button class="btn btn-outline-secondary wey-dropdown-1 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    -Select-
-                                </button>
-                                <ul class="dropdown-menu wey-dropdown-list-1">
-                                    <li><a class="dropdown-item" href="#">Pay with Paystack</a></li>
-                                </ul>
+                                <label class="form-label wey-EnterAmount">Payment Type</label>
+                                <select class="form-select">
+                                    <option>-Select-</option>
+                                    <option>Paystack</option>
+                                   
+                                </select>
+
+                                @* <input type="hidden" asp-controller="Dashboard" asp-action="Transfer" form-control wey-input"> *@
+
+
                             </div>
-                            <a class="btn btn-outline-light wey-fund-submit" href="#" role="button">Send</a>
+                            <button class="btn btn-outline-light wey-fund-submit send-button button" href="#" role="button">Send</button>
                         </form>
                     </div>
                 </div>
@@ -37,3 +55,15 @@
         </div>
     </div>
 </div>
+
+<style>
+    .send-button{
+        background-color: #6938EF;
+    }
+
+    .send-button:hover{
+            background-color: #5120d9;
+            color: white;
+    }
+</style>
+                                    
