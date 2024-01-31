@@ -369,6 +369,62 @@ namespace RYT.Controllers
 
             return View(fundAndTransferCombinedViewModel);
         }
+        [HttpGet]
+        public async Task<IActionResult> EditTeacherProfile()
+        {
+            var loggedInUsedr = await _userManager.GetUserAsync(User);
+
+            var teacher = ((await _repository.GetAsync<Teacher>())
+                .Include(x => x.User)
+                .Include(x => x.TeacherSubjects)
+                .Include(x => x.SchoolsTaughts)
+            ).FirstOrDefault(x => x.UserId == loggedInUsedr.Id);
+
+            if(teacher != null)
+            {
+                var editProfileViewModel = new EditTeacherProfileVM()
+                {
+                    FullName = $"{teacher.User.FirstName} {teacher.User.LastName}",
+                    Email = teacher.User.Email,
+                    PhoneNumber = teacher.User.PhoneNumber,
+                    TeachersSubject = teacher.TeacherSubjects.ToList(),
+                    SchoolType = teacher.SchoolType,
+                    YearsOfTeaching = teacher.YearsOfTeaching,
+                    TeachersSchool = teacher.SchoolsTaughts.ToList()
+                };
+                return View(editProfileViewModel);
+            }
+            return View();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditTeacherProfile(EditTeacherProfileVM model, string userId)
+        {
+            var teacher = (await _repository.GetAsync<Teacher>()).Where(s => s.UserId == userId).Select(s => s.User).FirstOrDefault();
+
+            IList<SubjectsTaught> teachersSubject = (await _repository.GetAsync<SubjectsTaught>()).Where(s => s.TeacherId == userId).ToList();
+
+            var photo = await _photoService.UploadImage(model.photo, model.FolderName);
+
+            if (teacher is not null)
+            {
+                teacher.FirstName = model.FullName;
+                teacher.LastName = model.FullName;
+                teacher.NameofSchool = model.SchoolType;
+                teacher.PhoneNumber = model.PhoneNumber;
+                teacher.Email = model.Email;
+                teacher.PhotoUrl = photo["Url"];
+
+                var updateTeacher = await _repository.UpdateAsync<AppUser>(teacher);
+
+                if (updateTeacher != 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                return View(model);
+            }
+            return View(model);
+        }
     }
 }
 
