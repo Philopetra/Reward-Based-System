@@ -87,7 +87,7 @@ line-height: 20px; /* 142.857% */
     outline: 0;
     border: 1px solid #98A2B3;
     border-radius: 8px;
-    padding: 6px 16px;
+    padding: 10px 16px;
     padding-left: 50px;
     background: transparent;
     font-size: 14px;
@@ -108,12 +108,12 @@ line-height: 20px; /* 142.857% */
     left: 0;
     top: 0;
     width: 60px;
-    height: 100px;
+    height: 110px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 10px;
-    font-size: 24px;
+    padding-top: 0px;
+    font-size: 20px;
     color:  #98A2B3;
 }
 

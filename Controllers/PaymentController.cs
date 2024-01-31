@@ -56,7 +56,7 @@ public class PaymentController : Controller
     [HttpGet("callback")]
     public async Task<IActionResult> VerifyPayment([FromQuery] string reference)
     {
-        // var userId = User.Claims.First(c => c.Type == "id").Value;
+        var userId = User.Claims.First(c => c.Type == "id").Value;
         
         var isSuccessful = await _payments.Verify(reference);
         
@@ -87,7 +87,7 @@ public class PaymentController : Controller
     [HttpPost("withdraw")]
     public async Task<IActionResult> Withdraw([FromForm] CreateWithdrawalVM model)
     {
-        var userId = User.Claims.First(c => c.Type == "id").Value;
+        // var userId = User.Claims.First(c => c.Type == "id").Value;
         ViewBag.IsSuccessful = false;
         try
         {
