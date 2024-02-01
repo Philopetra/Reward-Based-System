@@ -91,7 +91,7 @@
 .RYTS-20-divider {
     background-color: #d0d5dd;
     flex-shrink: 0;
-    height: 1078px;
+    height: 1070px;
     width: 0.1rem;
 }
 
@@ -100,10 +100,11 @@
     height: calc(100% - 0rem);
     margin-top: 0rem;
     width: 30rem;
-    /* border: 1px solid black; */
+    /*border: 1px solid black;*/
     /* margin-right: 15rem; */
     position: absolute;
     left: 17rem;
+    /*padding-top: -15px;*/
 }
 
 .RYTS-20-edit-profile-writeup-div {
@@ -149,6 +150,7 @@
     padding-top: 2rem;
     padding-right: 2rem;
     width: 100%;
+    margin-top: -10px;
 }
 
 .RYTS-20-input-divs {

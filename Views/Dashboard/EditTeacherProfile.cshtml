@@ -21,17 +21,16 @@
                 <p class="RYTS-20-only-you">Only you can view and edit your profile</p>
             </div>
             <div class="RYTS-20-form-div">
-
                 <div asp-validation-summary="All"></div>
                 <form method="post" asp-action="EditTeacherProfile" asp-controller="Dashboard">
                     <input type="text" asp-for="UserId" hidden><br>
                     <input type="text" asp-for="TeacherId" hidden><br>
                     <div class="RYTS-20-input-divs">
-                        <label for="FirstName" class="RYTS-20-label">Full Name</label>
+                        <label for="FirstName" class="RYTS-20-label">First Name</label>
                         <input type="text" asp-for="FirstName" placeholder="Franca John"><br>
                     </div> 
                     <div class="RYTS-20-input-divs">
-                        <label for="LastName" class="RYTS-20-label">Full Name</label>
+                        <label for="LastName" class="RYTS-20-label">Last Name</label>
                         <input type="text" asp-for="LastName" placeholder="Franca John"><br>
 
                     </div>
