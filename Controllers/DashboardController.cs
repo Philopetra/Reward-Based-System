@@ -440,46 +440,83 @@ namespace RYT.Controllers
             {
                 var editProfileViewModel = new EditTeacherProfileVM()
                 {
-                    FullName = $"{teacher.User.FirstName} {teacher.User.LastName}",
+                    TeacherId = teacher.Id,
+                    FirstName = $"{teacher.User.FirstName}",
+                    LastName = $"{teacher.User.LastName}",
                     Email = teacher.User.Email,
                     PhoneNumber = teacher.User.PhoneNumber,
-                    TeachersSubject = teacher.TeacherSubjects.ToList(),
                     SchoolType = teacher.SchoolType,
                     YearsOfTeaching = teacher.YearsOfTeaching,
-                    TeachersSchool = teacher.SchoolsTaughts.ToList()
+                    TeachersSubject = teacher.TeacherSubjects.Select(x => x.Subject).ToList(),
+                    TeachersSchool = teacher.SchoolsTaughts.Select(x => x.School).ToList(),
                 };
                 return View(editProfileViewModel);
             }
             return View();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> EditTeacherProfile(EditTeacherProfileVM model, string userId)
+        [HttpPost]
+        public async Task<IActionResult> EditTeacherProfile(EditTeacherProfileVM model)
         {
-            var teacher = (await _repository.GetAsync<Teacher>()).Where(s => s.UserId == userId).Select(s => s.User).FirstOrDefault();
-
-            IList<SubjectsTaught> teachersSubject = (await _repository.GetAsync<SubjectsTaught>()).Where(s => s.TeacherId == userId).ToList();
-
-            var photo = await _photoService.UploadImage(model.photo, model.FolderName);
-
-            if (teacher is not null)
+            if (ModelState.IsValid)
             {
-                teacher.FirstName = model.FullName;
-                teacher.LastName = model.FullName;
-                teacher.NameofSchool = model.SchoolType;
-                teacher.PhoneNumber = model.PhoneNumber;
-                teacher.Email = model.Email;
-                teacher.PhotoUrl = photo["Url"];
-
-                var updateTeacher = await _repository.UpdateAsync<AppUser>(teacher);
-
-                if (updateTeacher != 0)
+                if(model.SelectedSchool == "" || model.SelectedSubject == "")
                 {
-                    return RedirectToAction("Index");
+                    ModelState.AddModelError("", "You didn't select a school or subject");
+                    return View(model);
                 }
-                return View(model);
+
+                var loggedInUsedr = await _userManager.GetUserAsync(User);
+                var teacher = ((await _repository.GetAsync<Teacher>())
+                   .Include(x => x.User)
+                   .Include(x => x.TeacherSubjects)
+                   .Include(x => x.SchoolsTaughts)
+               ).FirstOrDefault(x => x.UserId == loggedInUsedr.Id);
+
+                if (teacher != null) 
+                {
+                    teacher.User.FirstName = model.FirstName;
+                    teacher.User.LastName = model.LastName;
+                    teacher.User.PhoneNumber = model.PhoneNumber;
+                    teacher.YearsOfTeaching = model.YearsOfTeaching;
+                    teacher.SchoolType = model.SchoolType;
+
+                    using var startTransaction = _repository._ctx.Database.BeginTransaction();
+                    try
+                    {
+                        await _repository.UpdateAsync(teacher);
+
+                        foreach (var item in teacher.SchoolsTaughts.ToList())
+                        {
+                            await _repository.DeleteAsync(item);
+                        }
+
+                        foreach (var item in teacher.TeacherSubjects.ToList())
+                        {
+                            await _repository.DeleteAsync(item);
+                        }
+
+                        await _repository.AddAsync(new SchoolsTaught { TeacherId = model.TeacherId, School = model.SelectedSchool });
+                        await _repository.AddAsync(new SubjectsTaught { TeacherId = model.TeacherId, Subject = model.SelectedSubject });
+                        
+                        await startTransaction.CommitAsync();
+
+                        return RedirectToAction("overview", "dashboard");
+                    }
+                    catch
+                    {
+                        await startTransaction.RollbackAsync();
+                        ModelState.AddModelError("", "Edit teacher failed.");
+                        return View(model);
+                    }
+                }
+
+                ModelState.AddModelError("", "Could not get loggedin user record.");
+
             }
+
             return View(model);
+
         }
     }
 }

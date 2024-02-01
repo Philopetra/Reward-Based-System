@@ -21,11 +21,19 @@
                 <p class="RYTS-20-only-you">Only you can view and edit your profile</p>
             </div>
             <div class="RYTS-20-form-div">
-                <form action="">
-                    <input type="text" name="username" asp-for="UserId" hidden><br>
+
+                <div asp-validation-summary="All"></div>
+                <form method="post" asp-action="EditTeacherProfile" asp-controller="Dashboard">
+                    <input type="text" asp-for="UserId" hidden><br>
+                    <input type="text" asp-for="TeacherId" hidden><br>
                     <div class="RYTS-20-input-divs">
-                        <label for="Full Name" class="RYTS-20-label">Full Name</label>
-                        <input type="text" name="fullname" asp-for="FullName" id="fullname" placeholder="Franca John"><br>
+                        <label for="FirstName" class="RYTS-20-label">Full Name</label>
+                        <input type="text" asp-for="FirstName" placeholder="Franca John"><br>
+                    </div> 
+                    <div class="RYTS-20-input-divs">
+                        <label for="LastName" class="RYTS-20-label">Full Name</label>
+                        <input type="text" asp-for="LastName" placeholder="Franca John"><br>
+
                     </div>
                     <div class="RYTS-20-input-divs">
                         <label for="Email" class="RYTS-20-label">Email</label>
@@ -33,28 +41,33 @@
                     </div>
                     <div class="RYTS-20-input-divs">
                         <label for="Phone Number" class="RYTS-20-label">Phone Number</label>
-                        <input type="number" asp-for="PhoneNumber" name=" phonenumber" id="phonenumber"><br>
+
+                        <input type="number" asp-for="PhoneNumber"><br>
                     </div>
                     <div class="RYTS-20-input-divs">
                         <label for="" class="RYTS-20-label">Schools where you taught</label>
-                        <select asp-for="TeachersSchool">
-                            @foreach ( var schoolTaught in Model.TeachersSchool)
+                        <select asp-for="SelectedSchool">
+                            <option value="">@Model.TeachersSchool.FirstOrDefault()</option>
+                            @foreach ( var schoolTaught in SeedData.Schools)
                             {
-                                <option value="@schoolTaught.School">@schoolTaught.School</option>
+                                <option value="@schoolTaught">@schoolTaught</option>
                             }
                         </select>
                     </div>
                     <br/>
                     <div class="RYTS-20-input-divs">
                         <label for="Years of Teaching" class="RYTS-20-label">Years of Teaching</label>
-                        <input type="text" value="@Model.YearsOfTeaching" name="yearof" id="" placeholder="e.g 2001 - 2021"><br>
+
+                        <input type="text" asp-for="YearsOfTeaching" placeholder="e.g 2001 - 2021"><br>
                     </div>
                     <div class="RYTS-20-input-divs">
                         <label for="Subjects Taught" class="RYTS-20-label">Subjects Taught</label>
-                        <select asp-for="TeachersSubject">
-                            @foreach(var teacher in Model.TeachersSubject)
+                        <select asp-for="SelectedSubject">
+                            <option value="">@Model.TeachersSubject.FirstOrDefault()</option>
+
+                            @foreach(var teacher in SeedData.Subjects)
                             {
-                                <option value="@teacher.Subject">@teacher.Subject</option>
+                                <option value="@teacher">@teacher</option>
                             }
                         </select>
                         <p id="RYTS-20-biology">Biology</p><br>
@@ -63,28 +76,10 @@
                         <label for="School Type" class="RYTS-20-label">School Type</label>
                         <input type="text" asp-for="SchoolType" placeholder="Franca John"><br>
                     </div>
-                    <div class="RYTS-20-input-divs">
-                        <label class="RYTS-20-label">Upload Picture</label>
-                        <div class="RYTS-20-upload">
-                            <!-- <img src="assets/image-square-7Lo.png" alt="upload image" class="RYTS-20-upload-parts"> -->
-                            <input type="file" name="imageUpload" id="imageUpload" class="RYTS-20-upload-part" placeholder="Upload Picture">
-                        </div>
-                    </div>
+
                     <button class="RYTS-20-submit">Save</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<script>
-    function selectOption(value) {
-        var selectElement = document.getElementById("mySelect");
-
-        for (var i = 0; i < selectElement.options.length; i++) {
-            if (selectElement.options[i].value === value) {
-                selectElement.options[i].selected = true;
-                break;
-            }
-        }
-    }
-</script>
