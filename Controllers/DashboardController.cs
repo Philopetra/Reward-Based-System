@@ -38,74 +38,112 @@ namespace RYT.Controllers
             return View();
         }
 
+
         [HttpGet]
-        public async Task <IActionResult> Messages(string searchTerm)
+        public async Task<IActionResult> Messages(string searchTerm, string threadId)
 
         {
+            MVModel messageViewModel = new MVModel();
             var loggedInUser = await _userManager.GetUserAsync(User);
-            List<MessageViewModel> messageViewModels = new List<MessageViewModel>();
-            var messages = (await _repository.GetAsync<Message>()).ToList();
+
+            var recieverId = "";
+
+            if (!string.IsNullOrEmpty(threadId))
+            {
+                recieverId = (await _repository.GetAsync<UserChat>())
+                .Where(message => message.ThreadId == threadId).Select(x => x.ReceiverId).First();
+                var receiver = await _userManager.FindByIdAsync(recieverId);
+
+                var chatHistory = await _repository.GetAsync<UserChat>();
+
+                if (chatHistory != null)
+                {
+                    var chats = (await _repository.GetAsync<UserChat>())
+                        .Where(message => message.ThreadId == threadId)
+                        .Select(message => new MessageThread
+                        {
+                            PhotoUrl = message.Sender.PhotoUrl,
+                            Text = message.Text,
+                            UserId = message.Sender.Id,
+                            TimeStamp = message.TimeStamp.ToLocalTime().ToString()
+                        })
+                        .ToList();
+
+                    messageViewModel.MessageThreads = chats;
+                    messageViewModel.CurrentThreadInUse = threadId;
+                    messageViewModel.receiverName = $"{receiver.FirstName} {receiver.LastName}";
+                }
+                else
+                {
+                    ViewBag.Msg = "No Message found";
+
+                    return View("Messages");
+                }
+                messageViewModel.ReceiverId = receiver.Id;
+
+            }
+
+            var messages = await _repository.GetAsync<UserChat>();
             if (messages != null && messages.Any())
             {
-                var results = messages.GroupBy(x => x.MessageId);
-                foreach (var messageThreads in results)
+                var filtered = messages.Where(x => x.SenderId == loggedInUser.Id || x.ReceiverId == loggedInUser.Id);
+                if (filtered.Any())
                 {
-                    var last = messageThreads.OrderBy(x => x.UpdatedOn).Last();
-                    var user = await _userManager.FindByIdAsync(last.UserId);
-                    messageViewModels.Add(new MessageViewModel
+                    var results = filtered.ToList().GroupBy(x => x.ThreadId);
+                    foreach (var messageThreads in results)
                     {
-                        PhotoUrl = user.PhotoUrl,
-                        LastText = last.Text,
-                        MessageId = last.MessageId,
-                        UserId = last.UserId,
-                        Name = $"{user.FirstName} {user.LastName}",
-                        TimeStamp = last.UpdatedOn,
-                        ReadOn = last.ReadOn,
-                        DeliverOn = last.DeliverOn
-                    });
+                        var last = messageThreads.OrderBy(x => x.UpdatedOn).Last();
+                        var user = await _userManager.FindByIdAsync(last.SenderId);
+                        messageViewModel.SideThreads.Add(new MessageViewModel
+                        {
+                            PhotoUrl = user.PhotoUrl,
+                            LastText = last.Text,
+                            ThreadId = last.ThreadId,
+                            UserId = last.SenderId,
+                            Name = $"{user.FirstName} {user.LastName}",
+                            TimeStamp = last.UpdatedOn,
+                            ReadOn = last.ReadOn,
+                            DeliverOn = last.DeliveredOn
+                        });
+                    }
+                    messageViewModel.SideThreads.OrderByDescending(x => x.TimeStamp);
+                    messageViewModel.SenderId = loggedInUser.Id;
+                    return View(messageViewModel);
                 }
-
-                return View(messageViewModels);
             }
 
             ViewBag.Msg = "No messages found";
 
             return View();
         }
-    
+
+
 
         [HttpPost]
-        public async Task<IActionResult> CreateMessage(string ReceiverId, string message)
+        public async Task<IActionResult> CreateMessage(MVModel model, string threadId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var receiver = await _userManager.FindByIdAsync(ReceiverId);
-            if (receiver == null)
+            if(!string.IsNullOrEmpty(model.SenderId) && 
+                !string.IsNullOrEmpty(model.ReceiverId) &&
+                !string.IsNullOrEmpty(model.NewChat) && 
+                !string.IsNullOrEmpty(threadId))
             {
-                return RedirectToAction("Messages");
-            }
-            else
-            {
-                var newMessage = new Message
+                await _repository.AddAsync(new UserChat
                 {
-                    UserId = user.Id,
-                    ReceiverId = receiver.Id,
-                    Text = message,
-                    TimeStamp = DateTime.UtcNow
-                };
-
-                await _repository.AddAsync<Message>(newMessage);
+                    Text = model.NewChat,
+                    SenderId = model.SenderId,
+                    ReceiverId = model.ReceiverId,
+                    DeliveredOn = DateTime.UtcNow,
+                    ReadOn = DateTime.UtcNow,
+                    TimeStamp = DateTime.UtcNow,
+                    ThreadId = threadId
+                });
             }
-
-            return RedirectToAction("Messages");
+            return RedirectToAction("Messages", new {threadId});
         }
-    
+
+
 
         [HttpGet]
-        public IActionResult SendReward()
-        {
-            return View();
-        }
-
         public IActionResult SendReward(ListOfSchoolViewModel model, string searchString, int page = 1)
         {
             int pageSize = 5;
@@ -127,6 +165,104 @@ namespace RYT.Controllers
             model.TotalPages = totalPages;
             model.Count = totalItems;
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendReward(string userId, decimal amount)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var senderId = user.Id;
+
+            if (amount != null)
+            {
+                var receiverId = userId;
+                var user_Receiver = await _repository.GetAsync<AppUser>(receiverId);
+                var senderWallet = await (await _repository.GetAsync<Wallet>()).FirstOrDefaultAsync(x => x.UserId == senderId);
+                var receiverWallet = await (await _repository.GetAsync<Wallet>()).FirstOrDefaultAsync(x => x.UserId == receiverId);
+                if (amount > 0)
+                {
+                    if (senderWallet != null)
+                    {
+                        if (senderWallet.Status == WalletStatus.Active)
+                        {
+                            if (senderWallet.Balance > 0 && senderWallet.Balance >= amount)
+                            {
+                                Transaction rewardTransaction = new Transaction()
+                                {
+                                    WalletId = senderWallet.Id,
+                                    Amount = amount,
+                                    SenderId = senderId,
+                                    ReceiverId = receiverId,
+                                    TransactionType = TransactionTypes.Transfer.ToString(),
+                                    Description = $"Transfer of the sum of \u20A6{amount}  by {user.FirstName} {user.LastName}",
+                                    Reference = Guid.NewGuid().ToString()
+                                };
+
+                                using (var trnxObj = await _repository._ctx.Database.BeginTransactionAsync())
+                                {
+                                    try
+                                    {
+                                        var transactionResult = await _repository.AddAsync<Transaction>(rewardTransaction);
+                                        senderWallet.Balance -= amount;
+                                        receiverWallet.Balance += amount;
+                                        await _repository.UpdateAsync<Wallet>(senderWallet);
+                                        await _repository.UpdateAsync<Wallet>(receiverWallet);
+                                        senderWallet.Transactions.Add(rewardTransaction);
+                                        receiverWallet.Transactions.Add(rewardTransaction);
+                                        var link = Url.Action("Login", "Account", null, Request.Scheme);
+                                        var body = @$"Hi{user_Receiver.FirstName},
+             Congratulations, you have been rewarded with a sum of {amount} by {user.FirstName} {user.LastName}. Kindly click <a href='{link}'>here</a> to login to your account";
+                                        await _emailService.SendEmailAsync(user_Receiver.Email, "Reward Notification", body);
+
+                                        await trnxObj.CommitAsync();                           
+                                        return Json(new { Code = 200, name = user.FirstName +" "+ user.LastName, amount=$"\u20A6{amount}" });
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        await trnxObj.RollbackAsync();
+                                        Console.WriteLine(ex.ToString());
+                                        var resultmessage = "Unsuccesfull Transaction";
+                                        return Json(new {Code=400, unsuccesfulTransactionResult = resultmessage });
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                
+                                return Json(new { Code=300, insufficientBalanceResult = "Insufficient Balance" });
+                            }
+
+                        }
+                        else
+                        {
+                            var resultmessage = "Your Wallet is Inactive";
+                            return Json(new { Code=700, inactiveWalletResult = resultmessage });
+
+                        }
+                    }
+                    else
+                    {
+                        var resultmessage = "User Wallet not Found";
+                        return Json(new { Code=404, userNotFoundResult = resultmessage });
+
+                    }
+
+                }
+
+                else
+                {
+                    var resultmessage = "Invalid entry!";
+                    return Json(new { Code=600, invalidEntryResult = resultmessage });
+
+
+                }
+            }
+            else
+            {
+                return Json(new { Code = 800, noAmountResult = "Enter an Amount!" });
+            }
+
+            return View();
         }
 
         [HttpGet]

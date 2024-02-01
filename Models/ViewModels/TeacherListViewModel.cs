@@ -1,4 +1,5 @@
 ﻿using RYT.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace RYT.Models.ViewModels
@@ -15,6 +16,7 @@ namespace RYT.Models.ViewModels
         public int TotalPages { get; set; }
         public int Count { get; set; }
         public int SchoolId { get; set; }
+        public RewardToSendViewModel? RewardToSend { get; set; }
 
         public string CurrentSchool { get; set; }
 
@@ -41,4 +43,10 @@ namespace RYT.Models.ViewModels
         }
 
     }
+}
+public class RewardToSendViewModel
+{
+    public string userId { get; set; }
+    [Required]
+    public decimal Amount { get; set; }
 }

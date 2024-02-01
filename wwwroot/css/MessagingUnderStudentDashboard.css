@@ -1,14 +1,8 @@
-/*.ryt-13-container {
-    gap: 20px;
-    display: flex;
-}*/
-
 
 .ryt-13-messaging_title {
     font-weight: 700;
     font-size: 32px;
-    line-height: 140%; /* 44.ryt-13-8px */
-    letter-spacing: 0.ryt-13-25px;
+    line-height: 140%;
     margin-bottom: 32px;
 }
 
@@ -21,8 +15,6 @@
     display: flex;
     flex-direction: column;
     width: 320px;
-    
-
 }
 
 .ryt-13-search_area {
@@ -75,13 +67,22 @@
     height: 1px;
     margin: 0.8rem 0rem;
 }
-.ryt-13-chat_container_left {
-    gap:8px;
+
+.container {
     display: flex;
-    width: 100%;
+    flex-direction: column;
+}
+
+.ryt-13-chat_container_left {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+.ryt-13-chat_info{
+    margin-right: 10px;
 }
 .ryt-13-pp_container {
-    margin:0;
+    margin-right: 10px;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -89,9 +90,9 @@
 }
 
 .ryt-13-chat_snip_area_left {
+    white-space: nowrap;
     display: flex;
     flex-direction: column;
-    
 }
 .ryt-13-chatmate_left {
     color: var(--Main-Text, #101828);
@@ -102,7 +103,6 @@
 }
 .ryt-13-chat_snip {
     color: var(--Grey-600, #475467);
-    /* Button Normal - 14 */
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
@@ -110,13 +110,8 @@
     padding: 0;
 }
 
-/*right_inner_container*/
-/*.ryt-13-divider {
-    height: 1px;
-    background: var(--Grey-300, #D0D5DD);
-    margin: 0;
-}*/
 .ryt-13-right_inner_container {
+    float: left;
     border: 1px solid var(--Grey-300, #D0D5DD);
 
 }
@@ -130,6 +125,7 @@
     padding: 12px 16px;
 }
 .ryt-13-chat_container_right{
+    float: left;
 
 }
 .ryt-13-chat_snip_area_right {
@@ -224,7 +220,6 @@ object-fit:cover;
     gap: -15px;
 }
 
-
 .ryt-13-keyboard-input-container {
     border-radius: 3rem;
     border: 1px solid var(--Grey-300, #d0d5dd);
@@ -237,7 +232,6 @@ object-fit:cover;
     padding: 9px 8px 9px 16px;
     margin: 2.69rem 0rem
 }
-
 
 .ryt-13-keyboard-input-area {
     display: flex;
@@ -279,4 +273,3 @@ object-fit:cover;
     padding: 8px 19px;
 
 }
-
