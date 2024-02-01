@@ -4,7 +4,7 @@ namespace RYT.Services.Repositories
 {
     public class Repository : IRepository
     {
-        private readonly RYTDbContext _ctx;
+        public RYTDbContext _ctx { get; private set; }
         public Repository(RYTDbContext ctx)
         {
             _ctx = ctx;
