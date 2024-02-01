@@ -10,14 +10,14 @@ namespace RYT.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<DateTime>(
-                name: "DeliveredOn",
+                name: "DeliverOn",
                 table: "Messages",
                 type: "timestamp with time zone",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<Guid>(
-                name: "MessageId",
+                name: "ThreadId",
                 table: "Messages",
                 type: "uuid",
                 nullable: false,
@@ -67,20 +67,20 @@ namespace RYT.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Messages_AspNetUsers_ReciverId",
-                table: "Messages");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_Messages_AspNetUsers_ReciverId",
+            //    table: "Messages");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Messages_ReciverId",
+            //migrationBuilder.DropIndex(
+            //    name: "IX_Messages_ReciverId",
+            //    table: "Messages");
+
+            migrationBuilder.DropColumn(
+                name: "DeliverOn",
                 table: "Messages");
 
             migrationBuilder.DropColumn(
-                name: "DeliveredOn",
-                table: "Messages");
-
-            migrationBuilder.DropColumn(
-                name: "MessageId",
+                name: "ThreadId",
                 table: "Messages");
 
             migrationBuilder.DropColumn(

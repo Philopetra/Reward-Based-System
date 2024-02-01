@@ -1,7 +1,9 @@
-﻿@model IEnumerable<MessageViewModel>
+﻿@model MVModel
+@inject UserManager<AppUser> _userManager
 
 @{
     ViewData["Title"] = "Messages";
+    var loggedInUserId = _userManager.GetUserAsync(User).Result.Id;
 }
 
 <div class="ryt-13-container main-div">
@@ -25,7 +27,7 @@
                 </div>
                 <div class="ryt-13-chat_list_container">
                     <div class="ryt-13-chat_container" style="background: var(--Purple-25, #FAFAFF);">
-                        @if (Model == null || !Model.Any())
+                        @if (Model == null || !Model.SideThreads.Any())
                         {
                             <div>
                                 <p>No message threads yet.</p>
@@ -33,19 +35,22 @@
                         }
                         else
                         {
-                            @foreach (var chatItem in Model)
+                            <div class="container">
+                            @foreach (var chatItem in Model.SideThreads)
                             {
-                                <div class="ryt-13-chat_container_left">
+
+                                    <a class="ryt-13-chat_container_left" asp-controller="Dashboard" asp-action="Messages" asp-route-threadId="@chatItem.ThreadId">
                                     <div class="ryt-13-pp_container">
-                                        <img src="@chatItem.PhotoUrl" class="ryt-13-profile_image" alt="profile_Image" />
+                                        <img src="@chatItem.PhotoUrl" class="ryt-13-profile_image" />
                                     </div>
-                                    <div class="ryt-13-chat_snip_area_left">
+                                    <div class="ryt-13-chat_info">
                                         <h6 class="ryt-13-chatmate_left">@chatItem.Name</h6>
                                         <p class="ryt-13-chat_snip">@chatItem.LastText</p>
                                     </div>
-                                </div>
-                                <span>@chatItem.TimeStamp</span>
+                                        <span class="time">@chatItem.TimeStamp.ToString("t")</span>
+                                </a> 
                             }
+                            </div>
                         }
                     </div>
                 </div>
@@ -53,65 +58,77 @@
             <div class="ryt-13-right_inner_container">
                 <div class="ryt-13-chat_area">
                     <div class="ryt-13-chat_container_right">
-                        @if (Model == null || !Model.Any())
+                        @if (Model == null || !Model.MessageThreads.Any())
                         {
                             <div>
-                                <p>No users yet.</p>
+                                <p>No message yet.</p>
                             </div>
                         }
                         else
-                        {
-                            @foreach (var message in Model)
+                        {       <div class="ryt-13-chatmate_name">
+                                <h2>@Model.receiverName</h2>
+                                </div>
+                            @foreach (var message in Model.MessageThreads)
                             {
-                                @* <div class="ryt-13-chatmate_name">
-                        <h2>@message.ReceiverName</h2>
-                        </div>
-                        <div class="ryt-13-chat_snip_area_right">
-                        <div class="ryt-13-pic_image">
-                        <div class="ryt-13-profile_image_container">
-                        <img class="ryt-13-profile_image" alt="Image" src="@message.ReceiverImage" />
-                        </div>
-                        <div class="ryt-13-message_container">
-                        <h6 class="ryt-13-chatmate" style="color:#979797;">@message.Text</h6>
-                        </div>
-                        </div>
-                        <div class="ryt-13-time_delivery">
-                        <span>@message.TimeStamp</span>
-                        <div class="ryt-13-checks">
-                        <span><i class="ryt-13-bi bi-check2"></i></span>
-                        <span><i class="ryt-13-bi bi-check2"></i></span>
-                        </div>
-                        </div>
-                        </div>
-                        <div class="ryt-13-chat_snip_area_right">
-                        <div class="ryt-13-pic_image_reverse">
-                        <div class="ryt-13-profile_image_container">
-                        <img class="ryt-13-profile_image" alt="Image" src="@message.PhotoUrl" />
-                        </div>
-                        <div class="ryt-13-message_container_reverse">
-                        <h6 class="ryt-13-chatmate">@message.LastText</h6>
-                        </div>
-                        </div>
-                        <div class="ryt-13-time_delivery_reverse">
-                        <span>@message.TimeStamp</span>
-                        <div class="ryt-13-checks">
-                        <span><i class="ryt-13-bi bi-check2"></i></span>
-                        <span><i class="ryt-13-bi bi-check2"></i></span>
-                        </div>
-                        </div>
-                        </div> *@
+
+                                if (message.UserId == loggedInUserId)
+                                {
+                                    <div class="ryt-13-chat_snip_area_right">
+                                        <div class="ryt-13-pic_image">
+                                            <div class="ryt-13-profile_image_container">
+                                                <img class="ryt-13-profile_image" alt="Image" src="@message.PhotoUrl" />
+                                            </div>
+                                            <div class="ryt-13-message_container">
+                                                <h6 style="text-align:left; width: 100%; color:#222222;" class="ryt-13-chatmate">@message.Text</h6>
+                                            </div>
+                                        </div>
+                                        <div class="ryt-13-time_delivery">
+                                            <span>@message.TimeStamp</span>
+                                            <div class="ryt-13-checks">
+                                                <span><i class="ryt-13-bi bi-check2"></i></span>
+                                                <span><i class="ryt-13-bi bi-check2"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="ryt-13-chat_snip_area_right">
+                                        <div class="ryt-13-pic_image_reverse">
+                                            <div class="ryt-13-profile_image_container">
+                                                <img class="ryt-13-profile_image" alt="Image" src="@message.PhotoUrl" />
+                                            </div>
+                                            <div class="ryt-13-message_container_reverse" style="text-align:left">
+                                                <h6  style="text-align:left; width: 100%;" class="ryt-13-chatmate">@message.Text</h6>
+                                            </div>
+                                        </div>
+                                        <div class="ryt-13-time_delivery_reverse">
+                                            <span>@message.TimeStamp</span>
+                                            <div class="ryt-13-checks">
+                                                <span><i class="ryt-13-bi bi-check2"></i></span>
+                                                <span><i class="ryt-13-bi bi-check2"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
                             }
+
+                            <form method="post" class="ryt-13-keyboard-input-container" asp-controller="Dashboard" asp-action="CreateMessage" asp-route-threadId="@Model.CurrentThreadInUse">
+                                <span class="ryt-13-keyboard-input-area">
+                                    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/109a1a5e9169f481d4c034bc300a3a459ff04f6b4962725a241d6107f83f03e7?" class="ryt-13-emoji" />
+                                    <div class="ryt-13-emoji-right-border"></div>
+                                    
+                                    <input asp-for="NewChat" class="ryt-13-chat-keyboard-input" placeholder="Message" />
+                                    <input asp-for="SenderId" class="ryt-13-chat-keyboard-input" hidden />
+                                    <input asp-for="ReceiverId" class="ryt-13-chat-keyboard-input" hidden />
+                                </span>
+                                <button class="ryt-13-send-button" type="submit">Send</button>
+                            </form>
                         }
                     </div>
                 </div>
-                <form class="ryt-13-keyboard-input-container" asp-controller="Dashboard" asp-action="CreateMessage">
-                    <span class="ryt-13-keyboard-input-area">
-                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/109a1a5e9169f481d4c034bc300a3a459ff04f6b4962725a241d6107f83f03e7?" class="ryt-13-emoji" />
-                        <div class="ryt-13-emoji-right-border"></div>
-                        <input class="ryt-13-chat-keyboard-input" placeholder="Message" />
-                    </span>
-                    <button class="ryt-13-send-button" type="submit">Send</button>
-                </form>
+                
             </div>
         </div>
     </div>
