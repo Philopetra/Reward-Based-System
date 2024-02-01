@@ -142,12 +142,8 @@ namespace RYT.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult SendReward()
-        {
-            return View();
-        }
 
+        [HttpGet]
         public IActionResult SendReward(ListOfSchoolViewModel model, string searchString, int page = 1)
         {
             int pageSize = 5;
@@ -169,6 +165,104 @@ namespace RYT.Controllers
             model.TotalPages = totalPages;
             model.Count = totalItems;
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendReward(string userId, decimal amount)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var senderId = user.Id;
+
+            if (amount != null)
+            {
+                var receiverId = userId;
+                var user_Receiver = await _repository.GetAsync<AppUser>(receiverId);
+                var senderWallet = await (await _repository.GetAsync<Wallet>()).FirstOrDefaultAsync(x => x.UserId == senderId);
+                var receiverWallet = await (await _repository.GetAsync<Wallet>()).FirstOrDefaultAsync(x => x.UserId == receiverId);
+                if (amount > 0)
+                {
+                    if (senderWallet != null)
+                    {
+                        if (senderWallet.Status == WalletStatus.Active)
+                        {
+                            if (senderWallet.Balance > 0 && senderWallet.Balance >= amount)
+                            {
+                                Transaction rewardTransaction = new Transaction()
+                                {
+                                    WalletId = senderWallet.Id,
+                                    Amount = amount,
+                                    SenderId = senderId,
+                                    ReceiverId = receiverId,
+                                    TransactionType = TransactionTypes.Transfer.ToString(),
+                                    Description = $"Transfer of the sum of \u20A6{amount}  by {user.FirstName} {user.LastName}",
+                                    Reference = Guid.NewGuid().ToString()
+                                };
+
+                                using (var trnxObj = await _repository._ctx.Database.BeginTransactionAsync())
+                                {
+                                    try
+                                    {
+                                        var transactionResult = await _repository.AddAsync<Transaction>(rewardTransaction);
+                                        senderWallet.Balance -= amount;
+                                        receiverWallet.Balance += amount;
+                                        await _repository.UpdateAsync<Wallet>(senderWallet);
+                                        await _repository.UpdateAsync<Wallet>(receiverWallet);
+                                        senderWallet.Transactions.Add(rewardTransaction);
+                                        receiverWallet.Transactions.Add(rewardTransaction);
+                                        var link = Url.Action("Login", "Account", null, Request.Scheme);
+                                        var body = @$"Hi{user_Receiver.FirstName},
+             Congratulations, you have been rewarded with a sum of {amount} by {user.FirstName} {user.LastName}. Kindly click <a href='{link}'>here</a> to login to your account";
+                                        await _emailService.SendEmailAsync(user_Receiver.Email, "Reward Notification", body);
+
+                                        await trnxObj.CommitAsync();                           
+                                        return Json(new { Code = 200, name = user.FirstName +" "+ user.LastName, amount=$"\u20A6{amount}" });
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        await trnxObj.RollbackAsync();
+                                        Console.WriteLine(ex.ToString());
+                                        var resultmessage = "Unsuccesfull Transaction";
+                                        return Json(new {Code=400, unsuccesfulTransactionResult = resultmessage });
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                
+                                return Json(new { Code=300, insufficientBalanceResult = "Insufficient Balance" });
+                            }
+
+                        }
+                        else
+                        {
+                            var resultmessage = "Your Wallet is Inactive";
+                            return Json(new { Code=700, inactiveWalletResult = resultmessage });
+
+                        }
+                    }
+                    else
+                    {
+                        var resultmessage = "User Wallet not Found";
+                        return Json(new { Code=404, userNotFoundResult = resultmessage });
+
+                    }
+
+                }
+
+                else
+                {
+                    var resultmessage = "Invalid entry!";
+                    return Json(new { Code=600, invalidEntryResult = resultmessage });
+
+
+                }
+            }
+            else
+            {
+                return Json(new { Code = 800, noAmountResult = "Enter an Amount!" });
+            }
+
+            return View();
         }
 
         [HttpGet]
