@@ -4,7 +4,7 @@
     {
         public string Text { get; set; } = string.Empty;
         public string UserId { get; set; }= string.Empty;
-        public DateTime DeliverdOn { get; set; } = DateTime.UtcNow;
+        public DateTime DeliverOn { get; set; } = DateTime.UtcNow;
         public string MessageId { get; set; } = string.Empty;
         public string ReceiverId { get; set; } = string.Empty;
         public DateTime ReadOn { get; set; } = DateTime.UtcNow;

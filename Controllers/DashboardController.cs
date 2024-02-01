@@ -38,11 +38,67 @@ namespace RYT.Controllers
             return View();
         }
 
-        public IActionResult Messages()
+        [HttpGet]
+        public async Task <IActionResult> Messages(string searchTerm)
 
         {
+            var loggedInUser = await _userManager.GetUserAsync(User);
+            List<MessageViewModel> messageViewModels = new List<MessageViewModel>();
+            var messages = (await _repository.GetAsync<Message>()).ToList();
+            if (messages != null && messages.Any())
+            {
+                var results = messages.GroupBy(x => x.MessageId);
+                foreach (var messageThreads in results)
+                {
+                    var last = messageThreads.OrderBy(x => x.UpdatedOn).Last();
+                    var user = await _userManager.FindByIdAsync(last.UserId);
+                    messageViewModels.Add(new MessageViewModel
+                    {
+                        PhotoUrl = user.PhotoUrl,
+                        LastText = last.Text,
+                        MessageId = last.MessageId,
+                        UserId = last.UserId,
+                        Name = $"{user.FirstName} {user.LastName}",
+                        TimeStamp = last.UpdatedOn,
+                        ReadOn = last.ReadOn,
+                        DeliverOn = last.DeliverOn
+                    });
+                }
+
+                return View(messageViewModels);
+            }
+
+            ViewBag.Msg = "No messages found";
+
             return View();
         }
+    
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMessage(string ReceiverId, string message)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var receiver = await _userManager.FindByIdAsync(ReceiverId);
+            if (receiver == null)
+            {
+                return RedirectToAction("Messages");
+            }
+            else
+            {
+                var newMessage = new Message
+                {
+                    UserId = user.Id,
+                    ReceiverId = receiver.Id,
+                    Text = message,
+                    TimeStamp = DateTime.UtcNow
+                };
+
+                await _repository.AddAsync<Message>(newMessage);
+            }
+
+            return RedirectToAction("Messages");
+        }
+    
 
 
         [HttpGet]
