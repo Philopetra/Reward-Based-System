@@ -12,7 +12,7 @@ namespace RYT.Models.Entities
         public DateTime UpdatedOn { get; set; } = DateTime.UtcNow;
 
         // navigation props
-        public ICollection<Message> Messages { get; set; } = new List<Message>();
+        //public ICollection<Message> Messages { get; set; } = new List<Message>();
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
         public Wallet? Wallet { get; set; }
         public string? NameofSchool { get; set; }
