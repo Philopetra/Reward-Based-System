@@ -1,6 +1,11 @@
-﻿/*using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RYT.Models.Entities;
+using RYT.Models.Enums;
 using RYT.Models.ViewModels;
 using RYT.Services.Payment;
+using RYT.Services.Repositories;
 
 namespace RYT.Controllers;
 
@@ -8,24 +13,44 @@ namespace RYT.Controllers;
 public class PaymentController : Controller
 {
     private readonly IPayments _payments;
-
-    public PaymentController(IPayments payments)
+    private readonly UserManager<AppUser> _userManger;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly IRepository _repository;
+    public PaymentController(IPayments payments, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IRepository repository)
     {
         _payments = payments;
+        _userManger = userManager;
+        _signInManager = signInManager;
+        _repository = repository;
     }
     
     public async Task<IActionResult> FundWallet([FromForm] FundWalletVM model)
     {
-         var userId = User.Claims.First(c => c.Type == "id").Value;
-        var response = await _payments.Initialize(model, userId);
-
+        AppUser user = await _signInManager.UserManager.GetUserAsync(User);
+        var response = await _payments.Initialize(model, user.Id);
+        Wallet userWallet = await _repository.GetAsync<Wallet>(user.Id);
         if (!response.Item1)
         {
-            ViewBag.Message = "Withdrawal failed";
-            return BadRequest("Withdrawal failed");
+            ViewBag.Message = "Funding failed";
+            return BadRequest("Funding failed");
         }
-
-        return Redirect(response.Item2);
+        Transaction transaction = new Transaction()
+        {
+            WalletId = user.Id,
+            Amount = model.Amount,
+            SenderId = user.Id,
+            ReceiverId = user.Id,
+            TransactionType = TransactionTypes.Funding.ToString(),
+            Description="Send this "+model.Amount +"to user",
+            Status=true,
+            Reference="vdsjhfko"
+        };
+        int result=await _repository.AddAsync<Transaction>(transaction); 
+        if(result<1)
+        {
+            return Redirect(response.Item2);
+        }
+        return RedirectToAction("Transfer","Dashboard");
     }
     
     [HttpGet("callback")]
@@ -62,7 +87,7 @@ public class PaymentController : Controller
     [HttpPost("withdraw")]
     public async Task<IActionResult> Withdraw([FromForm] CreateWithdrawalVM model)
     {
-         var userId = User.Claims.First(c => c.Type == "id").Value;
+        // var userId = User.Claims.First(c => c.Type == "id").Value;
         ViewBag.IsSuccessful = false;
         try
         {
@@ -120,4 +145,4 @@ public class PaymentController : Controller
         
         return Ok(banks);
     }
-}*/
+}
