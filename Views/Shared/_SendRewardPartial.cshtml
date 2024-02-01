@@ -1,4 +1,5 @@
-﻿<div class="modal fade" id="sendReward" tabindex="-1">
+﻿@model TeacherListViewModel
+<div class="modal fade" id="sendReward" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -7,15 +8,18 @@
             </div>
             <div class="modal-body">
                 <div class="ryts-2-font">
-                    <form method="Post" asp-action="#" asp-controller="#" class="form-ryts-2">
+                    <form method="Post" asp-action="SendReward" asp-controller="Dashboard" id"sendRewardForm" class="form-ryts-2">
                         <h5>Amount to Send</h5>
+                        <input asp-for="RewardToSend.userId" id="userid-input"  hidden/>
                         <div>
-                            <input class="input-layer-ryts-2" type="text" placeholder="N10,000">
+                            <input asp-for="RewardToSend.Amount" id="amt-to-send-input"  class="input-layer-ryts-2" placeholder="N10,000">
                         </div>
-                        <button class="btn-ryts-2">Send</button>
+                        <button class="btn-ryts-2" data-bs-target="#pay_success" type="button" id="send-rwd-btn">Send</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+

@@ -243,49 +243,6 @@ namespace RYT.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("RYT.Models.Entities.Message", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("DeliverOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("MessageId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("ReadOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Messages", (string)null);
-                });
-
             modelBuilder.Entity("RYT.Models.Entities.Notification", b =>
                 {
                     b.Property<string>("Id")
@@ -303,7 +260,7 @@ namespace RYT.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.SchoolsTaught", b =>
@@ -329,7 +286,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("schoolsTaughts", (string)null);
+                    b.ToTable("schoolsTaughts");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.SubjectsTaught", b =>
@@ -355,7 +312,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("SubjectsTaughts", (string)null);
+                    b.ToTable("SubjectsTaughts");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Teacher", b =>
@@ -397,7 +354,7 @@ namespace RYT.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Transaction", b =>
@@ -447,7 +404,50 @@ namespace RYT.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("Transactions", (string)null);
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("RYT.Models.Entities.UserChat", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DeliveredOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ReadOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ThreadId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("UserChats");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.Wallet", b =>
@@ -476,7 +476,7 @@ namespace RYT.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wallets", (string)null);
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -528,17 +528,6 @@ namespace RYT.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("RYT.Models.Entities.Message", b =>
-                {
-                    b.HasOne("RYT.Models.Entities.AppUser", "User")
-                        .WithMany("Messages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RYT.Models.Entities.SchoolsTaught", b =>
@@ -593,6 +582,17 @@ namespace RYT.Migrations
                     b.Navigation("Wallet");
                 });
 
+            modelBuilder.Entity("RYT.Models.Entities.UserChat", b =>
+                {
+                    b.HasOne("RYT.Models.Entities.AppUser", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("RYT.Models.Entities.Wallet", b =>
                 {
                     b.HasOne("RYT.Models.Entities.AppUser", "User")
@@ -606,8 +606,6 @@ namespace RYT.Migrations
 
             modelBuilder.Entity("RYT.Models.Entities.AppUser", b =>
                 {
-                    b.Navigation("Messages");
-
                     b.Navigation("Transactions");
 
                     b.Navigation("Wallet");
