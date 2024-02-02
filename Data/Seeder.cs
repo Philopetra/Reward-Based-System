@@ -34,6 +34,12 @@ namespace RYT.Data
                     {
                         user.EmailConfirmed = true;
                         userMgr.CreateAsync(user, "P@ssw0rd1").Wait();
+                        context.Add(new Wallet
+                        {
+                            Balance = 0,
+                            UserId = user.Id
+                        });
+                        context.SaveChanges();
                         if (counter < 1)
                         {
                             userMgr.AddToRoleAsync(user, "admin").Wait();
