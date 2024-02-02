@@ -24,33 +24,34 @@ public class PaymentController : Controller
         _repository = repository;
     }
     
-    public async Task<IActionResult> FundWallet([FromForm] FundWalletVM model)
+    public async Task<IActionResult> FundWallet([FromForm] OverviewViewModel model)
     {
         AppUser user = await _signInManager.UserManager.GetUserAsync(User);
-        var response = await _payments.Initialize(model, user.Id);
-        Wallet userWallet = await _repository.GetAsync<Wallet>(user.Id);
-        if (!response.Item1)
-        {
-            ViewBag.Message = "Funding failed";
-            return BadRequest("Funding failed");
-        }
-        Transaction transaction = new Transaction()
-        {
-            WalletId = user.Id,
-            Amount = model.Amount,
-            SenderId = user.Id,
-            ReceiverId = user.Id,
-            TransactionType = TransactionTypes.Funding.ToString(),
-            Description="Send this "+model.Amount +"to user",
-            Status=true,
-            Reference="vdsjhfko"
-        };
-        int result=await _repository.AddAsync<Transaction>(transaction); 
-        if(result<1)
-        {
-            return Redirect(response.Item2);
-        }
-        return RedirectToAction("Transfer","Dashboard");
+        var response = await _payments.Initialize(model.FundingVM, user.Id);
+        //Wallet userWallet = await _repository.GetAsync<Wallet>(user.Id);
+        //if (!response.Item1)
+        //{
+        //    ViewBag.Message = "Funding failed";
+        //    return BadRequest("Funding failed");
+        //}
+        //Transaction transaction = new Transaction()
+        //{
+        //    WalletId = user.Id,
+        //    Amount = model.FundingVM.Amount,
+        //    SenderId = user.Id,
+        //    ReceiverId = user.Id,
+        //    TransactionType = TransactionTypes.Funding.ToString(),
+        //    Description="Send this "+model.FundingVM.Amount +"to user",
+        //    Status=true,
+        //    Reference="vdsjhfko"
+        //};
+        //int result=await _repository.AddAsync<Transaction>(transaction); 
+        //if(result<1)
+        //{
+        //    return Redirect(response.Item2);
+        //}
+        return Redirect(response.Item2);
+        //return RedirectToAction("Transfer","Dashboard");
     }
     
     [HttpGet("callback")]
@@ -84,32 +85,32 @@ public class PaymentController : Controller
         return View(model);
     }
     
-    [HttpPost("withdraw")]
-    public async Task<IActionResult> Withdraw([FromForm] CreateWithdrawalVM model)
-    {
-        // var userId = User.Claims.First(c => c.Type == "id").Value;
-        ViewBag.IsSuccessful = false;
-        try
-        {
-            var response = await _payments.Withdraw(model, userId);
-            if (!response)
-            {
-                // redirect to failed page
-                ViewBag.Message = "Withdrawal failed";
-                return BadRequest("Withdrawal failed");
-            }
+    //[HttpPost("withdraw")]
+    //public async Task<IActionResult> Withdraw([FromForm] CreateWithdrawalVM model)
+    //{
+    //    // var userId = User.Claims.First(c => c.Type == "id").Value;
+    //    ViewBag.IsSuccessful = false;
+    //    try
+    //    {
+    //        var response = await _payments.Withdraw(model, userId);
+    //        if (!response)
+    //        {
+    //            // redirect to failed page
+    //            ViewBag.Message = "Withdrawal failed";
+    //            return BadRequest("Withdrawal failed");
+    //        }
             
-            // redirect to success page
-            ViewBag.IsSuccessful = true;
-            ViewBag.Message = "Withdrawal successful";
-            return Ok("Withdrawal successful");
-        }
-        catch (InvalidOperationException e)
-        {
-            return BadRequest(e.Message);
-        }
+    //        // redirect to success page
+    //        ViewBag.IsSuccessful = true;
+    //        ViewBag.Message = "Withdrawal successful";
+    //        return Ok("Withdrawal successful");
+    //    }
+    //    catch (InvalidOperationException e)
+    //    {
+    //        return BadRequest(e.Message);
+    //    }
         
-    }
+    //}
     
     [HttpPost("transfer/{receiverId}")]
     public async Task<IActionResult> Transfer([FromRoute] string receiverId, [FromForm] SendRewardVM model)

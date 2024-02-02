@@ -1,4 +1,4 @@
-﻿@model FundWalletVM
+﻿@model OverviewViewModel
 @inject SignInManager<AppUser> _signInManager
 @inject UserManager<AppUser> _userManager
 @{
@@ -31,14 +31,12 @@
                                                                                   
                             <div class="mb-3">
                                 <label for="EnterAmount" class="form-label wey-EnterAmount">Enter Amount</label>
-                                <input type="number" asp-for="Amount" placeholder="NGN 0.00" class="form-control wey-input" required>
+                                <input type="number" asp-for="FundingVM.Amount" placeholder="NGN 0.00" class="form-control wey-input" required>
                             </div>
                             <div class="dropdown">
                                 <label class="form-label wey-EnterAmount">Payment Type</label>
                                 <select class="form-select">
-                                    <option>-Select-</option>
                                     <option>Paystack</option>
-                                   
                                 </select>
 
                                 @* <input type="hidden" asp-controller="Dashboard" asp-action="Transfer" form-control wey-input"> *@

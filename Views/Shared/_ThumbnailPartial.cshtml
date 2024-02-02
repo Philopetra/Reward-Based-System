@@ -15,21 +15,23 @@
 
     <div class="d-xl-inline-flex">
         <a href="#" data-bs-target="#account_settings" data-bs-toggle="modal" class="nav" style="font-weight: bold; color: black;">
-            @if (string.IsNullOrEmpty(user.PhotoUrl))
-            {
-                <div class="oval-shape">
-                    <img src="~/images/ogm-dummy-image.png" />
-                </div>
-                @user.LastName
-            }
-            else
-            {
-                <div class="oval-shape">
-                    <img src="@user.PhotoUrl" />
-                </div>
-                <div class="" style="margin-left: 10px; margin-top: 3px">@user.FirstName @user.LastName</div>
-                
-            }
+           @if(user != null){
+                @if (string.IsNullOrEmpty(user.PhotoUrl))
+                {
+                    <div class="oval-shape">
+                        <img src="~/images/ogm-dummy-image.png" />
+                    </div>
+                    @user.LastName
+                }
+                else
+                {
+                    <div class="oval-shape">
+                        <img src="@user.PhotoUrl" />
+                    </div>
+                    <div class="" style="margin-left: 10px; margin-top: 3px">@user.FirstName @user.LastName</div>
+
+                }
+           }
         </a>
 
     </div>

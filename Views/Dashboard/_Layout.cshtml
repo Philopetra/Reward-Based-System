@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@inject UserManager<AppUser> _userManager;
+@inject SignInManager<AppUser> _signInManager;
+@{
+    var user = _userManager.GetUserAsync(User).Result;
+    var userRoles = _userManager.GetRolesAsync(user).Result;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -52,8 +58,11 @@
                     <p>Message</p>
                 </a>
 
-                <a asp-action="SendReward" asp-controller="Dashboard"><p>Send Reward</p></a>
+                @if(userRoles.Any(x => x.ToLower().Equals("student")))
+                {
+                    <a asp-action="SendReward" asp-controller="Dashboard"><p>Send Reward</p></a>
 
+                }
 
             </div>
             <div class="sperator"></div>

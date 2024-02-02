@@ -156,19 +156,6 @@ Please click the link <a href='{link}'>here</a> to confirm your account's email"
             return RedirectToAction("TeacherSignUpStep2");
         }
 
-        // To loadUp the Options in the SeedData
-/*        [HttpGet]
-        public IActionResult TeacherSignUpStep2(TeacherSignUpStep2GetViewModel model)
-        {
-            var step2ViewModel = new TeacherSignUpStep2GetViewModel
-            {
-                listOfSubjectsTaught = SeedData.Subjects,
-                listOfSchoolTypes = SeedData.SchoolTypes
-            };
-            return View(step2ViewModel);
-        }
-*/
-
         [HttpGet]
         public IActionResult TeacherSignUpStep2()
         {
@@ -328,21 +315,18 @@ Please click the link <a href='{link}'>here</a> to confirm your account's email"
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? ReturnUrl)
         {
+            ViewBag.ReturnUrl = ReturnUrl;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl)
         {
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                //if(user == null)
-                //{
-                //    ModelState.AddModelError("", "Email not found");
-                //}
                 if (user != null)
                 {
                     if (await _userManager.IsEmailConfirmedAsync(user))
@@ -350,7 +334,28 @@ Please click the link <a href='{link}'>here</a> to confirm your account's email"
                         var loginResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                         if (loginResult.Succeeded)
                         {
-                            return RedirectToAction("overview", "dashboard");
+                            var userRoles = await _userManager.GetRolesAsync(user);
+                            if (string.IsNullOrEmpty(returnUrl))
+                            {
+                                if(userRoles.Any(x => x.ToLower().Equals("teacher")) ||
+                                    userRoles.Any(x => x.ToLower().Equals("student")))
+                                {
+                                    return RedirectToAction("overview", "dashboard");
+
+                                }
+                                return RedirectToAction("Index", "Home");
+                            }
+                            else
+                            {
+                                if (userRoles.Any(x => x.ToLower().Equals("teacher")) ||
+                                    userRoles.Any(x => x.ToLower().Equals("student")))
+                                {
+                                    return LocalRedirect(returnUrl);
+
+                                }
+                                return RedirectToAction("Index", "Home");
+                            }
+
                         }
                         else
                         {

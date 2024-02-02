@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Teacher-Login";
+    var returnUrl = ViewBag.ReturnUrl;
 }
 
 <div class="RYTS-19-main-container RYTS-19-main-19">
@@ -20,7 +21,8 @@
                 <div class="RYTS-19-frame-7">
                     <span class="RYTS-19-login-account">Login to your account</span>
                     <div asp-validation-summary="All"></div>
-                    <form method="post" asp-action="Login" asp-controller="Account">
+                    <form method="post" asp-action="Login" asp-controller="Account"
+                          asp-route-returnUrl="@returnUrl">
                         <div class="RYTS-19-frame-8">
 
                             <div class="RYTS-19-frame-9">

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RYT.Commons;
@@ -17,6 +18,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace RYT.Controllers
 {
+    [Authorize()]
     public class DashboardController : Controller
     {
         private readonly IRepository _repository;
@@ -33,9 +35,104 @@ namespace RYT.Controllers
             _emailService = emailService;
         }
 
-        public IActionResult Overview()
+        public async Task<IActionResult> Overview(string? tableToShow)
         {
-            return View();
+            decimal currentUserWalletBalance = 0.0M;
+            string status = "";
+            decimal amountSent = 0.0M;
+            decimal amountReceived = 0.0M;
+            var userTransactions = new List<Transaction>();
+
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var wallets = await _repository.GetAsync<Wallet>();
+            if (wallets.Any())
+            {
+                var userWallet = wallets.First(x => x.UserId == user.Id);
+                if(userWallet != null)
+                {
+                    currentUserWalletBalance = userWallet.Balance;
+                    status = userWallet.Status.ToString();
+                }
+            }
+
+            if (roles.Any(x => x.ToLower().Equals("teacher"))) 
+            {
+                var transactions = await _repository.GetAsync<Transaction>();
+                if (transactions.Any())
+                {
+                    userTransactions = transactions.Where(
+                        x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
+                        x.ReceiverId.Equals(user.Id)).ToList();
+                }
+
+                userTransactions.ForEach(x =>
+                {
+                    amountReceived += x.Amount;
+                });
+
+            }
+            
+            if (roles.Any(x => x.ToLower().Equals("student")))
+            {
+                var transactions = await _repository.GetAsync<Transaction>();
+                if (transactions.Any())
+                {
+                    userTransactions = transactions.Where(
+                        x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
+                        x.ReceiverId.Equals(user.Id)).ToList();
+                }
+                userTransactions.ForEach(x =>
+                {
+                    amountSent += x.Amount;
+                });
+            }
+
+            var model = new OverviewViewModel
+            {
+                Balance = currentUserWalletBalance,
+                Status = status,
+                AmountReceived = amountReceived,
+                AmountSent = amountSent
+            };
+
+            if (roles.Any(x => x.ToLower().Equals("teacher")))
+            {
+                model.MyReceivedTransactions = userTransactions.Select(x => new ReceivedTransactionsViewModel
+                {
+                    Description = x.Description,
+                    Amount = x.Amount,
+                    timeOfTransaction = x.UpdatedOn
+                }).ToList();
+            }
+            
+            if (roles.Any(x => x.ToLower().Equals("student")))
+            {
+                model.MyFundings = userTransactions.Select(x => new FundingTransactionHistoryViewModel
+                {
+                    Description = x.Description,
+                    Amount = x.Amount,
+                    CreatedOn = x.UpdatedOn
+                }).ToList();
+            }
+
+            if (string.IsNullOrEmpty(tableToShow))
+            {
+                if (roles.Any(x => x.ToLower().Equals("student")))
+                {
+                ViewBag.TableToShow = "fund";
+                }
+                if (roles.Any(x => x.ToLower().Equals("teacher")))
+                {
+                ViewBag.TableToShow = "received";
+                }
+            }
+            else
+            {
+                ViewBag.TableToShow = tableToShow;
+            }
+            return View(model);
         }
 
 
@@ -430,7 +527,7 @@ namespace RYT.Controllers
             }
             OverviewViewModel overviewViewModel = new OverviewViewModel()
             {
-                MySentTransactions = sentTransactionViewModels
+                //MySentTransactions = sentTransactionViewModels
             };
 
             return View(overviewViewModel);
@@ -459,6 +556,11 @@ namespace RYT.Controllers
             return View(overviewViewModel);
         }
 
+        [HttpGet]
+        public IActionResult UpdateImage()
+        {
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> UpdateImage(UploadImageVM model)
