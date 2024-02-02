@@ -47,7 +47,7 @@ public class PaymentController : Controller
         
         // redirect to success page
         ViewBag.Message = "Payment verification successful";
-        return Ok("Payment verification successful");
+        return RedirectToAction("Overview", "Dashboard");
     }
 
     [HttpGet("withdraw")]
