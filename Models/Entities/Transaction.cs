@@ -19,6 +19,6 @@ namespace RYT.Models.Entities
 
         // Navigation Props
         public AppUser? Sender { get; set; }
-        public Wallet? Wallet { get; set; } = new Wallet();
+        public Wallet? Wallet { get; set; }
     }
 }
