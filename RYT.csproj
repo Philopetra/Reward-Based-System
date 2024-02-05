@@ -304,4 +304,9 @@
     </Content>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Views\Payment\" />
+  </ItemGroup>
+
 </Project>

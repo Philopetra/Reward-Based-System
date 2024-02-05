@@ -28,36 +28,13 @@ public class PaymentController : Controller
     {
         AppUser user = await _signInManager.UserManager.GetUserAsync(User);
         var response = await _payments.Initialize(model.FundingVM, user.Id);
-        //Wallet userWallet = await _repository.GetAsync<Wallet>(user.Id);
-        //if (!response.Item1)
-        //{
-        //    ViewBag.Message = "Funding failed";
-        //    return BadRequest("Funding failed");
-        //}
-        //Transaction transaction = new Transaction()
-        //{
-        //    WalletId = user.Id,
-        //    Amount = model.FundingVM.Amount,
-        //    SenderId = user.Id,
-        //    ReceiverId = user.Id,
-        //    TransactionType = TransactionTypes.Funding.ToString(),
-        //    Description="Send this "+model.FundingVM.Amount +"to user",
-        //    Status=true,
-        //    Reference="vdsjhfko"
-        //};
-        //int result=await _repository.AddAsync<Transaction>(transaction); 
-        //if(result<1)
-        //{
-        //    return Redirect(response.Item2);
-        //}
         return Redirect(response.Item2);
-        //return RedirectToAction("Transfer","Dashboard");
     }
     
     [HttpGet("callback")]
     public async Task<IActionResult> VerifyPayment([FromQuery] string reference)
     {
-        var userId = User.Claims.First(c => c.Type == "id").Value;
+        var userId = (await _userManger.GetUserAsync(User)).Id;
         
         var isSuccessful = await _payments.Verify(reference);
         
@@ -70,7 +47,7 @@ public class PaymentController : Controller
         
         // redirect to success page
         ViewBag.Message = "Payment verification successful";
-        return Ok("Payment verification successful");
+        return RedirectToAction("Overview", "Dashboard");
     }
 
     [HttpGet("withdraw")]
@@ -115,7 +92,7 @@ public class PaymentController : Controller
     [HttpPost("transfer/{receiverId}")]
     public async Task<IActionResult> Transfer([FromRoute] string receiverId, [FromForm] SendRewardVM model)
     {
-        var userId = User.Claims.First(c => c.Type == "id").Value;
+        var userId = (await _userManger.GetUserAsync(User)).Id;
         ViewBag.IsSuccessful = false;
         try
         {
