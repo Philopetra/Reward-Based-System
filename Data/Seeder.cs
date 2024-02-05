@@ -16,7 +16,7 @@ namespace RYT.Data
 			{
 				context.Database.MigrateAsync().Wait();
 			}
-
+            
 			try
 			{
                 if (!roleMgr.Roles.Any())

@@ -46,6 +46,30 @@ namespace RYT.Controllers
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
 
+            var model = new OverviewViewModel
+            {
+                Balance = currentUserWalletBalance,
+                Status = status,
+                AmountReceived = amountReceived,
+                AmountSent = amountSent
+            };
+
+            if (string.IsNullOrEmpty(tableToShow))
+            {
+                if (roles.Any(x => x.ToLower().Equals("student")))
+                {
+                    ViewBag.TableToShow = tableToShow = "fund";
+                }
+                if (roles.Any(x => x.ToLower().Equals("teacher")))
+                {
+                    ViewBag.TableToShow = tableToShow = "received";
+                }
+            }
+            else
+            {
+                ViewBag.TableToShow = tableToShow;
+            }
+
             var wallets = await _repository.GetAsync<Wallet>();
             if (wallets.Any())
             {
@@ -55,83 +79,104 @@ namespace RYT.Controllers
                     currentUserWalletBalance = userWallet.Balance;
                     status = userWallet.Status.ToString();
                 }
-            }
 
-            if (roles.Any(x => x.ToLower().Equals("teacher"))) 
-            {
-                var transactions = await _repository.GetAsync<Transaction>();
-                if (transactions.Any())
-                {
-                    userTransactions = transactions.Where(
-                        x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
-                        x.ReceiverId.Equals(user.Id)).ToList();
-                }
-
-                userTransactions.ForEach(x =>
-                {
-                    amountReceived += x.Amount;
-                });
-
-            }
-            
-            if (roles.Any(x => x.ToLower().Equals("student")))
-            {
-                var transactions = await _repository.GetAsync<Transaction>();
-                if (transactions.Any())
-                {
-                    userTransactions = transactions.Where(
-                        x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
-                        x.ReceiverId.Equals(user.Id)).ToList();
-                }
-                userTransactions.ForEach(x =>
-                {
-                    amountSent += x.Amount;
-                });
-            }
-
-            var model = new OverviewViewModel
-            {
-                Balance = currentUserWalletBalance,
-                Status = status,
-                AmountReceived = amountReceived,
-                AmountSent = amountSent
-            };
-
-            if (roles.Any(x => x.ToLower().Equals("teacher")))
-            {
-                model.MyReceivedTransactions = userTransactions.Select(x => new ReceivedTransactionsViewModel
-                {
-                    Description = x.Description,
-                    Amount = x.Amount,
-                    timeOfTransaction = x.UpdatedOn
-                }).ToList();
-            }
-            
-            if (roles.Any(x => x.ToLower().Equals("student")))
-            {
-                model.MyFundings = userTransactions.Select(x => new FundingTransactionHistoryViewModel
-                {
-                    Description = x.Description,
-                    Amount = x.Amount,
-                    CreatedOn = x.UpdatedOn
-                }).ToList();
-            }
-
-            if (string.IsNullOrEmpty(tableToShow))
-            {
-                if (roles.Any(x => x.ToLower().Equals("student")))
-                {
-                ViewBag.TableToShow = "fund";
-                }
                 if (roles.Any(x => x.ToLower().Equals("teacher")))
                 {
-                ViewBag.TableToShow = "received";
+                    var transactions = await _repository.GetAsync<Transaction>();
+                    if (tableToShow.ToLower().Equals("received"))
+                    {
+                        if (transactions.Any())
+                        {
+                            userTransactions = transactions.Where(
+                                x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
+                                x.ReceiverId.Equals(user.Id)).ToList();
+                        }
+                        model.MyReceivedTransactions = userTransactions.Select(x => new ReceivedTransactionsViewModel
+                        {
+                            Description = x.Description,
+                            Amount = x.Amount,
+                            timeOfTransaction = x.UpdatedOn
+                        }).ToList();
+                    }
+                    else
+                    {
+                        if (transactions.Any())
+                        {
+                            userTransactions = transactions.Where(
+                                x => x.TransactionType.ToLower().Equals(TransactionTypes.Withdrawal.ToString().ToLower()) &&
+                                x.SenderId.Equals(user.Id)).ToList();
+                        }
+                        model.MySentTransactions = userTransactions.Select(x => new SentTransactionViewModel
+                        {
+                            Description = x.Description,
+                            Amount = x.Amount,
+                            timeOfTransaction = x.UpdatedOn
+                        }).ToList();
+                    }
+
+                    userTransactions.ForEach(x =>
+                    {
+                        amountReceived += x.Amount;
+                    });
+
+                }
+
+                if (roles.Any(x => x.ToLower().Equals("student")))
+                {
+                    var transactions = await _repository.GetAsync<Transaction>();
+                    if (tableToShow.ToLower().Equals("fund"))
+                    {
+                        if (transactions.Any())
+                        {
+                            userTransactions = transactions.Where(
+                                x => x.TransactionType.ToLower().Equals(TransactionTypes.Funding.ToString().ToLower()) &&
+                                x.SenderId.Equals(user.Id)).ToList();
+                        }
+                        model.MyFundings = userTransactions.Select(x => new FundingTransactionHistoryViewModel
+                        {
+                            Description = x.Description,
+                            Amount = x.Amount,
+                            CreatedOn = x.UpdatedOn
+                        }).ToList();
+                    }
+                    else
+                    {
+                        if (transactions.Any())
+                        {
+                            userTransactions = transactions.Include(x => x.Sender)
+                                .Where(
+                                    x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
+                                    x.SenderId.Equals(user.Id)
+                                ).ToList();
+                        }
+                        model.MyTransferTransactions = userTransactions.Select(x => new TransferTransactionHistoryViewModel
+                        {
+                            School = "",
+                            NameOfTeacher = $"{x.Sender.FirstName} {x.Sender.LastName}",
+                            Amount = x.Amount,
+                            dateTime = x.UpdatedOn
+                        }).ToList();
+                    }
+
+                    userTransactions.ForEach(x =>
+                    {
+                        amountSent += x.Amount;
+                    });
                 }
             }
-            else
-            {
-                ViewBag.TableToShow = tableToShow;
-            }
+
+           
+
+            //if (roles.Any(x => x.ToLower().Equals("teacher")))
+            //{
+               
+            //}
+            
+            //if (roles.Any(x => x.ToLower().Equals("student")))
+            //{
+               
+            //}
+
             return View(model);
         }
 

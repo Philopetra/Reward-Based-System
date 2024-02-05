@@ -82,18 +82,18 @@
 
                         <div class="ryts-9-frame-1b">
 
-                            <button id="toggleButton1" class="toggle-button active ryts-9-received" onclick="toggleTable('table1', 'table2', 'toggleButton1', 'toggleButton2')">Funding</button>
+                            <a asp-action="overview" asp-route-tableToShow="fund" class="toggle-button active ryts-9-received">Funding</a>
 
                             @* <div class="ryts-9-divider-1c"></div> *@
                         </div>
-                        <button id="toggleButton2" class="toggle-button ryts-9-sent" onclick="toggleTable('table2', 'table1', 'toggleButton2', 'toggleButton1')">Transfer</button>
+                        <a asp-action="overview" asp-route-tableToShow="transfer" class="toggle-button ryts-9-sent">Transfer</a>
 
                     </div>
                     <div class="ryts-9-divider-1d"></div>
                 </div>
-                @if (tableToShow.ToLower().Equals("fund"))
-                {
-                    <table class="ryts-9-frame-1e" id="table1">
+                <table class="ryts-9-frame-1e" id="table1">
+                    @if (tableToShow.ToLower().Equals("fund"))
+                    {
                         <thead>
                             <tr class="ryts-9-frame-1f">
                                 <th class="ryts-9-description-transfer">Description</th>
@@ -120,12 +120,38 @@
                                 }
                             }
                         </tbody>
-                    </table>
-                }
-                @if (tableToShow.ToLower().Equals("sent"))
-                {
-
-                }
+                    }
+                    @if (tableToShow.ToLower().Equals("transfer"))
+                    {
+                        <thead>
+                            <tr class="ryts-9-frame-1f">
+                                <th class="ryts-9-description-transfer">Name of teacher</th>
+                                <th class="ryts-9-description-transfer">School</th>
+                                <th class="ryts-9-amount-sent-transfer">Amount sent</th>
+                                <th class="ryts-9-date-time-transfer">Date/Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model?.MyFundings == null)
+                            {
+                                <tr>
+                                    <td class="p-5" colspan="3">You have no funding transaction history yet</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var transaction in Model.MyFundings)
+                                {
+                                    <tr class="ryts-9-frame-20">
+                                        <td class="ryts-9-you-sent">@transaction.Description</td>
+                                        <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                        <td class="ryts-9-date-time-22-transfer">@transaction.CreatedOn</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    }
+                </table>
             }
             else if (userRoles.Any(x => x.ToLower().Equals("teacher")))
             {
@@ -134,23 +160,75 @@
 
                         <div class="ryts-9-frame-1b">
 
-                            <button id="toggleButton1" class="toggle-button active ryts-9-received" onclick="toggleTable('table1', 'table2', 'toggleButton1', 'toggleButton2')">Received</button>
+                            <a asp-action="overview" asp-route-tableToShow="received" class="toggle-button active ryts-9-received">Received</a>
 
                             @* <div class="ryts-9-divider-1c"></div> *@
                         </div>
-                        <button id="toggleButton2" class="toggle-button ryts-9-sent" onclick="toggleTable('table2', 'table1', 'toggleButton2', 'toggleButton1')">Sent</button>
+                        <a asp-action="overview" asp-route-tableToShow="sent" class="toggle-button ryts-9-sent">Sent</a>
 
                     </div>
                     <div class="ryts-9-divider-1d"></div>
                 </div>
+                <table class="ryts-9-frame-1e" id="table1">
                 @if (tableToShow.ToLower().Equals("received"))
                 {
-
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description-transfer">Description</th>
+                            <th class="ryts-9-amount-sent-transfer">Amount</th>
+                            <th class="ryts-9-date-time-transfer">Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model?.MyFundings == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">You have no funding transaction history yet</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var transaction in Model.MyFundings)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transaction.Description</td>
+                                    <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                    <td class="ryts-9-date-time-22-transfer">@transaction.CreatedOn</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
                 }
                 @if (tableToShow.ToLower().Equals("transfer"))
                 {
-
+                    <thead>
+                        <tr class="ryts-9-frame-1f">
+                            <th class="ryts-9-description-transfer">Description</th>
+                            <th class="ryts-9-amount-sent-transfer">Amount</th>
+                            <th class="ryts-9-date-time-transfer">Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model?.MyFundings == null)
+                        {
+                            <tr>
+                                <td class="p-5" colspan="3">You have no funding transaction history yet</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var transaction in Model.MyFundings)
+                            {
+                                <tr class="ryts-9-frame-20">
+                                    <td class="ryts-9-you-sent">@transaction.Description</td>
+                                    <td class="ryts-9-n-21-transfer">@transaction.Amount</td>
+                                    <td class="ryts-9-date-time-22-transfer">@transaction.CreatedOn</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
                 }
+                </table>
             }
         </div>
 
