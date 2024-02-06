@@ -156,7 +156,7 @@
                 <div class="container p-5">
                     <div class="ogm-notify-panel">
                         <div class="ogm-notify-panel-inner">
-                            <div class="ogm-details-area">
+                            <div id ="notificationContainer" class="ogm-details-area">
                                 <p class="ogm-day-time">Today<p />
                                 <div class="ogm-flex-words ogm-border-around">
                                     <p>You sent money to Babatunde<br /> <span class="ogm-day-time">12:30pm</span> </p>
@@ -267,3 +267,68 @@
 
 <Partial name="_PaySuccessPartial" />
 <Partial name="_FundingPartial" />
+<script>
+    function handleNotificationClick(element) {
+        document.addEventListener('click', function (event) {
+            var clickedElement = event.target;
+            var elementName = clickedElement.id;
+            var parentElement = clickedElement.parentElement;
+            fetch(`/dashboard/ReadNotification?notification=${elementName}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    parentElement.style.backgroundColor = 'grey';
+                    var notificationNumberElement = document.getElementById("notificationNumber");
+                    var unreadNo = parseInt(notificationNumberElement.innerHTML);
+                    unreadNo -= 1;
+                    notificationNumberElement.innerHTML = unreadNo;
+                })
+                .then(data => {
+
+                })
+                .catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                });
+        });
+
+    }
+    function countNotification() {
+        fetch(`/dashboard/CountUnreadNotifications`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                document.getElementById("notificationNumber").innerHTML = data;
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
+    }
+
+    function loadNotification() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'dashboard/GetNotifications', true);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                document.getElementById("notificationContainer").innerHTML = xhr.responseText;
+            } else {
+                console.error('Request failed with status', xhr.status);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('There was a problem with the request');
+        };
+        xhr.send();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Call loadNotification function when the document is ready
+        loadNotification();
+    });
+
+</script>

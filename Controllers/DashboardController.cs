@@ -9,6 +9,7 @@ using RYT.Models.Enums;
 using RYT.Models.ViewModels;
 using RYT.Services.CloudinaryService;
 using RYT.Services.Emailing;
+using RYT.Services.NotificationSaga;
 using RYT.Services.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +26,16 @@ namespace RYT.Controllers
         private readonly IPhotoService _photoService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
+        private readonly IFirebaseService _firebaseService;
 
-        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService,
+        public DashboardController(IFirebaseService firebaseService, IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService,
             IEmailService emailService)
         {
             _repository = repository;
             _userManager = userManager;
             _photoService = photoService;
             _emailService = emailService;
+            _firebaseService = firebaseService;
         }
 
         public async Task<IActionResult> Overview(string? tableToShow)
@@ -756,6 +759,86 @@ namespace RYT.Controllers
             return View(model);
 
         }
+        public async Task SendNotification()
+        {
+            FireBaseNotfication notification = new FireBaseNotfication
+            {
+                userId = "148d2f6f-af7a-423a-baa2-f01d434d9b3a",
+                messages = "gdh i love him like mad",
+                dateTime = DateTime.UtcNow,
+            };
+            int result = await _firebaseService.AddNotification(notification);
+            Console.WriteLine(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetNotifications()
+        {
+            AppUser user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+
+                return Content("0", "text/html");
+            }
+            Console.WriteLine(user.Id);
+            IEnumerable<FireBaseNotfication> result = (await _firebaseService.GetNotifications(user.Id)).OrderByDescending(n => n.notificationId);
+            if (result != null)
+            {
+                string FinalResult = "";
+                foreach (FireBaseNotfication fireBaseNotfication in result)
+                {
+                    string html = "";
+                    if (fireBaseNotfication.status == "sent")
+                    {
+                        html = "< div class='ogm-flex-words ogm-border-around'id ='INotifyU" + fireBaseNotfication.notificationId + "'><p>" + fireBaseNotfication.messages + "<br /> <span class='ogm -day-time'>" + fireBaseNotfication.dateTime + "</span> </p></ div >";
+                    }
+                    else
+                    {
+                        html = "<p onclick='handleNotificationClick(this)'id ='INotifyU" + fireBaseNotfication.notificationId + "'>" + fireBaseNotfication.messages + "<br> <span class='ogm-day-time pt'>" + fireBaseNotfication.dateTime + "</span> </p>";
+                    }
+                    FinalResult += html;
+                }
+                var htmlContent = FinalResult;
+                return Content(htmlContent, "text/html");
+            }
+            return Content("No Notification", "text/html");
+        }
+        public async Task<IActionResult> CountUnreadNotifications()
+        {
+            AppUser user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Content("0", "text/html");
+            }
+            IEnumerable<FireBaseNotfication> getList = (await _firebaseService.GetNotifications(user.Id));
+            int result = getList.Where(u => u.status == "sent").Count();
+            string counterUnread = result.ToString();
+            return Content(counterUnread, "text/html");
+        }
+        [HttpGet]
+        public async Task<string> ReadNotification(string notification)
+        {
+
+            int notificationId = int.Parse(notification.Replace("INotifyU", ""));
+            AppUser user = await _userManager.GetUserAsync(User);
+            int result = await _firebaseService.ReadNotification(user.Id, notificationId);
+            if (result == 0)
+            {
+                return "no";
+            }
+            return "yes";
+
+        }
+        public async Task DeleteNotification(string userId, int notificationId)
+        {
+            int result = await _firebaseService.DeleteNotification(userId, notificationId);
+            if (result == 0)
+            {
+                Console.WriteLine("no");
+            }
+            Console.WriteLine("yes");
+        }
+
     }
 }
 
