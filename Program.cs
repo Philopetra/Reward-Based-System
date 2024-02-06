@@ -19,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
+System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "wwwroot/firebase/firebase.json");
 builder.Services.AddDbContext<RYTDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("default")));
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<RYTDbContext>()
@@ -29,8 +30,8 @@ builder.Services.AddScoped<IEmailService, Emailing>();
 
 builder.Services.AddScoped<IPaymentService, PayStackService>();
 builder.Services.AddScoped<IPayments, Payments>();
-builder.Services.AddTransient<IFirebaseService, FirebaseService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddTransient<IFirebaseService, FirebaseService>();
 builder.Services.AddSingleton(provider =>
 {
     var firebaseApp = FirebaseApp.Create(new AppOptions
@@ -38,13 +39,13 @@ builder.Services.AddSingleton(provider =>
         Credential = GoogleCredential.GetApplicationDefault(),
     });
 
-    // Explicitly set the project ID (replace "your-project-id" with your actual Firebase project ID)
-    var projectId = "ryt-decagon-14ec0"; // Set your Firebase project ID here
+    var projectId = "ryt-decagon-14ec0";
 
     // Register FirestoreDb
     var firestoreDb = FirestoreDb.Create(projectId);
     return firestoreDb;
 });
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 

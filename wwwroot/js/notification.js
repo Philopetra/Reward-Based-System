@@ -9,7 +9,7 @@ connection.on("ReceiveNotification", function (notification) {
     NumberNot.innerHTML = notificationNumber+1;
 
     const notificationItem = document.createElement("div");
-    notificationItem.innerHTML = `<p onclick='handleNotificationClick(this)'id ='INotifyU${+fireBaseNotfication.notificationId}'>${fireBaseNotfication.messages} + "<br> <span class='ogm-day-time pt'>${fireBaseNotfication.dateTime}</span> </p>`;
+    notificationItem.innerHTML = `<div class='ogm-flex-words ogm-border-around'id ='INotifyU${fireBaseNotfication.notificationId}'><p>${fireBaseNotfication.messages}<br /> <span class='ogm -day-time'>${fireBaseNotfication.dateTime}</span> </p></ div >`;
     notificationItem.style.backgroundColor = "#D9D6FE";
     notificationItem.className += "ryt-row ryt-padding ryt-margin-bottom";
     document.getElementById("notificationContainer").prepend(notificationItem);
