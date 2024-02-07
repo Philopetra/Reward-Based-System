@@ -48,6 +48,23 @@ namespace RYT.Data
                         {
                             var r = new Random().Next(1, 3);
                             userMgr.AddToRoleAsync(user, SeedData.Roles[r]).Wait();
+                            if(r == 2)
+                            {
+                                context.AddAsync(new Teacher
+                                {
+                                    UserId = user.Id,
+                                    YearsOfTeaching = "1993 - 2001",
+                                    Position = "Class Teacher",
+                                    TeacherSubjects = new List<SubjectsTaught> {
+                                        new SubjectsTaught{ Subject = "English" },
+                                        new SubjectsTaught{ Subject = "Geography" },
+                                    },
+                                    SchoolsTaughts = new List<SchoolsTaught> { 
+                                        new SchoolsTaught{ School = "Mainland Senior High School" }
+                                    },
+                                    SchoolType = "Senior High School"
+                                });
+                            }
                         }
                         counter++;
                     }
