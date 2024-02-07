@@ -82,11 +82,12 @@
 
     </div>
     <div class="ryt-row" style="background-color:#F5F5F5">
-        <div style="font-weight:bold;margin-top:35px" class="ryt-col s12 ryt-margin-bottom">Transaction History</div>
-        <div class="ryts-9-frame-transfer">
+        <div style="font-weight:bold;margin-top:35px">Transaction History</div>
+        <br/>
+        <div class="ryts-9-frame-transfer" style="background:white">
             @if (userRoles.Any(x => x.ToLower().Equals("student")))
             {
-                <div class="ryts-9-frame-19">
+                <div class="ryts-9-frame-19" style="background:#F5F5F5">
                     <div class="ryts-9-frame-1a">
 
                         <div class="ryts-9-frame-1b">
@@ -116,7 +117,7 @@
                     </div>
                     <div class="ryts-9-divider-1d"></div>
                 </div>
-                <table class="neo-table-container">
+                <table class="neo-table-container" style="background:white">
                     @if (tableToShow.ToLower().Equals("fund"))
                     {
                         <thead>
@@ -179,7 +180,7 @@
             }
             else if (userRoles.Any(x => x.ToLower().Equals("teacher")))
             {
-                <div class="ryts-9-frame-19">
+                <div class="ryts-9-frame-19" style="background:#F5F5F5">
                     <div class="ryts-9-frame-1a">
 
                         <div class="ryts-9-frame-1b">
@@ -209,7 +210,7 @@
                     </div>
                     <div class="ryts-9-divider-1d"></div>
                 </div>
-                <table class="neo-table-container">
+                <table class="neo-table-container" style="background:white">
                 @if (tableToShow.ToLower().Equals("received"))
                 {
                     <thead>
