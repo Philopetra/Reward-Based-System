@@ -1,6 +1,4 @@
 ﻿@model MVModel
-@inject UserManager<AppUser> _userManager
-
 @{
     ViewData["Title"] = "Messages";
     var loggedInUserId = _userManager.GetUserAsync(User).Result.Id;
@@ -55,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="ryt-13-right_inner_container">
+            <div class="ryt-13-right_inner_container" style="width:80%; border:1px solid red">
                 <div class="ryt-13-chat_area">
                     <div class="ryt-13-chat_container_right">
                         @if (Model == null || !Model.MessageThreads.Any())

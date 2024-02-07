@@ -189,83 +189,83 @@ Please click the link <a href='{link}'>here</a> to confirm your account's email"
 
             if (ModelState.IsValid)
             {
-                var NINUploadImageResult = await _photoService.UploadImage(model.NINUploadImage, step1ViewModel.Name);
-
-                if (NINUploadImageResult.ContainsKey("Code") && NINUploadImageResult["Code"] == "200")
+                //var NINUploadImageResult = await _photoService.UploadImage(model.NINUploadImage, step1ViewModel.Name);
+                var user = new AppUser
                 {
-                    var user = new AppUser
-                    {
-                        FirstName = step1ViewModel.FirstName,
-                        LastName = step1ViewModel.LastName,
-                        Email = step1ViewModel.Email,
-                        UserName = step1ViewModel.Email,
-                        NameofSchool = step1ViewModel.SelectedSchool,
-                    };
+                    FirstName = step1ViewModel.FirstName,
+                    LastName = step1ViewModel.LastName,
+                    Email = step1ViewModel.Email,
+                    UserName = step1ViewModel.Email,
+                    NameofSchool = step1ViewModel.SelectedSchool,
+                };
 
-                    var createUserResult = await _userManager.CreateAsync(user, step1ViewModel.Password);
-                    if (createUserResult.Succeeded)
+                var createUserResult = await _userManager.CreateAsync(user, step1ViewModel.Password);
+                if (createUserResult.Succeeded)
+                {
+                    // Add Role to teacher
+                    var addRoleResult = await _userManager.AddToRoleAsync(user, "teacher");
+                    if (addRoleResult.Succeeded)
                     {
-                        // Add Role to teacher
-                        var addRoleResult = await _userManager.AddToRoleAsync(user, "teacher");
-                        if (addRoleResult.Succeeded)
+
+                        var teacher = new Teacher
                         {
+                            UserId = user.Id,
+                            YearsOfTeaching = model.YearsOfTeaching,
+                            SchoolType = model.SelectedSchoolType,
+                            // NINUploadUrl = NINUploadImageResult["Url"], // added url returned from cloudinary
+                            // NINUploadPublicId = NINUploadImageResult["PublicId"] // added public id returned from cloudinary
+                        };
+                        await _repository.AddAsync(teacher);
 
-                            var teacher = new Teacher
-                            {
-                                UserId = user.Id,
-                                YearsOfTeaching = model.YearsOfTeaching,
-                                SchoolType = model.SelectedSchoolType,
-                                NINUploadUrl = NINUploadImageResult["Url"], // added url returned from cloudinary
-                                NINUploadPublicId = NINUploadImageResult["PublicId"] // added public id returned from cloudinary
-                            };
-                            await _repository.AddAsync(teacher);
+                        var teacherSubject = new SubjectsTaught
+                        {
+                            TeacherId = teacher.Id,
+                            Subject = model.SelectedSubject
+                        };
+                        await _repository.AddAsync(teacherSubject);
 
-                            var teacherSubject = new SubjectsTaught
-                            {
-                                TeacherId = teacher.Id,
-                                Subject = model.SelectedSubject
-                            };
-                            await _repository.AddAsync(teacherSubject);
+                        var teacherSchool = new SchoolsTaught
+                        {
+                            TeacherId = teacher.Id,
+                            School = step1ViewModel.SelectedSchool
+                        };
+                        await _repository.AddAsync(teacherSchool);
 
-                            var teacherSchool = new SchoolsTaught
-                            {
-                                TeacherId = teacher.Id,
-                                School = step1ViewModel.SelectedSchool
-                            };
-                            await _repository.AddAsync(teacherSchool);
+                        var wallet = new Wallet
+                        {
+                            UserId = user.Id,
+                            Balance = 0,
+                            Status = WalletStatus.Active
+                        };
+                        await _repository.AddAsync(wallet);
 
-                            var wallet = new Wallet
-                            {
-                                UserId = user.Id,
-                                Balance = 0,
-                                Status = WalletStatus.Active
-                            };
-                            await _repository.AddAsync(wallet);
-
-                            // send email confirmation link
-                            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                            var link = Url.Action("ConfirmEmail", "Account", new { user.Email, token }, Request.Scheme);
-                            string body = @$"Hi{user.FirstName},
+                        // send email confirmation link
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var link = Url.Action("ConfirmEmail", "Account", new { user.Email, token }, Request.Scheme);
+                        string body = @$"Hi{user.FirstName},
 Please click the link <a href='{link}'>here</a> to confirm your account's email";
-                            await _emailService.SendEmailAsync(user.Email, "Confirm Email", body);
+                        await _emailService.SendEmailAsync(user.Email, "Confirm Email", body);
 
-                            return RedirectToAction("RegisterCongrats", "Account", new { name = user.FirstName });
-                        }
-                        foreach (var err in addRoleResult.Errors)
-                        {
-                            ModelState.AddModelError(err.Code, err.Description);
-                        }
+                        return RedirectToAction("RegisterCongrats", "Account", new { name = user.FirstName });
                     }
-
-                    foreach (var err in createUserResult.Errors)
+                    foreach (var err in addRoleResult.Errors)
                     {
                         ModelState.AddModelError(err.Code, err.Description);
                     }
                 }
-                else
+
+                foreach (var err in createUserResult.Errors)
                 {
-                    ModelState.AddModelError("", "Failed to upload NIN.");
+                    ModelState.AddModelError(err.Code, err.Description);
                 }
+                //if (NINUploadImageResult.ContainsKey("Code") && NINUploadImageResult["Code"] == "200")
+                //{
+                    
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError("", "Failed to upload NIN.");
+                //}
             }
 
             return View(model);

@@ -1,8 +1,10 @@
-﻿@inject UserManager<AppUser> _userManager;
-@inject SignInManager<AppUser> _signInManager;
-@{
+﻿@{
     var user = _userManager.GetUserAsync(User).Result;
-    var userRoles = _userManager.GetRolesAsync(user).Result;
+    IList<string> userRoles = new List<string>();
+    if (user != null)
+    {
+        userRoles = _userManager.GetRolesAsync(user).Result;
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -42,8 +44,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/rytHome.css" />
     <link rel="stylesheet" href="~/css/funding-transfer.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/animate.css" />
 </head>
-<body >
+<body class="animated fadeIn" >
     
     <Partial name="_NavBarPartial" />
     <div class="drawer-panel">
@@ -60,7 +63,7 @@
 
                 @if(userRoles.Any(x => x.ToLower().Equals("student")))
                 {
-                    <a asp-action="SendReward" asp-controller="Dashboard"><p>Send Reward</p></a>
+                    <a asp-action="SendReward" asp-controller="dashboard"><p>Send Reward</p></a>
 
                 }
 

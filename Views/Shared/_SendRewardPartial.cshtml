@@ -1,4 +1,20 @@
 ﻿@model TeacherListViewModel
+<style>
+
+
+.loader-panel {
+    width: 100%;
+    display:flex;
+    justify-content:center;
+    padding-top:10px;
+}
+.showItem{
+    display:block;
+}
+.hideItem {
+    display: none;
+}
+</style>
 <div class="modal fade" id="sendReward" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -15,6 +31,9 @@
                             <input asp-for="RewardToSend.Amount" id="amt-to-send-input"  class="input-layer-ryts-2" placeholder="N10,000">
                         </div>
                         <button class="btn-ryts-2" data-bs-target="#pay_success" type="button" id="send-rwd-btn">Send</button>
+                        <div class="loader-panel">
+                            <img class="hideItem" id="loader-img" src="~/Images/loader.gif" style="width:30px" />
+                        </div>
                     </form>
                 </div>
             </div>

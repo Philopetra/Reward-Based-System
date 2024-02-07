@@ -9,8 +9,8 @@
         public IList<SchoolsTaught> SchoolsTaughts { get; set; } = new List<SchoolsTaught>();
 
         public string SchoolType { get; set; } = string.Empty;
-        public string NINUploadUrl { get; set; } = string.Empty;
-        public string NINUploadPublicId { get; set; } = string.Empty;
+        public string? NINUploadUrl { get; set; }
+        public string? NINUploadPublicId { get; set; }
 
         // navigation property
         public AppUser? User { get; set; }

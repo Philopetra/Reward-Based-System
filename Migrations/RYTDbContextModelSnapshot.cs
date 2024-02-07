@@ -324,11 +324,9 @@ namespace RYT.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NINUploadPublicId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("NINUploadUrl")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Position")

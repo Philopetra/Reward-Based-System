@@ -1,7 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using RYT.Models.Entities
-@inject UserManager<AppUser> _userManager
-@inject SignInManager<AppUser> _signInManager
 @{
     var user = _userManager.GetUserAsync(User).Result;
 }

@@ -11,7 +11,21 @@ let usernameCols = document.querySelectorAll(".username-col");
 let userIdInput = document.querySelector("#userid-input");
 let amtToSendInput = document.querySelector("#amt-to-send-input");
 
+let loader = document.querySelector("#loader-img");
+
 let sendBtn = document.querySelector("#send-rwd-btn");
+
+
+function removeLoader() {
+
+    amtToSendInput.value = "";
+    sendBtn.classList.remove("hideItem");
+    loader.classList.add("hideItem");
+}
+function showLoader() {
+    sendBtn.classList.add("hideItem");
+    loader.classList.remove("hideItem");
+}
 
 usernameCols.forEach(col => {
     col.addEventListener('click', () => {
@@ -36,6 +50,9 @@ noLogoutBtn.addEventListener('click', () => {
 })
 
 sendBtn.addEventListener("click", () => {
+
+    showLoader();
+
     fetch(`SendReward?userId=${userIdInput.value}&amount=${amtToSendInput.value}`,
         {
             method: 'POST',
@@ -60,6 +77,9 @@ sendBtn.addEventListener("click", () => {
                
                 <div class="ryts-2-font">
                  
+                  <div style="justify-content:center; text-align:center;" >
+                  <img src="~/Images/Succes-image.png" alt="Success Image">
+                   </div>
                     <p class="ryts-2-p1">Money is on the way</p>
                     <div class="ryts-2-text-wrap">
                         <p class="ryts-2-p2">
@@ -74,47 +94,59 @@ sendBtn.addEventListener("click", () => {
 
             else if (data.code == "600") {
                 output = `
-                <div>
-                <p> ${data.invalidEntryResult} </p>
+                <div style="display:flex;">
+                <i class="fa fa-exclamation-circle fa-2x" style="color:red;"></i>
+                <p style="margin-left:20px;"> ${data.invalidEntryResult} </p>
                 </div>
                 `;
+                removeLoader();
             }
             else if (data.code == "300") {
                 output = `
-                <div>
-                <p> ${data.insufficientBalanceResult} </p>
+                <div style="display:flex;">
+                <i class="fa fa-exclamation-circle fa-2x" style="color:red;"></i>
+                <p style="margin-left:20px;"> ${data.insufficientBalanceResult} </p>
                 </div>
                 `;
+                removeLoader();
             }
             else if (data.code == "404") {
                 output = `
-                <div>
-                <p> ${data.userNotFoundResult}</p>
+                <div style="display:flex;">
+                <i class="fa fa-exclamation-circle fa-2x" style="color:red;"></i>
+                <p style="margin-left:20px;"> ${data.userNotFoundResult} </p>
                 </div>
                 `;
 
+                removeLoader();
             }
             else if (data.code == "700") {
                 output = `
-                <div>  
-                <p> ${data.inactiveWalletResult}</p>
+                <div style="display:flex;">
+                <i class="fa fa-exclamation-circle fa-2x" style="color:red;"></i>
+                <p style="margin-left:20px;"> ${data.inactiveWalletResult} </p>
                 </div>
                 `;
+                removeLoader();
             }
             else if (data.code = "400") {
                 output = `
-                   <div>
-                   <p>${data.unsuccesfulTransactionResult}</p>
-                   </div>
+                <div style="display:flex;">
+                <i class="fa fa-exclamation-circle fa-2x" style="color:red;"></i>
+                <p style="margin-left:20px;"> ${data.unsuccesfulTransactionResult} </p>
+                </div>
                 `;
+                removeLoader();
             }
             else if (data.code == "800")
             {
                 output = `
-                <div>
-                <p>${data.noAmountResult} </p>
+                <div style="display:flex;">
+                <i class="fa fa-exclamation-circle fa-2x" style="color:red;"></i>
+                <p style="margin-left:20px;"> ${data.noAmountResult} </p>
                 </div>
                 `;
+                removeLoader();
             }
             // Example: Update content of a new modal with the result
             document.getElementById('resultModalContent').innerHTML = output;
@@ -126,3 +158,4 @@ sendBtn.addEventListener("click", () => {
             console.error('Error occurred while sending data:', error);
         });
 });
+

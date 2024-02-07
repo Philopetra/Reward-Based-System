@@ -1,6 +1,4 @@
 ﻿@model RYT.Models.ViewModels.UploadImageVM
-@inject SignInManager<AppUser> _signInManager;
-@inject UserManager<AppUser> _userManager;
 @{
     ViewData["Title"] = "Edit Profile Picture"; 
     var user = _userManager.GetUserAsync(User).Result;

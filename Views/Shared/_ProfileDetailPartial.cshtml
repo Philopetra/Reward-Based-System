@@ -1,8 +1,10 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using RYT.Models.Entities
-@inject UserManager<AppUser> _userManager;
-@{
+﻿@{
     var user = _userManager.GetUserAsync(User).Result;
+    IList<string> userRoles = new List<string>();
+    if(user != null)
+    {
+        userRoles = _userManager.GetRolesAsync(user).Result;
+    }
 }
 <div class="modal fade" id="profile" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -63,10 +65,15 @@
                             }
                         </div>
                         <div class="ryts-2-div-12">
-                            <a role="button" class="ryts-2-span-4" asp-action="sendReward" asp-controller="dashboard">
-                                <div class="ryts-2-span-4-1">Send Reward</div>
-                            </a>
-                            <a asp-action="messages" role="button" class="ryts-2-span-5"><div class="ryts-2-span-5-1">Message</div></a>
+                            @if (userRoles.Any(x => x.ToLower().Equals("student")))
+                            {
+                                
+                                <a role="button" class="ryts-2-span-4" asp-action="sendReward" asp-controller="dashboard">
+                                    <div class="ryts-2-span-4-1">Send Reward</div>
+                                </a>
+
+                            }
+                            <a asp-action="messages" asp-controller="dashboard" role="button" class="ryts-2-span-5"><div class="ryts-2-span-5-1">Message</div></a>
                         </div>
                     </span>
                 </div>

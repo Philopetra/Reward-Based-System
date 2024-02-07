@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using RYT.Commons;
 using RYT.Data;
 using RYT.Models.Entities;
@@ -9,6 +11,7 @@ using RYT.Models.Enums;
 using RYT.Models.ViewModels;
 using RYT.Services.CloudinaryService;
 using RYT.Services.Emailing;
+using RYT.Services.Payment;
 using RYT.Services.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,21 +24,23 @@ namespace RYT.Controllers
     [Authorize()]
     public class DashboardController : Controller
     {
+        private readonly IPayments _payments;
         private readonly IRepository _repository;
         private readonly IPhotoService _photoService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
 
-        public DashboardController(IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService,
+        public DashboardController(IPayments payments, IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService,
             IEmailService emailService)
         {
             _repository = repository;
             _userManager = userManager;
             _photoService = photoService;
             _emailService = emailService;
+            _payments = payments;
         }
 
-        public async Task<IActionResult> Overview(string? tableToShow)
+        public async Task<IActionResult> Overview(string? tableToShow, string? msg)
         {
             decimal currentUserWalletBalance = 0.0M;
             string status = "";
@@ -53,6 +58,12 @@ namespace RYT.Controllers
                 AmountReceived = amountReceived,
                 AmountSent = amountSent
             };
+
+            if (!string.IsNullOrEmpty(msg))
+            {
+                ViewBag.FundErrMsg = msg;
+                return View(model);
+            }
 
             if (string.IsNullOrEmpty(tableToShow))
             {
@@ -83,14 +94,21 @@ namespace RYT.Controllers
                 if (roles.Any(x => x.ToLower().Equals("teacher")))
                 {
                     var transactions = await _repository.GetAsync<Transaction>();
+                    if (transactions.Any())
+                    {
+                        userTransactions = transactions.Where(
+                            x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
+                            x.ReceiverId.Equals(user.Id) &&
+                            x.Status == true
+                            ).ToList();
+
+                        userTransactions.ForEach(x =>
+                        {
+                            amountReceived += x.Amount;
+                        });
+                    }
                     if (tableToShow.ToLower().Equals("received"))
                     {
-                        if (transactions.Any())
-                        {
-                            userTransactions = transactions.Where(
-                                x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
-                                x.ReceiverId.Equals(user.Id)).ToList();
-                        }
                         model.MyReceivedTransactions = userTransactions.Select(x => new ReceivedTransactionsViewModel
                         {
                             Description = x.Description,
@@ -104,7 +122,9 @@ namespace RYT.Controllers
                         {
                             userTransactions = transactions.Where(
                                 x => x.TransactionType.ToLower().Equals(TransactionTypes.Withdrawal.ToString().ToLower()) &&
-                                x.SenderId.Equals(user.Id)).ToList();
+                                x.SenderId.Equals(user.Id) &&
+                                x.Status == true
+                                ).ToList();
                         }
                         model.MySentTransactions = userTransactions.Select(x => new SentTransactionViewModel
                         {
@@ -114,23 +134,35 @@ namespace RYT.Controllers
                         }).ToList();
                     }
 
-                    userTransactions.ForEach(x =>
-                    {
-                        amountReceived += x.Amount;
-                    });
 
                 }
 
                 if (roles.Any(x => x.ToLower().Equals("student")))
                 {
                     var transactions = await _repository.GetAsync<Transaction>();
+                    if (transactions.Any())
+                    {
+                        userTransactions = transactions.Include(x => x.Sender)
+                            .Where(
+                                x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
+                                x.SenderId.Equals(user.Id) &&
+                                x.Status == true
+                            ).ToList();
+
+                        userTransactions.ForEach(x =>
+                        {
+                            amountSent += x.Amount;
+                        });
+                    }
                     if (tableToShow.ToLower().Equals("fund"))
                     {
                         if (transactions.Any())
                         {
                             userTransactions = transactions.Where(
                                 x => x.TransactionType.ToLower().Equals(TransactionTypes.Funding.ToString().ToLower()) &&
-                                x.SenderId.Equals(user.Id)).ToList();
+                                x.SenderId.Equals(user.Id) &&
+                                x.Status == true
+                                ).ToList();
                         }
                         model.MyFundings = userTransactions.Select(x => new FundingTransactionHistoryViewModel
                         {
@@ -141,48 +173,39 @@ namespace RYT.Controllers
                     }
                     else
                     {
-                        if (transactions.Any())
-                        {
-                            userTransactions = transactions.Include(x => x.Sender)
-                                .Where(
-                                    x => x.TransactionType.ToLower().Equals(TransactionTypes.Transfer.ToString().ToLower()) &&
-                                    x.SenderId.Equals(user.Id)
-                                ).ToList();
-                        }
                         model.MyTransferTransactions = userTransactions.Select(x => new TransferTransactionHistoryViewModel
                         {
                             School = "",
-                            NameOfTeacher = $"{x.Sender.FirstName} {x.Sender.LastName}",
+                            NameOfTeacher = $"{_userManager.FindByIdAsync(x.ReceiverId).Result.FirstName} {_userManager.FindByIdAsync(x.ReceiverId).Result.LastName}",
                             Amount = x.Amount,
                             dateTime = x.UpdatedOn
                         }).ToList();
                     }
 
-                    userTransactions.ForEach(x =>
-                    {
-                        amountSent += x.Amount;
-                    });
                 }
             }
 
-           
+
 
             //if (roles.Any(x => x.ToLower().Equals("teacher")))
             //{
-               
-            //}
-            
-            //if (roles.Any(x => x.ToLower().Equals("student")))
-            //{
-               
+
             //}
 
+            //if (roles.Any(x => x.ToLower().Equals("student")))
+            //{
+
+            //}
+            model.Balance = currentUserWalletBalance;
+            model.Status = status;
+            model.AmountReceived = amountReceived;
+            model.AmountSent = amountSent;
             return View(model);
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> Messages(string searchTerm, string threadId)
+        public async Task<IActionResult> Messages(string? searchTerm, string? threadId)
 
         {
             MVModel messageViewModel = new MVModel();
@@ -286,7 +309,7 @@ namespace RYT.Controllers
 
 
         [HttpGet]
-        public IActionResult SendReward(ListOfSchoolViewModel model, string searchString, int page = 1)
+        public IActionResult SendReward(string? searchString, int page = 1)
         {
             int pageSize = 5;
 
@@ -302,6 +325,7 @@ namespace RYT.Controllers
 
             Pagination.UsePagination(schools, page, pageSize, out schoolsOnPage, out totalItems, out totalPages);
 
+            var model = new ListOfSchoolViewModel();
             model.Schools = schoolsOnPage;
             model.CurrentPage = page;
             model.TotalPages = totalPages;
@@ -337,7 +361,8 @@ namespace RYT.Controllers
                                     ReceiverId = receiverId,
                                     TransactionType = TransactionTypes.Transfer.ToString(),
                                     Description = $"Transfer of the sum of \u20A6{amount}  by {user.FirstName} {user.LastName}",
-                                    Reference = Guid.NewGuid().ToString()
+                                    Reference = Guid.NewGuid().ToString(),
+                                    Status = true
                                 };
 
                                 using (var trnxObj = await _repository._ctx.Database.BeginTransactionAsync())
@@ -352,7 +377,7 @@ namespace RYT.Controllers
                                         senderWallet.Transactions.Add(rewardTransaction);
                                         receiverWallet.Transactions.Add(rewardTransaction);
                                         var link = Url.Action("Login", "Account", null, Request.Scheme);
-                                        var body = @$"Hi{user_Receiver.FirstName},
+                                        var body = @$"Hi {user_Receiver.FirstName},
              Congratulations, you have been rewarded with a sum of {amount} by {user.FirstName} {user.LastName}. Kindly click <a href='{link}'>here</a> to login to your account";
                                         await _emailService.SendEmailAsync(user_Receiver.Email, "Reward Notification", body);
 
@@ -484,30 +509,41 @@ namespace RYT.Controllers
         [HttpGet]
         public async Task<IActionResult> Teachers(string schoolName, int page = 1)
         {
-            int pageSize = 5;
-
-            var listOfSchoolTaught = await _repository.GetAsync<SchoolsTaught>();
-
             var model = new TeacherListViewModel();
-
-            if (listOfSchoolTaught != null && listOfSchoolTaught.Any())
+            if (!string.IsNullOrEmpty(schoolName))
             {
-                var schoolsTaught = (await _repository.GetAsync<SchoolsTaught>())
-                                    .Include(x => x.Teacher)
-                                    .ThenInclude(x => x.User).ToList();
+                int pageSize = 5;
 
-                var paginated = new List<SchoolsTaught>();
-                int totalItems;
-                int totalPages;
+                var listOfSchoolTaught = await _repository.GetAsync<SchoolsTaught>();
 
-                Pagination.UsePagination(schoolsTaught.AsQueryable(), page, pageSize, out paginated, out totalItems, out totalPages);
-                model.TeacherList = paginated.Select(x => x.Teacher).ToList();
-                model.SchoolName = schoolName;
-                model.CurrentPage = page;
-                model.Count = totalItems;
-                model.TotalPages = totalPages;
 
-                return View(model);
+                if (listOfSchoolTaught != null && listOfSchoolTaught.Any())
+                {
+                    var schoolsTaught = (await _repository.GetAsync<SchoolsTaught>())
+                                        .Include(x => x.Teacher)
+                                        .ThenInclude(x => x.User).ToList();
+
+                    var teachersBySchool = listOfSchoolTaught.Where(x => x.School.Equals(schoolName))
+                                                             .Select(x => x.Teacher).ToList()
+                                                             .Distinct();
+    
+                    var paginated = new List<Teacher>();
+                    int totalItems;
+                    int totalPages;
+
+                    Pagination.UsePagination(teachersBySchool.AsQueryable(), page, pageSize, out paginated, out totalItems, out totalPages);
+                    model.TeacherList = paginated;
+                    model.SchoolName = schoolName;
+                    model.CurrentPage = page;
+                    model.Count = totalItems;
+                    model.TotalPages = totalPages;
+
+                    return View(model);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "School name must not be empty!");
             }
 
             return View(model);
@@ -800,6 +836,104 @@ namespace RYT.Controllers
 
             return View(model);
 
+        }
+
+        
+        [HttpPost]
+        public async Task<IActionResult> Withdraw(string bank, decimal amt, string acc)
+        {
+            if (amt <= 0)
+            {
+                return Json(new { Code = 400, Message = "Invalid amount! Please enter an amount greaterthan zero" });
+            }
+
+            if (string.IsNullOrEmpty(bank) || bank.Equals("Select Bank"))
+            {
+                return Json(new { Code = 400, Message = "Please select your bank" });
+            }
+
+            int n;
+            bool isNumeric = int.TryParse(acc, out n);
+            if (!isNumeric || acc.Length != 10)
+            {
+                return Json(new { Code = 400, Message = "Please ensure you entered 10 digits for your account number!" });
+            }
+
+            var loggedInUser = await _userManager.GetUserAsync(User);
+
+            var wallets = await _repository.GetAsync<Wallet>();
+            if(wallets != null && wallets.Any())
+            {
+                var userWallet = wallets.FirstOrDefault(x => x.UserId == loggedInUser.Id);
+                if(userWallet != null)
+                {
+                    if(userWallet.Balance > amt)
+                    {
+                        using (var trnxObj = await _repository._ctx.Database.BeginTransactionAsync())
+                        {
+                            Transaction rewardTransaction = new Transaction()
+                            {
+                                WalletId = userWallet.Id,
+                                Amount = amt,
+                                SenderId = loggedInUser.Id,
+                                ReceiverId = loggedInUser.Id,
+                                TransactionType = TransactionTypes.Withdrawal.ToString(),
+                                Description = $"Withdrawal of the sum of \u20A6{amt}  has been completed for {loggedInUser.FirstName} {loggedInUser.LastName}",
+                                Reference = Guid.NewGuid().ToString(),
+                                Status = true
+                            };
+                            try
+                            {
+                                var transactionResult = await _repository.AddAsync<Transaction>(rewardTransaction);
+                                userWallet.Balance -= amt;
+                                await _repository.UpdateAsync<Wallet>(userWallet);
+
+                                var body = @$"Hi {loggedInUser.FirstName}, Congratulations, your withdrawal of the sum of {amt} by was successful.";
+                                await _emailService.SendEmailAsync(loggedInUser.Email, "Reward Notification", body);
+
+                                await trnxObj.CommitAsync();
+                                return Json(new { Code = 200, name = loggedInUser.FirstName + " " + loggedInUser.LastName, amount = $"\u20A6{amt}", newBal=userWallet.Balance });
+                            }
+                            catch (Exception ex)
+                            {
+                                await trnxObj.RollbackAsync();
+                                Console.WriteLine(ex.ToString());
+                                var resultmessage = "Unsuccesfull Transaction";
+                                return Json(new { Code = 400, unsuccesfulTransactionResult = resultmessage });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Code = 400, Message = "Insufficient fund!" });
+                    }
+                }
+
+            }
+
+
+            return Json(new { Code = 400, Message = "Server error: Could not get user's wallet record!" }); ;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FundWallet(decimal amt)
+        {
+            decimal n;
+            bool isNumeric = decimal.TryParse(amt.ToString(), out n);
+            if (!isNumeric)
+            {
+                return RedirectToAction("overview", new {msg="invalid fund entry!"});
+            }
+
+            if(amt < 1)
+            {
+                return Json(new { Code = 400, Message = "Invalid amount! Please enter an amount greaterthan zero" });
+            }
+
+            AppUser user = await _userManager.GetUserAsync(User);
+            var model = new FundWalletVM { Amount = amt };
+            var response = await _payments.Initialize(model, user.Id);
+            return Json(new { Code = 200, Message = response.Item2 });
         }
     }
 }

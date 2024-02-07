@@ -32,7 +32,7 @@ public class PaymentController : Controller
     }
     
     [HttpGet("callback")]
-    public async Task<IActionResult> VerifyPayment([FromQuery] string reference)
+    public async Task<IActionResult> VerifyPayment([FromQuery] string trxref, [FromQuery] string reference)
     {
         var userId = (await _userManger.GetUserAsync(User)).Id;
         
