@@ -42,8 +42,8 @@
 
         @foreach (var teacher in Model.TeacherList)
         {
-                <tr>
-                    <td><a class="username-col" name="@teacher.UserId" data-bs-target="#sendReward" data-bs-toggle="modal">@(teacher.User?.FirstName + " " + teacher.User?.LastName)</a></td>
+                <tr style="color:dimgray">
+                <td><a class="username-col" name="@teacher.UserId" data-bs-target="#sendReward" data-bs-toggle="modal">@(teacher.User?.FirstName + " " + teacher.User?.LastName)</a></td>
                     <td>@teacher.Position</td>
                     <td>@teacher.YearsOfTeaching</td>
                 </tr>

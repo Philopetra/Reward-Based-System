@@ -16,7 +16,11 @@
                         
                              <div class="mb-3" hidden>
                                 <label for="userId" class="form-label wey-EnterAmount"></label>
-                                <input type="text" id="userId" value="@user.Id"form-control wey-input">
+                            @if (user != null)
+                            {
+                            <input type="text" id="userId" value="@user.Id"form-control wey-input">
+                                
+                            }
                             </div> 
                     @*         <div class="mb-3" hidden>label
                                 <label for="userId" class="form-label wey-EnterAmount"></label>
@@ -38,7 +42,7 @@
 
                             </div>
                             <div class="loader-panel">
-                                <img class="hideItem" id="loader-img" src="~/Images/loader.gif" style="width:30px" />
+                                <img class="hideItem" id="loader-fund-img" src="~/Images/loader.gif" style="width:30px" />
                             </div>
                             <button id="btnFund" class="btn btn-outline-light wey-fund-submit send-button button" href="#" role="button">Send</button>
                         
@@ -67,16 +71,17 @@
     let userId = document.querySelector("#userId")
     let fundInput = document.querySelector("#fundInput")
     let btnFund = document.querySelector("#btnFund")
+    let loaderFund = document.querySelector("#loader-fund-img");
 
 
     function removeFundLoader() {
         fundInput.value = "";
         btnFund.classList.remove("hideItem");
-        loader.classList.add("hideItem");
+        loaderFund.classList.add("hideItem");
     }
     function showFundLoader() {
         btnFund.classList.add("hideItem");
-        loader.classList.remove("hideItem");
+        loaderFund.classList.remove("hideItem");
     }
 
     btnFund.addEventListener("click", () => {

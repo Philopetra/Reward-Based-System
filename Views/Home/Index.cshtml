@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
+@{
+    var user = _userManager.GetUserAsync(User).Result;
+}
 <Partial name="_NavbarPartial" />
 
 <body>
@@ -9,9 +11,19 @@
         <div class="ryt-col  animated bounceIn" style="width:50%;margin-top:75px;padding-left:60px">
             <div style="color:#3E1C96;font-weight:bold" class="ryt-xxxlarge">Send instant <br>heartfelt rewards<br>to your teachers</div><br>
             <div style="color:#101828;" class="ryt-margin-top">A digital platform that digitizes the process of sending funds to teachers who have done their work with emphatic kindness.</div>
-            <a asp-action="signup" asp-controller="account">
-            <span class="ryt-padding ryt-button ryt-margin-top" style="background-color:#6938EF;color:white"> Get Started</span>
-            </a>
+            @if (!_signInManager.IsSignedIn(User))
+            {
+                <a asp-action="signup" asp-controller="account">
+                    <span class="ryt-padding ryt-button ryt-margin-top" style="background-color:#6938EF;color:white"> Get Started</span>
+                </a>
+            }
+            else
+            {
+                <a asp-action="overview" asp-controller="dashboard">
+                    <span class="ryt-padding ryt-button ryt-margin-top" style="background-color:#6938EF;color:white"> Goto Dashboard Overview</span>
+                </a>
+            }
+            
         </div>
         <img class="ryt-col  animated2 slideInRight" style="width:50%;padding-right:2%;margin-bottom:-0.8%" src="~/images/hm1.png">
     </div>
@@ -41,9 +53,19 @@
         <div class="ryt-col  ryt-display-topleft " style="padding-top:100px;padding-left:80px;width:50%">
             <div class="ryt-text-white" style="font-weight:bold;font-size:40px">Send surprise funds to<br> your teacher today</div>
             <div class="ryt-text-white ryt-margin-top">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Feugiat eget ipsum, sed praesent.</div>
-            <a asp-action="signup" asp-controller="account">
-            <div class="ryt-button ryt-margin-top" style="font-weight:bold;color: #3e1c96;background-color:white">Get Started</div>
-            </a>
+            @if (!_signInManager.IsSignedIn(User))
+            {
+                <a asp-action="signup" asp-controller="account">
+                <div class="ryt-button ryt-margin-top" style="font-weight:bold;color: #3e1c96;background-color:white">Get Started</div>
+                </a>
+            }
+            else
+            {
+                <a asp-action="overview" asp-controller="dashboard">
+                    <div class="ryt-button ryt-margin-top" style="font-weight:bold;color: #3e1c96;background-color:white">Goto Dashboard Overview</div>
+
+                </a>
+            }
         </div>
         <img src="~/images/checking.png" class="ryt-col ryt-display-bottomright" style="  width:50%">
     </div>

@@ -48,7 +48,7 @@
                             <input class="ryt-col s12 ryt-padding ryt-round-large ryt-panel ryt-border" type="number" placeholder="Enter account number" id="accountNumInput">
                         </div>
                         <div class="loader-panel">
-                            <img class="hideItem" id="loader-img" src="~/Images/loader.gif" style="width:30px" />
+                            <img class="hideItem" id="loader-pay-img" src="~/Images/loader.gif" style="width:30px" />
                         </div>
                         <div class="ryt-row ryt-margin-top">
                             <button style="background-color: #6938EF" class="ryt-text-white ryt-col s12 ryt-padding ryt-round-large ryt-panel ryt-border" placeholder="Enter account number" id="btnPay">PAY NGN</button>
@@ -70,17 +70,19 @@ let amountToPayInput = document.querySelector("#amountToPayInput")
 let bankInput = document.querySelector("#bankInput")
 let accountNumInput = document.querySelector("#accountNumInput")
 let btnPay = document.querySelector("#btnPay")
+let loaderPay = document.querySelector("#loader-pay-img");
+
 
 
 function removePayLoader() {
     amountToPayInput.value = "";
     accountNumInput.value = "";
     btnPay.classList.remove("hideItem");
-    loader.classList.add("hideItem");
+    loaderPay.classList.add("hideItem");
 }
 function showPayLoader() {
     btnPay.classList.add("hideItem");
-    loader.classList.remove("hideItem");
+    loaderPay.classList.remove("hideItem");
 }
 
 btnPay.addEventListener("click", () => {
@@ -94,26 +96,29 @@ btnPay.addEventListener("click", () => {
     .then(res => res.json())
     .then(data => {
         let output = ''; 
+        let isRedirect = false;
             if (data.code == "200") {
                 // let newBal = `<span>&#8358;</span>${data.newBal}`
                 // document.querySelector("#bal").innerHTML = newBal
-                output = `
+            //     output = `
                
-                <div class="ryts-2-font">
+            //     <div class="ryts-2-font">
                  
-                  <div style="justify-content:center; text-align:center;" >
-                  <img src="~/Images/Succes-image.png" alt="Success Image">
-                   </div>
-                    <p class="ryts-2-p1">Money is on the way</p>
-                    <div class="ryts-2-text-wrap">
-                        <p class="ryts-2-p2">
-                            Congratulations <span class="ryts-2-patience">${data.name}.</span> 
-                            you have withdraw ${data.amount}<br> Your money is on it's way to your bank. Cheers
-                        </p>
+            //       <div style="justify-content:center; text-align:center;" >
+            //       <img src="~/Images/Succes-image.png" alt="Success Image">
+            //        </div>
+            //         <p class="ryts-2-p1">Money is on the way</p>
+            //         <div class="ryts-2-text-wrap">
+            //             <p class="ryts-2-p2">
+            //                 Congratulations <span class="ryts-2-patience">${data.name}.</span> 
+            //                 you have withdraw ${data.amount}<br> Your money is on it's way to your bank. Cheers
+            //             </p>
                         
-                    </div>
-                </div>
-            `;
+            //         </div>
+            //     </div>
+            // `;
+                isRedirect = true;
+                    window.location.href = data.rtnUrl;
             }
             else if (data.code == "400") {
                 output = `
@@ -124,10 +129,12 @@ btnPay.addEventListener("click", () => {
                 `;
                 removePayLoader();
             }
-            document.getElementById('resultModalContent').innerHTML = output;
-           
-            $("#withdraw").modal("hide")
-            $('#sendRewardSuccess').modal('show');
+           if(!isRedirect){
+                    document.getElementById('resultModalContent').innerHTML = output;
+
+                    $("#withdraw").modal("hide")
+                    $('#sendRewardSuccess').modal('show');
+           }
     })
     .catch()
 

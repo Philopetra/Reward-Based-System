@@ -12,6 +12,7 @@ using RYT.Models.ViewModels;
 using RYT.Services.CloudinaryService;
 using RYT.Services.Emailing;
 using RYT.Services.Payment;
+using RYT.Services.NotificationSaga;
 using RYT.Services.Repositories;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,9 @@ namespace RYT.Controllers
         private readonly IPhotoService _photoService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
+        private readonly IFirebaseService _firebaseService;
 
-        public DashboardController(IPayments payments, IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService,
+        public DashboardController(IFirebaseService firebaseService, IPayments payments, IRepository repository, UserManager<AppUser> userManager, IPhotoService photoService,
             IEmailService emailService)
         {
             _repository = repository;
@@ -38,6 +40,7 @@ namespace RYT.Controllers
             _photoService = photoService;
             _emailService = emailService;
             _payments = payments;
+            _firebaseService = firebaseService;
         }
 
         public async Task<IActionResult> Overview(string? tableToShow, string? msg)
@@ -85,7 +88,7 @@ namespace RYT.Controllers
             if (wallets.Any())
             {
                 var userWallet = wallets.First(x => x.UserId == user.Id);
-                if(userWallet != null)
+                if (userWallet != null)
                 {
                     currentUserWalletBalance = userWallet.Balance;
                     status = userWallet.Status.ToString();
@@ -287,9 +290,9 @@ namespace RYT.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMessage(MVModel model, string threadId)
         {
-            if(!string.IsNullOrEmpty(model.SenderId) && 
+            if (!string.IsNullOrEmpty(model.SenderId) &&
                 !string.IsNullOrEmpty(model.ReceiverId) &&
-                !string.IsNullOrEmpty(model.NewChat) && 
+                !string.IsNullOrEmpty(model.NewChat) &&
                 !string.IsNullOrEmpty(threadId))
             {
                 await _repository.AddAsync(new UserChat
@@ -303,7 +306,7 @@ namespace RYT.Controllers
                     ThreadId = threadId
                 });
             }
-            return RedirectToAction("Messages", new {threadId});
+            return RedirectToAction("Messages", new { threadId });
         }
 
 
@@ -381,36 +384,36 @@ namespace RYT.Controllers
              Congratulations, you have been rewarded with a sum of {amount} by {user.FirstName} {user.LastName}. Kindly click <a href='{link}'>here</a> to login to your account";
                                         await _emailService.SendEmailAsync(user_Receiver.Email, "Reward Notification", body);
 
-                                        await trnxObj.CommitAsync();                           
-                                        return Json(new { Code = 200, name = user.FirstName +" "+ user.LastName, amount=$"\u20A6{amount}" });
+                                        await trnxObj.CommitAsync();
+                                        return Json(new { Code = 200, name = user.FirstName + " " + user.LastName, amount = $"\u20A6{amount}" });
                                     }
                                     catch (Exception ex)
                                     {
                                         await trnxObj.RollbackAsync();
                                         Console.WriteLine(ex.ToString());
                                         var resultmessage = "Unsuccesfull Transaction";
-                                        return Json(new {Code=400, unsuccesfulTransactionResult = resultmessage });
+                                        return Json(new { Code = 400, unsuccesfulTransactionResult = resultmessage });
                                     }
                                 }
                             }
                             else
                             {
-                                
-                                return Json(new { Code=300, insufficientBalanceResult = "Insufficient Balance" });
+
+                                return Json(new { Code = 300, insufficientBalanceResult = "Insufficient Balance" });
                             }
 
                         }
                         else
                         {
                             var resultmessage = "Your Wallet is Inactive";
-                            return Json(new { Code=700, inactiveWalletResult = resultmessage });
+                            return Json(new { Code = 700, inactiveWalletResult = resultmessage });
 
                         }
                     }
                     else
                     {
                         var resultmessage = "User Wallet not Found";
-                        return Json(new { Code=404, userNotFoundResult = resultmessage });
+                        return Json(new { Code = 404, userNotFoundResult = resultmessage });
 
                     }
 
@@ -419,7 +422,7 @@ namespace RYT.Controllers
                 else
                 {
                     var resultmessage = "Invalid entry!";
-                    return Json(new { Code=600, invalidEntryResult = resultmessage });
+                    return Json(new { Code = 600, invalidEntryResult = resultmessage });
 
 
                 }
@@ -526,7 +529,7 @@ namespace RYT.Controllers
                     var teachersBySchool = listOfSchoolTaught.Where(x => x.School.Equals(schoolName))
                                                              .Select(x => x.Teacher).ToList()
                                                              .Distinct();
-    
+
                     var paginated = new List<Teacher>();
                     int totalItems;
                     int totalPages;
@@ -683,14 +686,14 @@ namespace RYT.Controllers
 
             return View();
         }
-       
+
         [HttpGet]
         public async Task<IActionResult> TransferHistory(string userId)
         {
             FundAndTransferCombinedViewModel fundAndTransferCombinedViewModel = new FundAndTransferCombinedViewModel();
 
             IQueryable<Transaction> GetTransactions = await _repository.GetAsync<Transaction>();
-        
+
             List<Transaction> transactions = GetTransactions
                 .Where(transaction => transaction.TransactionType == TransactionTypes.Transfer
                 .ToString() && userId == transaction.SenderId).ToList();
@@ -716,7 +719,7 @@ namespace RYT.Controllers
                     };
 
                 fundAndTransferCombinedViewModel.TransferTransactions.Add(transferTransactionHistoryViewModel);
-            }        
+            }
 
             return View(fundAndTransferCombinedViewModel);
         }
@@ -727,7 +730,7 @@ namespace RYT.Controllers
             FundAndTransferCombinedViewModel fundAndTransferCombinedViewModel = new FundAndTransferCombinedViewModel();
 
             IQueryable<Transaction> GetTransactions = await _repository.GetAsync<Transaction>();
-                    
+
             List<Transaction> fundTransactions = GetTransactions.Where(transaction => transaction
             .SenderId == userId && transaction.TransactionType == TransactionTypes.Funding.ToString()).ToList();
 
@@ -755,7 +758,7 @@ namespace RYT.Controllers
                 .Include(x => x.SchoolsTaughts)
             ).FirstOrDefault(x => x.UserId == loggedInUsedr.Id);
 
-            if(teacher != null)
+            if (teacher != null)
             {
                 var editProfileViewModel = new EditTeacherProfileVM()
                 {
@@ -779,7 +782,7 @@ namespace RYT.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(model.SelectedSchool == "" || model.SelectedSubject == "")
+                if (model.SelectedSchool == "" || model.SelectedSubject == "")
                 {
                     ModelState.AddModelError("", "You didn't select a school or subject");
                     return View(model);
@@ -792,7 +795,7 @@ namespace RYT.Controllers
                    .Include(x => x.SchoolsTaughts)
                ).FirstOrDefault(x => x.UserId == loggedInUsedr.Id);
 
-                if (teacher != null) 
+                if (teacher != null)
                 {
                     teacher.User.FirstName = model.FirstName;
                     teacher.User.LastName = model.LastName;
@@ -817,7 +820,7 @@ namespace RYT.Controllers
 
                         await _repository.AddAsync(new SchoolsTaught { TeacherId = model.TeacherId, School = model.SelectedSchool });
                         await _repository.AddAsync(new SubjectsTaught { TeacherId = model.TeacherId, Subject = model.SelectedSubject });
-                        
+
                         await startTransaction.CommitAsync();
 
                         return RedirectToAction("overview", "dashboard");
@@ -838,7 +841,7 @@ namespace RYT.Controllers
 
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> Withdraw(string bank, decimal amt, string acc)
         {
@@ -862,12 +865,12 @@ namespace RYT.Controllers
             var loggedInUser = await _userManager.GetUserAsync(User);
 
             var wallets = await _repository.GetAsync<Wallet>();
-            if(wallets != null && wallets.Any())
+            if (wallets != null && wallets.Any())
             {
                 var userWallet = wallets.FirstOrDefault(x => x.UserId == loggedInUser.Id);
-                if(userWallet != null)
+                if (userWallet != null)
                 {
-                    if(userWallet.Balance > amt)
+                    if (userWallet.Balance > amt)
                     {
                         using (var trnxObj = await _repository._ctx.Database.BeginTransactionAsync())
                         {
@@ -892,7 +895,9 @@ namespace RYT.Controllers
                                 await _emailService.SendEmailAsync(loggedInUser.Email, "Reward Notification", body);
 
                                 await trnxObj.CommitAsync();
-                                return Json(new { Code = 200, name = loggedInUser.FirstName + " " + loggedInUser.LastName, amount = $"\u20A6{amt}", newBal=userWallet.Balance });
+                                var redirectUrl = Url.Action("overview", "dashboard", new { tableToShow="sent" }, Request.Scheme);
+                                return Json(new { Code = 200, name = loggedInUser.FirstName + " " + loggedInUser.LastName, amount = $"\u20A6{amt}", RtnUrl = redirectUrl });
+                                //return Json(new { Code = 200, name = loggedInUser.FirstName + " " + loggedInUser.LastName, amount = $"\u20A6{amt}", newBal = userWallet.Balance });
                             }
                             catch (Exception ex)
                             {
@@ -922,10 +927,10 @@ namespace RYT.Controllers
             bool isNumeric = decimal.TryParse(amt.ToString(), out n);
             if (!isNumeric)
             {
-                return RedirectToAction("overview", new {msg="invalid fund entry!"});
+                return RedirectToAction("overview", new { msg = "invalid fund entry!" });
             }
 
-            if(amt < 1)
+            if (amt < 1)
             {
                 return Json(new { Code = 400, Message = "Invalid amount! Please enter an amount greaterthan zero" });
             }
@@ -934,6 +939,85 @@ namespace RYT.Controllers
             var model = new FundWalletVM { Amount = amt };
             var response = await _payments.Initialize(model, user.Id);
             return Json(new { Code = 200, Message = response.Item2 });
+        }
+        public async Task SendNotification()
+        {
+            FireBaseNotfication notification = new FireBaseNotfication
+            {
+                userId = "148d2f6f-af7a-423a-baa2-f01d434d9b3a",
+                messages = "gdh i love him like mad",
+                dateTime = DateTime.UtcNow,
+            };
+            int result = await _firebaseService.AddNotification(notification);
+            Console.WriteLine(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetNotifications()
+        {
+            AppUser user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+
+                return Content("0", "text/html");
+            }
+            Console.WriteLine(user.Id);
+            IEnumerable<FireBaseNotfication> result = (await _firebaseService.GetNotifications(user.Id)).OrderByDescending(n => n.notificationId);
+            if (result != null)
+            {
+                string FinalResult = "";
+                foreach (FireBaseNotfication fireBaseNotfication in result)
+                {
+                    string html = "";
+                    if (fireBaseNotfication.status == "sent")
+                    {
+                        html = "< div class='ogm-flex-words ogm-border-around'id ='INotifyU" + fireBaseNotfication.notificationId + "'><p>" + fireBaseNotfication.messages + "<br /> <span class='ogm -day-time'>" + fireBaseNotfication.dateTime + "</span> </p></ div >";
+                    }
+                    else
+                    {
+                        html = "<p onclick='handleNotificationClick(this)'id ='INotifyU" + fireBaseNotfication.notificationId + "'>" + fireBaseNotfication.messages + "<br> <span class='ogm-day-time pt'>" + fireBaseNotfication.dateTime + "</span> </p>";
+                    }
+                    FinalResult += html;
+                }
+                var htmlContent = FinalResult;
+                return Content(htmlContent, "text/html");
+            }
+            return Content("No Notification", "text/html");
+        }
+        public async Task<IActionResult> CountUnreadNotifications()
+        {
+            AppUser user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Content("0", "text/html");
+            }
+            IEnumerable<FireBaseNotfication> getList = (await _firebaseService.GetNotifications(user.Id));
+            int result = getList.Where(u => u.status == "sent").Count();
+            string counterUnread = result.ToString();
+            return Content(counterUnread, "text/html");
+        }
+        [HttpGet]
+        public async Task<string> ReadNotification(string notification)
+        {
+
+            int notificationId = int.Parse(notification.Replace("INotifyU", ""));
+            AppUser user = await _userManager.GetUserAsync(User);
+            int result = await _firebaseService.ReadNotification(user.Id, notificationId);
+            if (result == 0)
+            {
+                return "no";
+            }
+            return "yes";
+
+        }
+        public async Task DeleteNotification(string userId, int notificationId)
+        {
+            int result = await _firebaseService.DeleteNotification(userId, notificationId);
+            if (result == 0)
+            {
+                Console.WriteLine("no");
+            }
+            Console.WriteLine("yes");
         }
     }
 }

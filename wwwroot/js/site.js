@@ -78,7 +78,7 @@ sendBtn.addEventListener("click", () => {
                 <div class="ryts-2-font">
                  
                   <div style="justify-content:center; text-align:center;" >
-                  <img src="~/Images/Succes-image.png" alt="Success Image">
+                  <img src="../Images/Succes-image.png" alt="Success Image">
                    </div>
                     <p class="ryts-2-p1">Money is on the way</p>
                     <div class="ryts-2-text-wrap">

@@ -135,7 +135,7 @@
                             }
                             else
                             {
-                                @foreach (var transaction in Model.MyFundings)
+                                @foreach (var transaction in Model.MyFundings.OrderByDescending(x => x.CreatedOn))
                                 {
                                     <tr style="color:dimgray">
                                         <td>@transaction.Description</td>
@@ -164,7 +164,7 @@
                             }
                             else
                             {
-                                @foreach (var transaction in Model.MyTransferTransactions)
+                                @foreach (var transaction in Model.MyTransferTransactions.OrderByDescending(x => x.dateTime))
                                 {
                                     <tr style="color:dimgray">
                                         <td>@transaction.NameOfTeacher</td>
@@ -228,7 +228,7 @@
                         }
                         else
                         {
-                            @foreach (var transaction in Model.MyReceivedTransactions)
+                                @foreach (var transaction in Model.MyReceivedTransactions.OrderByDescending(x => x.timeOfTransaction))
                             {
                                 <tr style="color:dimgray">
                                     <td>@transaction.Description</td>
@@ -257,7 +257,7 @@
                         }
                         else
                         {
-                            @foreach (var transaction in Model.MySentTransactions)
+                                @foreach (var transaction in Model.MySentTransactions.OrderByDescending(x => x.timeOfTransaction))
                             {
                                 <tr style="color:dimgray">
                                     <td>@transaction.Description</td>
